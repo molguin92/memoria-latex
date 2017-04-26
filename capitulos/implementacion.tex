@@ -1,0 +1,32 @@
+\chapter{Comunicando Paramics con OMNeT++ mediante TraCI}
+
+\section{Paramics}
+\section{OMNeT++}
+\section{TraCI}
+TraCI (\textbf{Tra}ffic \textbf{C}ontrol \textbf{I}nterface) es un protocolo de comunicación para la interacción con simuladores de redes de transporte, cuyo principal propósito es facilitar el diseño y la implementación de simulaciones de Sistemas de Transporte Inteligente \cite{traci}. Proporciona una interfaz unificada que permite no sólo la obtención de datos desde la simulación de transporte, sino que también permite el control directo sobre la ejecución de ésta y provee métodos para la modificación del comportamiento de sus componentes. Así, TraCI permite a un agente externo (como, por ejemplo, un simulador de redes) comunicarse de manera bidireccional con la simulación de la red de transporte, posibilitando un desarrollo dinámico de dicha simulación en reacción a estímulos externos.
+
+Hoy en día, el protocolo se encuentra integrado con SUMO, y se utiliza en conjunto con simuladores de redes de comunicación inalámbrica como OMNeT++ y NS2 para la simulación y estudio de Sistemas de Transporte Inteligente.
+
+\subsection{Diseño del Protocolo}
+
+\begin{bytefield}{16}
+    \bitheader{0,7,8,15} \\
+    \begin{rightwordgroup}{Header}
+        \wordbox{2}{Largo del mensaje, incluyendo el header}
+    \end{rightwordgroup} \\
+    \begin{rightwordgroup}{Comando 0}
+        \bitbox{8}{Largo} & \bitbox{8}{Identificador} \\
+        \wordbox{1}{Parámetros del Comando}
+    \end{rightwordgroup} \\
+    \begin{rightwordgroup}{Comando 1}
+        \bitbox{8}{0x00} & \bitbox[lrt]{8}{}\\
+        \wordbox[lr]{1}{Largo extendido (32 bits)}\\
+        \bitbox[lrb]{8}{} & \bitbox{8}{Identificador} \\
+        \wordbox{1}{Parámetros del Comando}
+    \end{rightwordgroup} \\
+    \wordbox[]{1}{$\vdots$} \\[1ex]
+    \begin{rightwordgroup}{Comando n}
+        \bitbox{8}{Largo} & \bitbox{8}{Identificador} \\
+        \wordbox{1}{Parámetros del Comando}
+    \end{rightwordgroup} \\
+\end{bytefield}
