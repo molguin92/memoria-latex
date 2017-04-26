@@ -1,17 +1,17 @@
-\documentclass[upright, contnum]{umemoria}
+\documentclass[upright, contnum, latin1]{umemoria}
 \depto{DEPARTAMENTO DE CIENCIAS DE LA COMPUTACIÓN}
-\author{ALFREDO JAIME CADIZ RODRÍGUEZ}
-\title{DESDE LA WEB A LOS MÓVILES: LLEVANDO U-CURSOS A NUESTROS BOLSILLOS}
-\auspicio{.}
-\date{ENERO 2014}
-\guia{JAVIER BUSTOS JIMÉNEZ}
+\author{Manuel Osvaldo J. Olguín Muñoz}
+\title{Diseño e Implementación de un Framework Integrado para Simulaciones de Sistemas Inteligentes de Transporte en OMNeT ++ y Paramics}
+\auspicio{NIC Chile Research Labs}
+\date{Julio 2017}
+\guia{Sandra Céspedes U.}
 \carrera{INGENIERO CIVIL EN COMPUTACIÓN}
-\memoria{MEMORIA PARA OPTAR AL TÍTULO DE}
-\comision{JOHAN FABRY,PATRICIO INOSTROZA FAJARDIN}
+\memoria{MEMORIA PARA OPTAR AL TÍTULO DE INGENIERO CIVIL EN COMPUTACIÓN}
+\comision{Javier Bustos, Cristián Cortés}
 
 \usepackage{lipsum}
-
-\usepackage[latin1]{inputenc}
+\usepackage{multicol}
+\usepackage[]{inputenc}
 \usepackage[T1]{fontenc}
 
 \begin{document}
@@ -40,12 +40,13 @@ Una dedicatoria corta.
 
 \mainmatter
 
-\input{intro.tex}
-\input{cap1.tex}
-\input{cap2.tex}
-\input{conclu.tex}
+\input{capitulos/introduccion.tex}
+\input{capitulos/arquitectura.tex}
 
 \nocite{*}
-\bibliographystyle{plain}
-\bibliography{bibliografia}
+\newpage
+\begin{multicols}{2}
+    \bibliographystyle{ieeetr}
+    \bibliography{bibliografia}
+\end{multicols}
 \end{document}
