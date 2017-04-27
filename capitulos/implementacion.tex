@@ -14,9 +14,9 @@ TraCI se basa en una arquitectura cliente-servidor, en la cual el simulador de r
 La figura \ref{fig:traci_msg} ilustra las composiciones de mensajes TraCI para comandos (cliente $\rightarrow$ servidor), y para respuestas (servidor $\rightarrow$ cliente). Ambas comparten una estructura básica idéntica; una cabecera de 32 bits que indica el largo del mensaje seguida de una cantidad arbitraria de comandos/respuestas.
 Para el caso de los comandos, son todos idénticos en su estructura; los primeros dos bytes corresponden al largo del comando y su identificador, respectivamente, seguidos de los parámetros de dicho comando. En el caso de que el largo del comando sobrepase los 255 bits, se fija el byte del largo en $0$ y se agrega un campo adicional de 32 bits que indica el largo extendido del comando.
 
-\begin{figure}
-    \centering
-    \begin{subfigure}{.4\textwidth}
+\begin{figure}[hb]
+    %\centering
+    \begin{subfigure}{.3\textwidth}
         \centering
             \begin{bytefield}{16}
             \bitheader{0,7,8,15} \\
@@ -27,7 +27,7 @@ Para el caso de los comandos, son todos idénticos en su estructura; los primero
                 \bitbox{8}{Largo} & \bitbox{8}{ID Comando} \\
                 \wordbox{1}{Parámetros del Comando}
             \end{rightwordgroup} \\
-            \begin{rightwordgroup}{Comando 1\\(Ejemplo largo\\extendido)}
+            \begin{rightwordgroup}{Comando 1\\(Ejemplo\\largo ext.)}
                 \bitbox{8}{0x00} & \bitbox[lrt]{8}{}\\
                 \wordbox[lr]{1}{Largo extendido (32 bits)}\\
                 \bitbox[lrb]{8}{} & \bitbox{8}{ID Comando} \\
@@ -42,7 +42,7 @@ Para el caso de los comandos, son todos idénticos en su estructura; los primero
         \caption{Comandos}
         \label{fig:traci_msg:command}
     \end{subfigure}\hspace{0.2\textwidth}%
-    \begin{subfigure}{.4\textwidth}
+    \begin{subfigure}{.3\textwidth}
         \centering
         \begin{bytefield}{16}
             \bitheader{0,7,8,15} \\
