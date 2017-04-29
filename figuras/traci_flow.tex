@@ -1,0 +1,38 @@
+\begin{sequencediagram}
+    \newthread{A}{Cliente}
+    \newinst[3]{B}{Servidor}
+    
+    \begin{sdblock}{Inicialización}{}
+        \postlevel
+        \begin{call}{A}{GET\_VERSION}{B}{VERSION}
+        \end{call}
+        \postlevel
+        \begin{call}{A}{SUB\_SIMVAR}{B}{OK}
+        \end{call}
+        \postlevel
+        \begin{call}{A}{SUB\_VHCVAR}{B}{OK}
+        \end{call}
+        
+    \end{sdblock}
+    
+    \begin{sdblock}{Loop Simulación}{}
+        
+        \begin{call}{A}{SIMSTEP}{B}{SUB\_RESULTS}
+            \postlevel
+        \end{call}
+        \postlevel
+        \begin{call}{A}{Comando TraCI}{B}{Respuesta TraCI}
+            \postlevel
+        \end{call}
+    \end{sdblock}
+
+    \begin{sdblock}{Finalización}{}
+        \begin{call}{A}{UNSUB}{B}{OK}
+        \end{call}
+        \postlevel
+        \begin{call}{A}{CLOSE}{B}{OK}
+        \end{call}
+    \end{sdblock}
+
+    
+\end{sequencediagram}
