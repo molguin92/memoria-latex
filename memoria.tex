@@ -15,6 +15,18 @@
 \usepackage[T1]{fontenc}
 \usepackage{bytefield}
 \usepackage{subcaption}
+\usepackage{pgf-umlsd}
+
+% new an instance thread
+% Example:
+% \newthread[edge distance]{var}{thread name}
+\renewcommand{\newthread}[3][0.2]{
+    \newinst[#1]{#2}{#3}
+    \stepcounter{threadnum}
+    \node[below of=inst\theinstnum,node distance=0.8cm] (thread\thethreadnum) {};
+    \tikzstyle{threadcolor\thethreadnum}=[fill=gray!30]
+    \tikzstyle{instcolor#2}=[fill=gray!30]
+}
 
 \begin{document}
 

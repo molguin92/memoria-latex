@@ -1,1 +1,16 @@
 \chapter{Comunicando Paramics con OMNeT++ mediante TraCI}
+\section{Diseño Arquitectural}
+\begin{figure}[b]
+    \centering
+    \begin{sequencediagram}
+        \newthread{A}{OMNeT++}{}
+        \newinst[5]{B}{Plugin}{}
+        \newthread[3]{C}{Paramics}{}
+        \begin{call}{A}{Comando TraCI}{B}{Respuesta TraCI}
+            \begin{call}{B}{API Paramics}{C}{}
+            \end{call}
+        \end{call}
+    \end{sequencediagram}
+    \caption{Arquitectura del Framework}
+    \label{fig:ptraci_arch}
+\end{figure}

@@ -5,14 +5,14 @@
 \section{TraCI}
 TraCI (\textbf{Tra}ffic \textbf{C}ontrol \textbf{I}nterface) es una arquitectura para la interacción con simuladores de redes de transporte, cuyo principal propósito es facilitar el diseño y la implementación de simulaciones de Sistemas de Transporte Inteligente \cite{traci}. Proporciona una interfaz unificada que permite no sólo la obtención de datos desde la simulación de transporte, sino que también permite el control directo sobre la ejecución de ésta y provee métodos para la modificación del comportamiento de sus componentes. Así, TraCI permite a un agente externo (como, por ejemplo, un simulador de redes) comunicarse de manera bidireccional con la simulación de la red de transporte, posibilitando un desarrollo dinámico de dicha simulación en reacción a estímulos externos.
 
-Hoy en día, dicha arquitectura se encuentra integrada con SUMO, y se utiliza en conjunto con simuladores de redes de comunicación inalámbrica como OMNeT++ y NS2 para la simulación y estudio de Sistemas de Transporte Inteligente.
+Hoy en día, dicha arquitectura se encuentra integrada en SUMO, y se utiliza en conjunto con simuladores de redes de comunicación inalámbrica como OMNeT++ y NS2 para la simulación y estudio de Sistemas de Transporte Inteligente.
 
 \subsection{Diseño}
 \subsubsection{Mensajes}
 
 TraCI se basa en una arquitectura cliente-servidor, en la cual el simulador de redes de transporte asume el rol de un servidor pasivo que espera comandos desde un cliente activo. Define además un protocolo de comunicaciones de capa de aplicación para la transmisión de comandos e información entre servidor y cliente mediante un \emph{socket} TCP.
 
-La figura \ref{fig:traci_msg:command} ilustra la estructura básica de un mensaje TraCI enviado desde un cliente al servidor. Consiste en una cadena de comandos TraCI consecutivos que deben ser ejecutados por este último; cada comando tiene un largo y un identificador, y puede incluir información adicional -- por ejemplo, en el caso de que se trate de un comando que asigne algún valor a una variable de la simulación. En caso de que el valor del largo exceda 255, este se fija en \texttt{0x00} y se agrega un campo de 32 bits para almacenar dicho valor.
+La figura \ref{fig:traci_msg:command} ilustra la estructura básica de un mensaje TraCI enviado desde un cliente al servidor. Consiste en una cadena de comandos TraCI consecutivos que deben ser ejecutados por este último; cada comando tiene un largo y un identificador, y puede incluir información adicional -- por ejemplo, en el caso de que se trate de un comando que asigne algún valor a una variable de la simulación. En caso de que el valor del largo exceda 255, se agrega un campo de 32 bits para almacenar dicho valor y el campo original se fija en \texttt{0x00}.
 
 Por otro lado, la figura \ref{fig:traci_msg:response} ilustra un ejemplo de respuesta del servidor, el cual debe responder a cada uno de éstos mensajes con una notificación del estado de la solicitud (``OK'', ``ERROR'' o ``NO IMPLEMENTADO'') y, en caso de que corresponda, con información adicional de acuerdo a parámetros específicos definidos para cada comando. Finalmente, la figura \ref{fig:tracigetversion} ilustra el flujo de mensajes para la solicitud de una variable de la simulación.
 
@@ -82,15 +82,25 @@ Por otro lado, la figura \ref{fig:traci_msg:response} ilustra un ejemplo de resp
 
 \begin{figure}
     \centering
-    \includegraphics[width=1.0\linewidth]{imagenes/traci_getversion}
-    \caption{Ejemplo de solicitud de variable TraCI.}
+    \begin{sequencediagram}
+        \newthread{A}{Cliente}{}
+        \newinst[8]{B}{Servidor}{}
+        \begin{call}{A}{COMANDO}{B}{DATOS DE RETORNO}
+            \postlevel
+            \begin{call}{A}{PARÁMETROS}{B}{ESTADO DE LA SOLICITUD}
+                \postlevel
+            \end{call}
+            \postlevel
+        \end{call}
+    \end{sequencediagram}
+    \caption{Flujo de comunicación TraCI.}
     \label{fig:tracigetversion}
 \end{figure}
 
 
 \subsubsection{Comandos}
 
-El protocolo define cuatro categorías de comandos disponibles:
+El protocolo define tres categorías de comandos disponibles:
 
 \begin{itemize}
     \item \textbf{Control de Simulación:} Esta categoría abarca en total tres comandos distintos, relacionados directamente con el control de la ejecución de la simulación:
