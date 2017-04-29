@@ -1,0 +1,13 @@
+\begin{sequencediagram}
+    \newthread{A}{OMNeT++}{}
+    \newinst{B}{VEINS}{}
+    \newthread[5]{C}{Plugin}{}
+    \newthread{D}{Paramics}{}
+    
+    \begin{call}{A}{}{B}{}
+        \mess[1]{B}{Mensaje TraCI}{C}
+        \begin{call}{C}{API()}{D}{Datos}
+        \end{call}
+        \mess[1]{C}{Respuesta TraCI}{B}
+    \end{call}
+\end{sequencediagram}

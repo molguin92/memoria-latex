@@ -20,59 +20,13 @@ Por otro lado, la figura \ref{fig:traci_msg:response} ilustra un ejemplo de resp
     %\centering
     \begin{subfigure}{.3\textwidth}
         \centering
-        \begin{bytefield}{16}
-            \bitheader{0,7,8,15} \\
-            \begin{rightwordgroup}{Cabecera}
-                \wordbox{2}{Largo del mensaje, incluyendo la cabecera}
-            \end{rightwordgroup} \\
-            \begin{rightwordgroup}{Comando 0}
-                \bitbox{8}{Largo} & \bitbox{8}{ID Comando} \\
-                \wordbox{1}{Parámetros del Comando}
-            \end{rightwordgroup} \\
-            \begin{rightwordgroup}{Comando 1\\(Ejemplo\\largo ext.)}
-                \bitbox{8}{0x00} & \bitbox[lrt]{8}{}\\
-                \wordbox[lr]{1}{Largo extendido (32 bits)}\\
-                \bitbox[lrb]{8}{} & \bitbox{8}{ID Comando} \\
-                \wordbox{1}{Parámetros del Comando}
-            \end{rightwordgroup} \\
-            \wordbox[]{1}{$\vdots$} \\[1ex]
-            \begin{rightwordgroup}{Comando n}
-                \bitbox{8}{Largo} & \bitbox{8}{ID Comando} \\
-                \wordbox{1}{Parámetros del Comando}
-            \end{rightwordgroup} \\
-        \end{bytefield}
+        \input{figuras/tracimsg_command.tex}
         \caption{Comandos}
         \label{fig:traci_msg:command}
     \end{subfigure}\hspace{0.2\textwidth}%
     \begin{subfigure}{.3\textwidth}
         \centering
-        \begin{bytefield}{16}
-            \bitheader{0,7,8,15} \\
-            \begin{rightwordgroup}{Cabecera}
-                \wordbox{2}{Largo del mensaje, incluyendo la cabecera}
-            \end{rightwordgroup} \\
-            \begin{rightwordgroup}{Estatus\\Comando 0}
-                \bitbox{8}{Largo} & \bitbox{8}{ID Comando} \\
-                \bitbox{8}{Estatus} & \bitbox[lrt]{8}{} \\
-                \wordbox[lrb]{1}{Descripción}
-            \end{rightwordgroup}\\
-            \begin{rightwordgroup}{Respuesta\\Comando 0\\(Opcional)}
-                \bitbox{8}{Largo} & \bitbox{8}{ID Respuesta} \\
-                \wordbox{2}{Respuesta a comando}
-            \end{rightwordgroup} \\
-            %            \begin{rightwordgroup}{Comando 1}
-            %                \bitbox{8}{0x00} & \bitbox[lrt]{8}{}\\
-            %                \wordbox[lr]{1}{Largo extendido (32 bits)}\\
-            %                \bitbox[lrb]{8}{} & \bitbox{8}{Identificador} \\
-            %                \wordbox{1}{Parámetros del Comando}
-            %            \end{rightwordgroup} \\
-            \wordbox[]{1}{$\vdots$} \\[1ex]
-            \begin{rightwordgroup}{Estatus\\Comando n}
-                \bitbox{8}{Largo} & \bitbox{8}{ID Comando} \\
-                \bitbox{8}{Estatus} & \bitbox[lrt]{8}{} \\
-                \wordbox[lrb]{1}{Descripción}
-            \end{rightwordgroup} \\
-        \end{bytefield}
+        \input{figuras/tracimsg_response.tex}
         \caption{Respuesta}
         \label{fig:traci_msg:response}
     \end{subfigure}
@@ -82,17 +36,7 @@ Por otro lado, la figura \ref{fig:traci_msg:response} ilustra un ejemplo de resp
 
 \begin{figure}
     \centering
-    \begin{sequencediagram}
-        \newthread{A}{Cliente}{}
-        \newinst[8]{B}{Servidor}{}
-        \begin{call}{A}{COMANDO}{B}{DATOS DE RETORNO}
-            \postlevel
-            \begin{call}{A}{PARÁMETROS}{B}{ESTADO DE LA SOLICITUD}
-                \postlevel
-            \end{call}
-            \postlevel
-        \end{call}
-    \end{sequencediagram}
+    \input{figuras/flujo_traci.tex}
     \caption{Flujo de comunicación TraCI.}
     \label{fig:tracigetversion}
 \end{figure}

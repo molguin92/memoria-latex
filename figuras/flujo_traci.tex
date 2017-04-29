@@ -1,0 +1,11 @@
+\begin{sequencediagram}
+    \newthread{A}{Cliente}{}
+    \newinst[8]{B}{Servidor}{}
+    \begin{call}{A}{COMANDO}{B}{DATOS DE RETORNO}
+        \postlevel
+        \begin{call}{A}{PARÁMETROS}{B}{ESTADO DE LA SOLICITUD}
+            \postlevel
+        \end{call}
+        \postlevel
+    \end{call}
+\end{sequencediagram}

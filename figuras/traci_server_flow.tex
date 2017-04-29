@@ -1,0 +1,24 @@
+\begin{sequencediagram}
+    \newthread{D}{OMNeT++}{}
+    \newinst[1]{A}{VEINS}{}
+    \newinst[3]{B}{Plugin (TraCIServer)}{}
+    \newthread[2]{C}{Paramics}{}
+    
+    \begin{messcall}{C}{run()}{B}
+        \postlevel
+        \begin{call}{B}{waitForCommands()}{B}{}
+        \end{call}
+    \end{messcall}
+    
+    \begin{call}{D}{Solicitud}{A}{Resultado}
+    
+        \begin{call}{A}{Comando TraCI}{B}{Respuesta TraCI}
+            \begin{call}{B}{parseCommand()}{B}{sendResponse()}
+                \postlevel
+                \begin{call}{B}{API Paramics}{C}{Datos}
+                \end{call}
+                \postlevel
+            \end{call}
+        \end{call}
+    \end{call}
+\end{sequencediagram}

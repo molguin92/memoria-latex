@@ -1,0 +1,21 @@
+\begin{bytefield}{16}
+    \bitheader{0,7,8,15} \\
+    \begin{rightwordgroup}{Cabecera}
+        \wordbox{2}{Largo del mensaje, incluyendo la cabecera}
+    \end{rightwordgroup} \\
+    \begin{rightwordgroup}{Comando 0}
+        \bitbox{8}{Largo} & \bitbox{8}{ID Comando} \\
+        \wordbox{1}{Parámetros del Comando}
+    \end{rightwordgroup} \\
+    \begin{rightwordgroup}{Comando 1\\(Ejemplo\\largo ext.)}
+        \bitbox{8}{0x00} & \bitbox[lrt]{8}{}\\
+        \wordbox[lr]{1}{Largo extendido (32 bits)}\\
+        \bitbox[lrb]{8}{} & \bitbox{8}{ID Comando} \\
+        \wordbox{1}{Parámetros del Comando}
+    \end{rightwordgroup} \\
+    \wordbox[]{1}{$\vdots$} \\[1ex]
+    \begin{rightwordgroup}{Comando n}
+        \bitbox{8}{Largo} & \bitbox{8}{ID Comando} \\
+        \wordbox{1}{Parámetros del Comando}
+    \end{rightwordgroup} \\
+\end{bytefield}
