@@ -1,5 +1,5 @@
 \chapter{Comunicando Paramics con OMNeT++ mediante TraCI}
-\section{Diseño Arquitectural}
+\section{Diseño Arquitectural}\label{sec:architecture}
 
 El software desarrollado consiste en un \emph{plugin} que extiende la funcionalidad de Paramics, agregándole la capacidad de comportarse como un servidor TraCI. Específicamente, el \emph{plugin} consiste en una implementación parcial de un servidor TraCI, el cual se ejecuta en un \emph{thread} paralelo a Paramics; este se encuentra a su vez simulando en modo discreto, esperando instrucciones para avanzar la simulación. La comunicación entre ambos se efectúa a través de la API de extensión de Paramics.
 
@@ -11,4 +11,42 @@ La figura \ref{fig:ptraci_arch} ilustra esta arquitectura. A pesar de que se enc
     \caption{Arquitectura del Framework}
     \label{fig:ptraci_arch}
 \end{figure}
-\newpage
+
+\section{Módulos Principales}
+\subsection{plugin.c}
+
+Si bien en estricto rigor no es un módulo del \emph{framework}, merece ser mencionado al ser el archivo principal del \emph{plugin} desarrollado. En este archivo se definen las funciones de extensión (prefijo \texttt{QPX}, ver sección \ref{sec:paramics_api}) a ser invocadas por Paramics al inicializar el \emph{plugin}.
+
+\subsubsection{\texttt{void qpx\_NET\_postOpen(void)}}
+
+Invocada inmediatamente luego de que Paramics carga la red y el \emph{plugin}, esta función cambia el modo de ejecución de Paramics a su modo discreto e inicializa el servidor TraCI. Para esto, crea un \emph{thread} donde corre una función auxiliar \texttt{runner\_fn()}, la cual se encarga de:
+
+\begin{enumerate}
+    \item Obtener el puerto en el cual esperar conexiones entrantes desde los parámetros de ejecución de Paramics. De no haberse especificado puerto, utiliza uno por defecto.
+    \item Inicializar un objeto \emph{TraCIServer} (ver sección \ref{sec:traciserver}) encargado de las conexiones entrantes en el puerto anteriormente definido.
+\end{enumerate}
+
+
+\subsection{TraCIServer}\label{sec:traciserver}
+
+Implementa el funcionamiento base del servidor TraCI. Es el primer módulo en inicializarse, y tiene como funciones:
+
+\begin{enumerate}
+    \item Asociarse a un \emph{socket} TCP, y esperar una conexión de un cliente TraCI.
+    \item Mientras exista una conexión abierta, recibir e interpretar comandos TraCI entrantes.
+    \begin{itemize}
+        \item En el caso de los comandos de obtención de versión y cierre de la conexión, estos son ejecutados por el módulo mismo.
+        \item El comando de avance de simulación es ejecutado parcialmente por este módulo y el módulo \emph{Simulation} (ver sección \ref{sec:simulation}).
+        \item Demás comandos son delegados a los módulos pertinentes.
+    \end{itemize}
+    \item Escribir mensajes de estado y respuesta a comandos TraCI.
+    \item Al recibir un comando de cierre, finalizar la simulación y cerrar el \emph{socket}.
+\end{enumerate}
+
+El módulo en cuestión se implementó como una clase de C++ en los archivos \emph{TraCIServer.h} y \emph{TraCIServer.cpp}. A continuación se detallará la implementación de cada una de las funcionalidades anteriormente enumeradas.
+
+\subsubsection{Inicio de conexión TraCI}
+
+
+\subsection{Simulation}\label{sec:simulation}
+\subsection{VehicleManager}
