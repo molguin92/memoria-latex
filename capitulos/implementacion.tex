@@ -15,7 +15,7 @@ La figura \ref{fig:ptraci_arch} ilustra esta arquitectura. A pesar de que se enc
 \section{Módulos Principales}
 \subsection{plugin.c}
 
-Si bien en estricto rigor no es un módulo del \emph{framework}, merece ser mencionado al ser el archivo principal del \emph{plugin} desarrollado. En este archivo se definen las funciones de extensión (prefijo \texttt{QPX}, ver sección \ref{sec:paramics_api}) a ser invocadas por Paramics al inicializar el \emph{plugin}.
+Si bien en estricto rigor no es un módulo del \emph{framework}, merece ser mencionado al ser el archivo principal del \emph{plugin} desarrollado. En este archivo se definen las funciones de extensión (prefijo \texttt{QPX}, ver sección \ref{sec:paramics_api}) a ser invocadas por Paramics al inicializar el \emph{plugin}. A continuación se describirán brevemente las más importantes de estas funciones, mientras que el archivo \texttt{plugin.c} puede estudiarse en su totalidad en el código \ref{code:pluginc} en los anexos.
 
 \subsubsection{\texttt{void qpx\_NET\_postOpen(void)}}
 
@@ -26,6 +26,13 @@ Invocada inmediatamente luego de que Paramics carga la red y el \emph{plugin}, e
     \item Inicializar un objeto \emph{TraCIServer} (ver sección \ref{sec:traciserver}) encargado de las conexiones entrantes en el puerto anteriormente definido.
 \end{enumerate}
 
+\subsubsection{\texttt{void qpx\_VHC\_release(VEHICLE* vehicle)}}
+
+Función invocada por Paramics cada vez que un vehículo es liberado a la red de transporte. Simplemente se encarga de notificar al \emph{VehicleManager} (ver sección \ref{sec:vehiclemanager}) para su inclusión en el modelo interno del \emph{plugin}.
+
+\subsubsection{\texttt{void qpx\_VHC\_arrive(VEHICLE* vehicle, LINK* link, ZONE* zone)}}
+
+Invocada cuando un vehículo alcanza su destino final, esta función notifica al \emph{VehicleManager} para eliminar el vehículo en cuestión de la representación interna.
 
 \subsection{TraCIServer}\label{sec:traciserver}
 
@@ -49,4 +56,4 @@ El módulo en cuestión se implementó como una clase de C++ en los archivos \em
 
 
 \subsection{Simulation}\label{sec:simulation}
-\subsection{VehicleManager}
+\subsection{VehicleManager}\label{sec:vehiclemanager}
