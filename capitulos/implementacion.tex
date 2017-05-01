@@ -12,12 +12,14 @@ La figura \ref{fig:ptraci_arch} ilustra esta arquitectura. A pesar de que se enc
     \label{fig:ptraci_arch}
 \end{figure}
 
+Describir separación de archivos, namespaces.
+
 \section{Módulos Principales}
 \subsection{plugin.c}
 
 Si bien en estricto rigor no es un módulo del \emph{framework}, merece ser mencionado al ser el archivo principal del \emph{plugin} desarrollado. En este archivo se definen las funciones de extensión (prefijo \texttt{QPX}, ver sección \ref{sec:paramics_api}) a ser invocadas por Paramics al inicializar el \emph{plugin}. A continuación se describirán brevemente las más importantes de estas funciones, mientras que el archivo \texttt{plugin.c} puede estudiarse en su totalidad en el código \ref{code:pluginc} en los anexos.
 
-\subsubsection{\texttt{void qpx\_NET\_postOpen(void)}}
+\subsubsection{\texttt{void qpx\_NET\_postOpen(void)}}\label{sec:qpx_postopen}
 
 Invocada inmediatamente luego de que Paramics carga la red y el \emph{plugin}, esta función cambia el modo de ejecución de Paramics a su modo discreto e inicializa el servidor TraCI. Para esto, crea un \emph{thread} donde corre una función auxiliar \texttt{runner\_fn()}, la cual se encarga de:
 
@@ -60,8 +62,11 @@ A continuación se detalla la implementación de las funcionalidades anteriormen
 
 \subsubsection{Inicio de conexión TraCI}
 
+Como se mencionó en la sección \ref{sec:qpx_postopen}, al iniciarse el \emph{plugin} se crea un nuevo \emph{thread}, en el cual se instancia un objeto de la clase \texttt{TraCIServer}, al cual se le invoca su método \texttt{run()}.
 
+\lstinputlisting[style=CPP, label={cod:traciserver_run}, caption={Rutina de inicio de conexión.}]{codigo/traciserver_run.cpp}
 
+Este método es simple: imprime información pertinente sobre el \emph{plugin} en la ventana de información de Paramics, y luego procede a bloquear el \emph{thread} mientras espera una conexión entrante en el \emph{socket}. Al recibirla, resume la ejecución y realiza un llamado al método \texttt{waitForCommands()} para comenzar a recibir e interpretar comandos TraCI.
 
 \subsection{Simulation}\label{sec:simulation}
 \subsection{VehicleManager}\label{sec:vehiclemanager}
