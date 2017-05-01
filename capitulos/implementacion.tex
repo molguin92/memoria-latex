@@ -36,7 +36,7 @@ Invocada cuando un vehículo alcanza su destino final, esta función notifica al
 
 \subsection{TraCIServer}\label{sec:traciserver}
 
-Implementa el funcionamiento base del servidor TraCI. Es el primer módulo en inicializarse, y tiene como funciones:
+Implementa el funcionamiento base del servidor TraCI. Es el primer módulo como tal en inicializarse, y tiene como funciones:
 
 \begin{enumerate}
     \item Asociarse a un \emph{socket} TCP, y esperar una conexión de un cliente TraCI.
@@ -50,9 +50,17 @@ Implementa el funcionamiento base del servidor TraCI. Es el primer módulo en in
     \item Al recibir un comando de cierre, finalizar la simulación y cerrar el \emph{socket}.
 \end{enumerate}
 
-El módulo en cuestión se implementó como una clase de C++ en los archivos \emph{TraCIServer.h} y \emph{TraCIServer.cpp}. A continuación se detallará la implementación de cada una de las funcionalidades anteriormente enumeradas.
+El módulo en cuestión se implementó como una clase de C++ en los archivos \texttt{src/TraCIAPI/TraCIServer.h} y \texttt{src/TraCIAPI/TraCIServer.cpp}, y se instancia en el archivo \texttt{plugin.c}. Se implementó considerando que se ejecutaría en un \emph{thread} paralelo al principal de Paramics, y por lo tanto incluye elementos de sincronización.
+
+Cabe destacar que para facilitar el uso de \emph{sockets} y la obtención y envío de datos a través de éstos, se utilizaron las clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}, definidas en los archivos \texttt{src/shawn/socket.\{cpp/h\}} y \texttt{src/shawn/storage.\{cpp/h\}}. \texttt{tcpip::Socket} abstrae el funcionamiento de un \textit{socket} TCP, y provee métodos de conveniencia que permiten leer y escribir mensajes TraCI completos como objetos \texttt{tcpip::Storage}. Estos a su vez proveen métodos para escribir y leer todo tipo de variables en dichos mensajes, sin la necesidad de hacer la conversión manual a \textit{bytes}.
+
+Estos archivos no fueron desarrollados por el memorista, sino que fueron obtenidos desde el código fuente de SUMO \footnote{Fuente SUMO: \url{https://github.com/planetsumo/sumo/tree/master/sumo/src/foreign/tcpip}. Debe notarse que, a su vez, los creadores de SUMO originalmente obtuvieron dichos archivos del código fuente del simulador de eventos discretos para redes de sensores \emph{SHAWN} \cite{kroller2005shawn}. Su fuente original se encuentra en \url{https://github.com/itm/shawn/tree/master/src/apps/tcpip}}, distribuidos bajo una licencia BSD\footnote{Licencia clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}: \url{http://sumo.dlr.de/wiki/Libraries_Licenses\#tcpip_-_TCP.2FIP_Socket_Class_to_communicate_with_other_programs}}.
+
+A continuación se detalla la implementación de las funcionalidades anteriormente mencionadas.
 
 \subsubsection{Inicio de conexión TraCI}
+
+
 
 
 \subsection{Simulation}\label{sec:simulation}
