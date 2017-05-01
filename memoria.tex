@@ -1,4 +1,4 @@
-\documentclass[upright, contnum, latin1]{umemoria}
+\documentclass[upright, contnum]{umemoria}
 \depto{DEPARTAMENTO DE CIENCIAS DE LA COMPUTACIÓN}
 \author{Manuel Osvaldo J. Olguín Muñoz}
 \title{Diseño e Implementación de un Framework Integrado para Simulaciones de Sistemas Inteligentes de Transporte en OMNeT ++ y Paramics}
@@ -16,6 +16,12 @@
 \usepackage{bytefield}
 \usepackage{subcaption}
 \usepackage{pgf-umlsd}
+\usepackage[spanish]{babel}
+\usepackage[style=ieee, sorting=none]{biblatex}
+\usepackage{csquotes}
+
+\addbibresource{bibliografia.bib}
+
 
 % new an instance thread
 % Example:
@@ -58,10 +64,11 @@ Una dedicatoria corta.
 \input{capitulos/conceptos.tex}
 \input{capitulos/implementacion.tex}
 
-\nocite{*}
+%\nocite{*} %incluye todas las citas en la bibliografia, aunque no se hayan referenciado
 \newpage
-\begin{multicols}{2}
-    \bibliographystyle{ieeetr}
-    \bibliography{bibliografia}
-\end{multicols}
+%\begin{multicols*}{2}
+    %\bibliographystyle{ieeetr}
+    %\bibliography{bibliografia}
+    \printbibliography
+%\end{multicols*}
 \end{document}

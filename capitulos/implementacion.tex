@@ -1,11 +1,14 @@
 \chapter{Comunicando Paramics con OMNeT++ mediante TraCI}
 \section{Diseño Arquitectural}
 
+El software desarrollado consiste en un \emph{plugin} que extiende la funcionalidad de Paramics, agregándole la capacidad de comportarse como un servidor TraCI. Específicamente, el \emph{plugin} consiste en una implementación parcial de un servidor TraCI, el cual se ejecuta en un \emph{thread} paralelo a Paramics; este se encuentra a su vez simulando en modo discreto, esperando instrucciones para avanzar la simulación. La comunicación entre ambos se efectúa a través de la API de extensión de Paramics.
 
+La figura \ref{fig:ptraci_arch} ilustra esta arquitectura. A pesar de que se encuentra implementado como un \emph{plugin} de Paramics, el servidor TraCI es prácticamente un programa independiente, y su interacción con el simulador de transporte se limita a un conjunto acotado de llamados a su API.
 
-\begin{figure}[b]
+\begin{figure}[t]
     \centering
     \input{figuras/plugin_serverflow.tex}
     \caption{Arquitectura del Framework}
     \label{fig:ptraci_arch}
 \end{figure}
+\newpage
