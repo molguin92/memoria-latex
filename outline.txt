@@ -1,7 +1,9 @@
 Introducción
 	Motivación
-	Estado del Arte
+	Objetivos
+	Metodología
 Conceptos Clave
+	Estado del Arte
 	OMNeT++
 	Paramics
 		API Plugins
@@ -17,9 +19,10 @@ Acoplando Paramics y OMNeT++
 		etc
 Validación del Framework
 	Simulación Simple
+Aplicación Modelo Real
 	Simulación "Compleja"
-Conclusiones
 	Resultados
+Conclusiones
 	Trabajo Futuro
 
 		

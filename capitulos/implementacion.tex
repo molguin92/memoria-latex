@@ -45,7 +45,7 @@ Implementa el funcionamiento base del servidor TraCI. Es el primer módulo como 
     \item Mientras exista una conexión abierta, recibir e interpretar comandos TraCI entrantes.
     \begin{itemize}
         \item En el caso de los comandos de obtención de versión y cierre de la conexión, estos son ejecutados por el módulo mismo.
-        \item El comando de avance de simulación es ejecutado parcialmente por este módulo y el módulo \emph{Simulation} (ver sección \ref{sec:simulation}).
+        \item El comando de avance de simulación es ejecutado parcialmente por este módulo y el módulo \emph{Simulation} (ver sección \ref{sec:simulation}). Específicamente, se delega el avance del estado de la simulación a \emph{Simulation}, luego del cual se realiza la evaluación de las suscripciones en \emph{TraCIServer}.
         \item Demás comandos son delegados a los módulos pertinentes.
     \end{itemize}
     \item Escribir mensajes de estado y respuesta a comandos TraCI.
@@ -77,12 +77,32 @@ El código inicia un \emph{loop} dentro del cual monitorea el \emph{socket}. Al 
 
 Finalmente, interpretados todos los comandos, se envía la respuesta al cliente a través del mismo \emph{socket} y se limpian los objetos \texttt{tcpip::Storage} para su reutilización en una nueva iteración del \emph{loop}.
 
-\lstinputlisting[float, style=CPP, label={cod:traciserver_waitforcommands}, caption={Recepción de mensajes desde el \emph{socket} TCP.}]{codigo/traciserver_waitforcommands.cpp}
+\lstinputlisting[style=CPP, label={cod:traciserver_waitforcommands}, caption={Recepción de mensajes desde el \emph{socket} TCP.}]{codigo/traciserver_waitforcommands.cpp}
 %\minipagelisting{codigo/traciserver_waitforcommands.cpp}{Recepción de mensajes desde el \emph{socket} TCP.}{cod:traciserver_waitforcommands}
 
-Como se mencionó anteriormente, la interpretación de los comandos se lleva a cabo en el método \texttt{parseCommand()}, el cual recibe un único comando encapsulado en un objeto \texttt{tcpip::Storage}. 
+Como se mencionó anteriormente, la interpretación de los comandos se lleva a cabo en el método \texttt{parseCommand()}, el cual recibe un único comando encapsulado en un objeto \texttt{tcpip::Storage}. Este método tiene una única misión; interpretar el identificador del comando recibido y delegar su ejecución al método correspondiente de la clase \texttt{TraCIServer}. Su implementación es simple, aunque un poco tediosa, y su esqueleto puede observarse en el código \ref{cod:traciserver_parsecommand}. En específico, el código del método se puede dividir en dos ramas de ejecución; en caso de comando de suscripción (cuyos identificadores se encuentran todos en el rango $[\texttt{0xd0}, \texttt{0xdb}]$) se extraen los parámetros de la suscripción y se invoca el método \texttt{addSubscription()} para la subsecuente validación y activación de ésta. Por el contrario, en case de recibir un comando con identificador fuera de dicho rango, se procede a verificar su tipo mediante un \emph{switch}. Cada caso se relaciona con un comando y método específico a invocar, y en caso de no encontrarse el identificador en cuestión se notifica al cliente que el comando deseado no está implementado.
 
-\lstinputlisting[style=CPP, linerange={1-10}, label={cod:traciserver_parsecommand}, caption={Interpretación de comandos TraCI}]{codigo/traciserver_parsecommand.cpp}
+\lstinputlisting[style=CPP, label={cod:traciserver_parsecommand}, caption={Esqueleto de \texttt{parseCommand()}}]{codigo/traciserver_parsecommand.cpp}
+
+\subsubsection{Avance de Simulación y Evaluación de Suscripciones}
+
+En caso de recibir un comando de avance de simulación, \emph{TraCIServer} delega la ejecución de dicho avance al módulo \emph{Simulation}. Sin embargo, al terminar este procedimiento, se realiza la evaluación de las suscripciones activas en \emph{TraCIServer}, mediante el método \texttt{processSubscriptions()}.
+
+Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define 12 tipos de suscripciones a variables de objeto, las cuales comparten todas una estructura idéntica. Cada suscripción se caracteriza por su identificador de tipo y sus parámetros: tiempo de inicio, tiempo de fin, identificador del objeto y las variables a las cuales el cliente se ha suscrito. En la práctica, lo único que diferencia a las suscripciones entre sí son las categorías de objetos a las cuales están asociadas, y por ende, cómo obtener esos datos desde la implementación interna del \emph{plugin}. A raíz de esto, se decidió implementar un árbol de clases de C++ para representar las suscripciones en memoria (declarada e implementada en los archivos \texttt{src/TraCIAPI/Subscriptions.h} y \texttt{src/TraCIAPI/Subscriptions.cpp} respectivamente).
+
+La raíz de éste árbol, la clase \texttt{VariableSuscription}, implementa la funcionalidad completa de evaluación y actualización de una suscripción, abstrayendo la obtención de datos específicos a cada tipo en los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}. Estos métodos son \emph{virtuales} en la clase base, y son implementados por las clases derivadas, de manera que \emph{TraCIServer} sólo necesita mantener un vector de variables del tipo base, las cuales se evalúan de manera polimórfica.
+
+En términos más simples, lo único que diferencia a las diferentes clases de suscripciones en la implementación son los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()} anteriormente mencionados. Para dar un ejemplo, para suscripciones de variables de vehículos, estos métodos se ven así:
+
+\lstinputlisting[style=CPP, label={cod:vehiclesub}, caption={Ejemplo de métodos extendidos en \emph{VehicleVariableSubscription}}]{codigo/vehiclesub.cpp}
+%\minipagelisting{codigo/vehiclesub.cpp}{Ejemplo de métodos extendidos en \emph{VehicleVariableSubscription}}{cod:vehiclesub}
+    
+%\begin{figure}
+%    \centering
+%    \input{figuras/subs_tree.tex}
+%    \caption{Árbol de herencia de suscripciones.}
+%    \label{fig:subs_tree}
+%\end{figure}
 
 \subsection{Simulation}\label{sec:simulation}
 \subsection{VehicleManager}\label{sec:vehiclemanager}
