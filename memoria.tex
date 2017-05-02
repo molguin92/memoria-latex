@@ -21,6 +21,7 @@
 \usepackage{csquotes}
 \usepackage{appendix}
 \usepackage{listings}
+\usepackage{float}
 \usepackage{sourcecodepro}
 
 % CPP style definition: %
@@ -52,11 +53,11 @@
     breakatwhitespace=true,
     tabsize=4,
     morekeywords={string},
-    backgroundcolor=\color{lightgray}}
+    backgroundcolor=\color{lightgray}
+}
 
 
 \addbibresource{bibliografia.bib}
-
 
 % new an instance thread
 % Example:
@@ -74,6 +75,13 @@
     %\thispagestyle{empty}
     \mbox{}
     \newpage
+}
+
+\newcommand{\minipagelisting}[3]{
+    \noindent
+    \begin{minipage}{\linewidth}
+        \lstinputlisting[style=CPP, label={#3}, caption={#2}]{#1}
+    \end{minipage}
 }
 
 % footnote spacing

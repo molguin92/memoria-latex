@@ -1,6 +1,3 @@
-/**
- * \brief Starts this instance, binding it to a port and awaiting connections. This method is blocking, and as such should be run in a separate thread.
- */
 void traci_api::TraCIServer::run()
 {
     running = true;
