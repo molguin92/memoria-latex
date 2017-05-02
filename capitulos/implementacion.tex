@@ -73,12 +73,16 @@ Este método es simple: imprime información pertinente sobre el \emph{plugin} e
 
 El método \texttt{waitForCommands()}, presentado en el código \ref{cod:traciserver_waitforcommands}, se encarga de recibir mensajes TraCI entrantes y separar los comandos para su posterior interpretación.
 
-El código inicia un \emph{loop} dentro del cual monitorea el \emph{socket}. Al recibir datos entrantes, el \emph{socket} retorna un objeto \texttt{tcpip::Storage} con el mensaje completo. Luego, en un \emph{loop} adicional, este mensaje se separa en sus comandos TraCI constituyentes, copiando la información perteneciente a cada comando en otro objeto \texttt{tcpip::Storage} temporal. Este objeto luego se entrega como parámetro al método \texttt{parseCommand()} para la interpretación del comando, luego de lo cual se limpia y se vuelve a utilizar para el siguiente comando.
+El código inicia un \emph{loop} dentro del cual monitorea el \emph{socket}. Al recibir datos entrantes, el \emph{socket} retorna un objeto \texttt{tcpip::Storage} con el mensaje completo. Luego, en un \emph{loop} adicional, este mensaje se separa en sus comandos TraCI constituyentes, copiando la información perteneciente a cada comando en otro objeto \texttt{tcpip::Storage} temporal. Este objeto se entrega como parámetro al método \texttt{parseCommand()} para la interpretación del comando, luego de lo cual se limpia y se vuelve a utilizar para el siguiente comando.
 
 Finalmente, interpretados todos los comandos, se envía la respuesta al cliente a través del mismo \emph{socket} y se limpian los objetos \texttt{tcpip::Storage} para su reutilización en una nueva iteración del \emph{loop}.
 
 \lstinputlisting[float, style=CPP, label={cod:traciserver_waitforcommands}, caption={Recepción de mensajes desde el \emph{socket} TCP.}]{codigo/traciserver_waitforcommands.cpp}
 %\minipagelisting{codigo/traciserver_waitforcommands.cpp}{Recepción de mensajes desde el \emph{socket} TCP.}{cod:traciserver_waitforcommands}
+
+Como se mencionó anteriormente, la interpretación de los comandos se lleva a cabo en el método \texttt{parseCommand()}, el cual recibe un único comando encapsulado en un objeto \texttt{tcpip::Storage}. 
+
+\lstinputlisting[style=CPP, linerange={1-10}, label={cod:traciserver_parsecommand}, caption={Interpretación de comandos TraCI}]{codigo/traciserver_parsecommand.cpp}
 
 \subsection{Simulation}\label{sec:simulation}
 \subsection{VehicleManager}\label{sec:vehiclemanager}

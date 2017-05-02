@@ -1,0 +1,25 @@
+Introducción
+	Motivación
+	Estado del Arte
+Conceptos Clave
+	OMNeT++
+	Paramics
+		API Plugins
+	VEINS
+	TraCI
+Acoplando Paramics y OMNeT++
+	Diseño Arquitectural (Macro)
+	Módulos Principales
+		plugin.c
+		TraCIServer
+		Simulation
+		VehicleManager
+		etc
+Validación del Framework
+	Simulación Simple
+	Simulación "Compleja"
+Conclusiones
+	Resultados
+	Trabajo Futuro
+
+		
