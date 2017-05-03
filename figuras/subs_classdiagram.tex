@@ -1,0 +1,20 @@
+\begin{tikzpicture}% [ show background grid ]
+    \begin{class}[text width=8cm]{VariableSubscription}{0 ,0}
+        \operation{uint8\_t handleSubscription(\dots) \{\dots\}}
+        \operation{uint8\_t updateSubscription(\dots) \{\dots\}}
+        \operation[0]{virtual void getObjectVariable(\dots);}
+        \operation[0]{virtual uint8\_t getResponseCode();}
+    \end{class}
+    
+    \begin{class}[text width=7cm]{VehicleVariableSubscription}{4 ,-4}
+        \inherit{VariableSubscription}
+        \operation{void getObjectVariable(\dots) \{\dots\}}
+        \operation{uint8\_t getResponseCode() \{\dots\}}
+    \end{class}
+    
+    \begin{class}[text width=7cm]{SimulationVariableSubscription}{-4 ,-4}
+        \inherit{VariableSubscription}
+        \operation{void getObjectVariable(\dots) \{\dots\}}
+        \operation{uint8\_t getResponseCode() \{\dots\}}
+    \end{class}
+\end{tikzpicture}

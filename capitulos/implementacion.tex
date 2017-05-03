@@ -25,16 +25,16 @@ Invocada inmediatamente luego de que Paramics carga la red y el \emph{plugin}, e
 
 \begin{enumerate}
     \item Obtener el puerto en el cual esperar conexiones entrantes desde los parámetros de ejecución de Paramics. De no haberse especificado puerto, utiliza uno por defecto.
-    \item Inicializar un objeto \emph{TraCIServer} (ver sección \ref{sec:traciserver}) encargado de las conexiones entrantes en el puerto anteriormente definido.
+    \item Inicializar un objeto \texttt{TraCIServer} (ver sección \ref{sec:traciserver}) encargado de las conexiones entrantes en el puerto anteriormente definido.
 \end{enumerate}
 
 \subsubsection{\texttt{void qpx\_VHC\_release(VEHICLE* vehicle)}}
 
-Función invocada por Paramics cada vez que un vehículo es liberado a la red de transporte. Simplemente se encarga de notificar al \emph{VehicleManager} (ver sección \ref{sec:vehiclemanager}) para su inclusión en el modelo interno del \emph{plugin}.
+Función invocada por Paramics cada vez que un vehículo es liberado a la red de transporte. Simplemente se encarga de notificar al \texttt{VehicleManager} (ver sección \ref{sec:vehiclemanager}) para su inclusión en el modelo interno del \emph{plugin}.
 
 \subsubsection{\texttt{void qpx\_VHC\_arrive(VEHICLE* vehicle, LINK* link, ZONE* zone)}}
 
-Invocada cuando un vehículo alcanza su destino final, esta función notifica al \emph{VehicleManager} para eliminar el vehículo en cuestión de la representación interna.
+Invocada cuando un vehículo alcanza su destino final, esta función notifica al \texttt{VehicleManager} para eliminar el vehículo en cuestión de la representación interna.
 
 \subsection{TraCIServer}\label{sec:traciserver}
 
@@ -45,7 +45,7 @@ Implementa el funcionamiento base del servidor TraCI. Es el primer módulo como 
     \item Mientras exista una conexión abierta, recibir e interpretar comandos TraCI entrantes.
     \begin{itemize}
         \item En el caso de los comandos de obtención de versión y cierre de la conexión, estos son ejecutados por el módulo mismo.
-        \item El comando de avance de simulación es ejecutado parcialmente por este módulo y el módulo \emph{Simulation} (ver sección \ref{sec:simulation}). Específicamente, se delega el avance del estado de la simulación a \emph{Simulation}, luego del cual se realiza la evaluación de las suscripciones en \emph{TraCIServer}.
+        \item El comando de avance de simulación es ejecutado parcialmente por este módulo y el módulo \texttt{Simulation} (ver sección \ref{sec:simulation}). Específicamente, se delega el avance del estado de la simulación a \texttt{Simulation}, luego del cual se realiza la evaluación de las suscripciones en \texttt{TraCIServer}.
         \item Demás comandos son delegados a los módulos pertinentes.
     \end{itemize}
     \item Escribir mensajes de estado y respuesta a comandos TraCI.
@@ -54,7 +54,7 @@ Implementa el funcionamiento base del servidor TraCI. Es el primer módulo como 
 
 El módulo en cuestión se implementó como una clase de C++ en los archivos \texttt{src/TraCIAPI/TraCIServer.h} y \texttt{src/TraCIAPI/TraCIServer.cpp}, y se instancia en el archivo \texttt{plugin.c}. Se implementó considerando que se ejecutaría en un \emph{thread} paralelo al principal de Paramics, y por lo tanto incluye elementos de sincronización.
 
-Cabe destacar que para facilitar el uso de \emph{sockets} y la obtención y envío de datos a través de éstos, se utilizaron las clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}, definidas en los archivos \texttt{src/shawn/socket.\{cpp/h\}} y \texttt{src/shawn/storage.\{cpp/h\}}. \texttt{tcpip::Socket} abstrae el funcionamiento de un \textit{socket} TCP, y provee métodos de conveniencia que permiten leer y escribir mensajes TraCI completos como objetos \texttt{tcpip::Storage}. Estos a su vez proveen métodos para escribir y leer todo tipo de variables en dichos mensajes, sin la necesidad de hacer la conversión manual a \textit{bytes}.
+Cabe destacar que para facilitar el uso de \emph{sockets} y la obtención y envío de datos a través de éstos, se utilizaron las clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}, definidas en los archivos \texttt{src/shawn/socket.\{cpp/h\}} y \texttt{src/shawn/storage.\{cpp/h\}}. \texttt{tcpip::Socket} abstrae el funcionamiento de un \textit{socket} TCP, y provee métodos de conveniencia que permiten leer y escribir mensajes TraCI completos como objetos \texttt{tcpip::Storage}. Estos a su vez proveen métodos para escribir y leer todo tipo de variables en dichos mensajes, sin la necesidad de hacer la conversión manual a bytes.
 
 Estos archivos no fueron desarrollados por el memorista, sino que fueron obtenidos desde el código fuente de SUMO \footnote{Fuente SUMO: \url{https://github.com/planetsumo/sumo/tree/master/sumo/src/foreign/tcpip}. Debe notarse que, a su vez, los creadores de SUMO originalmente obtuvieron dichos archivos del código fuente del simulador de eventos discretos para redes de sensores \emph{SHAWN} \cite{kroller2005shawn}. Su fuente original se encuentra en \url{https://github.com/itm/shawn/tree/master/src/apps/tcpip}}, distribuidos bajo una licencia BSD\footnote{Licencia clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}: \url{http://sumo.dlr.de/wiki/Libraries_Licenses\#tcpip_-_TCP.2FIP_Socket_Class_to_communicate_with_other_programs}}.
 
@@ -86,24 +86,35 @@ Como se mencionó anteriormente, la interpretación de los comandos se lleva a c
 
 \subsubsection{Avance de Simulación y Evaluación de Suscripciones}
 
-En caso de recibir un comando de avance de simulación, \emph{TraCIServer} delega la ejecución de dicho avance al módulo \emph{Simulation}. Sin embargo, al terminar este procedimiento, se realiza la evaluación de las suscripciones activas en \emph{TraCIServer}, mediante el método \texttt{processSubscriptions()}.
+En caso de recibir un comando de avance de simulación, \texttt{TraCIServer} delega la ejecución de dicho avance al módulo \texttt{Simulation}. Sin embargo, al terminar este procedimiento, se realiza la evaluación de las suscripciones activas en \texttt{TraCIServer}, mediante el método \texttt{processSubscriptions()}.
 
 Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define 12 tipos de suscripciones a variables de objeto, las cuales comparten todas una estructura idéntica. Cada suscripción se caracteriza por su identificador de tipo y sus parámetros: tiempo de inicio, tiempo de fin, identificador del objeto y las variables a las cuales el cliente se ha suscrito. En la práctica, lo único que diferencia a las suscripciones entre sí son las categorías de objetos a las cuales están asociadas, y por ende, cómo obtener esos datos desde la implementación interna del \emph{plugin}. A raíz de esto, se decidió implementar un árbol de clases de C++ para representar las suscripciones en memoria (declarada e implementada en los archivos \texttt{src/TraCIAPI/Subscriptions.h} y \texttt{src/TraCIAPI/Subscriptions.cpp} respectivamente).
 
-La raíz de éste árbol, la clase \texttt{VariableSuscription}, implementa la funcionalidad completa de evaluación y actualización de una suscripción en el método \texttt{handleSubscription()}, abstrayendo la obtención de datos específicos a cada tipo en los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}. Estos métodos son \emph{virtuales} en la clase base, y son implementados por las clases derivadas, de manera que \emph{TraCIServer} sólo necesita mantener un vector de variables del tipo base, las cuales se evalúan de manera polimórfica.
+La raíz de éste árbol, la clase \texttt{VariableSuscription}, implementa la funcionalidad completa de evaluación y actualización de una suscripción en los métodos \texttt{handleSubscription()} y \texttt{updateSubscription()} (implementación completa de estos métodos en \ref{code:variablesubscription_main}), abstrayendo la obtención de datos específicos a cada tipo en los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}. Estos métodos son \emph{virtuales} en la clase base, y son implementados por las clases derivadas, de manera que \texttt{TraCIServer} sólo necesita mantener un vector de variables del tipo base, las cuales se evalúan de manera polimórfica.
 
-En términos más simples, lo único que diferencia a las diferentes clases de suscripciones en la implementación son los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()} anteriormente mencionados. Para dar un ejemplo, para suscripciones de variables de vehículos, estos métodos se ven así:
+\begin{figure}
+    \centering
+    \include{figuras/subs_classdiagram}
+    \caption{Diagrama de herencia, \texttt{VariableSubscription}}
+    \label{fig:cd_variablesub}
+\end{figure}
 
-\lstinputlisting[style=CPP, label={cod:vehiclesub}, caption={Ejemplo de métodos extendidos en \emph{VehicleVariableSubscription}}]{codigo/vehiclesub.cpp}
+En términos más simples, lo único que debe implementar una clase derivada de \texttt{VariableSubscription} para implementar un nuevo tipo de suscripción son versiones propias de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}, ya que todo la demás funcionalidad de evaluación de suscripciones está ya implementada en la clase base. Para dar un ejemplo, para suscripciones de variables de vehículos, estos métodos se ven así:
+
+\lstinputlisting[style=CPP, label={cod:vehiclesub}, caption={Ejemplo de métodos extendidos en \texttt{VehicleVariableSubscription}}]{codigo/vehiclesub.cpp}
 %\minipagelisting{codigo/vehiclesub.cpp}{Ejemplo de métodos extendidos en \emph{VehicleVariableSubscription}}{cod:vehiclesub}
 
 Mientras que para variables de simulación son:
 
-\lstinputlisting[style=CPP, label={cod:simsub}, caption={Ejemplo de métodos extendidos en \emph{SimulationVariableSubscription}}]{codigo/simsub.cpp}
+\lstinputlisting[style=CPP, label={cod:simsub}, caption={Ejemplo de métodos extendidos en \texttt{SimulationVariableSubscription}}]{codigo/simsub.cpp}
 
-De esta manera, la evaluación en \emph{TraCIServer} se simplifica, ya que la instancia sólo necesita mantener un vector con punteros a objetos de la clase base, dado que independiente de la implementación específica de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()} de cada subclase, \texttt{handleSubscription()} es exactamente igual para todas.
+De esta manera, la evaluación en \texttt{TraCIServer} se simplifica, ya que la instancia sólo necesita mantener un vector con punteros a objetos de la clase base, dado que independiente de la implementación específica de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()} de cada subclase, \texttt{handleSubscription()} es exactamente igual para todas (ver línea 7 en el código \ref{cod:traciserver_processsubs}).
 
-\lstinputlisting[style=CPP, label={cod:traciserver_processsubs}, caption={Rutina de evaluación de suscripciones en \emph{TraCIServer}. \texttt{subs} es una variable de instancia de \emph{TraCIServer} correspondiente a un vector de punteros \texttt{VariableSuscription*}, poblado de elementos de clases derivadas de \texttt{VariableSuscription}.}]{codigo/traciserver_processsubs.cpp}
+\lstinputlisting[style=CPP, label={cod:traciserver_processsubs}, caption={Rutina de evaluación de suscripciones en \texttt{TraCIServer}. \texttt{subs} es una variable de instancia de \texttt{TraCIServer} correspondiente a un vector de punteros \texttt{VariableSuscription*}, poblado de elementos de clases derivadas de \texttt{VariableSuscription}.}]{codigo/traciserver_processsubs.cpp}
+
+Para agregar suscripciones entonces, \texttt{TraCIServer} debe considerar la categoría de objetos a la cual se está suscribiendo, e insertar un puntero a un objeto con el tipo correspondiente en la variable de instancia \texttt{subs}. Esto sucede al recibir un comando con un identificador correspondiente a una suscripción; los parámetros de la suscripción son extraídos y delegados al método \texttt{addSubscription()} (código \ref{cod:traciserver_parsecommand},línea 15). Este código puede estudiarse en su totalidad en el anexo \ref{chapter:anex_codes}, código \ref{code:addsub}, sin embargo, a continuación se explicará brevemente su funcionamiento con algunos extractos de código.
+
+Un comando en 
 
     
 %\begin{figure}
