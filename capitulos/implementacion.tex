@@ -84,9 +84,24 @@ Como se mencionó anteriormente, la interpretación de los comandos se lleva a c
 
 \lstinputlisting[style=CPP, label={cod:traciserver_parsecommand}, caption={Esqueleto de \texttt{parseCommand()}}]{codigo/traciserver_parsecommand.cpp}
 
-\subsubsection{Avance de Simulación y Evaluación de Suscripciones}
+Se definieron una serie de comandos en \texttt{TraCIServer} encargados de obtener variables de la simulación o modificar el estado de esta. El funcionamiento de estos es idéntico en todos los casos (a excepción de \texttt{cmdGetPolygonVar()}), y se limita al siguiente procedimiento (ver ejemplo en el código \ref{cod:traciserver_cmdgetvhcvar}):
 
-En caso de recibir un comando de avance de simulación, \texttt{TraCIServer} delega la ejecución de dicho avance al módulo \texttt{Simulation}. Sin embargo, al terminar este procedimiento, se realiza la evaluación de las suscripciones activas en \texttt{TraCIServer}, mediante el método \texttt{processSubscriptions()}.
+\begin{enumerate}
+    \item Obtener el valor desde el módulo apropiado (por ejemplo, \texttt{VehicleManager} para variables de vehículos, \texttt{Simulation} para variables de la simulación, etc.).
+    \item En caso de error en la obtención de los datos (variable no implementada, objeto no existente, etc.), atrapar el error y determinar el curso de acción apropiado (por ejemplo, notificar al cliente).
+    \item Finalmente, enviar un mensaje de estado de la solicitud y, en caso de éxito, el valor de la variable, al cliente.
+\end{enumerate}
+
+El caso de \texttt{cmdGetPolygonVar()} es especial. En TraCI, un polígono representa un edificio o una estructura presente en las cercanías de la simulación vehicular, la cual puede interferir con el modelo de comunicación inalámbrica en OMNeT++. Sin embargo, el modelador de Paramics no maneja elementos externos a la simulación de transporte, por lo que se decidió, en el caso de comandos de obtención de variables relacionadas, simplemente reportar que no existen polígonos en la simulación para simplificar la integración.
+
+\lstinputlisting[style=CPP, label={cod:traciserver_cmdgetvhcvar}, caption={Ejemplo de método de obtención y empaquetamiento de variables en \texttt{TraCIServer}}]{codigo/cmdGetVhcVar.cpp}
+
+Nótese que no se implementó el protocolo en su totalidad, sino únicamente aquellas funcionalidades críticas para su uso práctico en simulaciones de mediana complejidad.
+
+
+\subsubsection{Avance de Simulación y Evaluación de Suscripciones}\label{sec:traciserver_simstep}
+
+En caso de recibir un comando de avance de simulación, \texttt{TraCIServer} ejecuta su método \texttt{cmdSimStep()}, dentro del cual extrae los parámetros del comando y delega la ejecución de dicho avance al módulo \texttt{Simulation}. Sin embargo, al terminar este procedimiento, se realiza la evaluación de las suscripciones activas en \texttt{TraCIServer}, mediante el método \texttt{processSubscriptions()}.
 
 Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define 12 tipos de suscripciones a variables de objeto, las cuales comparten todas una estructura idéntica. Cada suscripción se caracteriza por su identificador de tipo y sus parámetros: tiempo de inicio, tiempo de fin, identificador del objeto y las variables a las cuales el cliente se ha suscrito. En la práctica, lo único que diferencia a las suscripciones entre sí son las categorías de objetos a las cuales están asociadas, y por ende, cómo obtener esos datos desde la implementación interna del \emph{plugin}. A raíz de esto, se decidió implementar un árbol de clases de C++ para representar las suscripciones en memoria (declarada e implementada en los archivos \texttt{src/TraCIAPI/Subscriptions.h} y \texttt{src/TraCIAPI/Subscriptions.cpp} respectivamente).
 
@@ -99,23 +114,39 @@ La raíz de éste árbol, la clase \texttt{VariableSuscription}, implementa la f
     \label{fig:cd_variablesub}
 \end{figure}
 
-En términos más simples, lo único que debe implementar una clase derivada de \texttt{VariableSubscription} para implementar un nuevo tipo de suscripción son versiones propias de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}, ya que todo la demás funcionalidad de evaluación de suscripciones está ya implementada en la clase base. Para dar un ejemplo, para suscripciones de variables de vehículos, estos métodos se ven así:
+En términos más simples, lo único que debe implementar una clase derivada de \texttt{VariableSubscription} para definir un nuevo tipo de suscripción son versiones propias de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}, ya que todo la demás funcionalidad de evaluación de suscripciones está ya implementada en la clase base. 
+%Para dar un ejemplo, para suscripciones de variables de vehículos, estos métodos se ven así:
 
-\lstinputlisting[style=CPP, label={cod:vehiclesub}, caption={Ejemplo de métodos extendidos en \texttt{VehicleVariableSubscription}}]{codigo/vehiclesub.cpp}
+%\lstinputlisting[style=CPP, label={cod:vehiclesub}, caption={Ejemplo de métodos extendidos en \texttt{VehicleVariableSubscription}}]{codigo/vehiclesub.cpp}
 %\minipagelisting{codigo/vehiclesub.cpp}{Ejemplo de métodos extendidos en \emph{VehicleVariableSubscription}}{cod:vehiclesub}
 
-Mientras que para variables de simulación son:
+%Mientras que para variables de simulación son:
 
-\lstinputlisting[style=CPP, label={cod:simsub}, caption={Ejemplo de métodos extendidos en \texttt{SimulationVariableSubscription}}]{codigo/simsub.cpp}
+%\lstinputlisting[style=CPP, label={cod:simsub}, caption={Ejemplo de métodos extendidos en \texttt{SimulationVariableSubscription}}]{codigo/simsub.cpp}
 
-De esta manera, la evaluación en \texttt{TraCIServer} se simplifica, ya que la instancia sólo necesita mantener un vector con punteros a objetos de la clase base, dado que independiente de la implementación específica de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()} de cada subclase, \texttt{handleSubscription()} es exactamente igual para todas (ver línea 7 en el código \ref{cod:traciserver_processsubs}).
+De esta manera, la evaluación en \texttt{TraCIServer} se simplifica, ya que la instancia sólo necesita mantener un vector con punteros a objetos de la clase base, dado que independiente de la implementación específica de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()} de cada subclase, \texttt{handleSubscription()} es exactamente igual para todas (ver línea 7 en el código \ref{cod:traciserver_processsubs}). Además, esto facilita la extensión futura del software.
 
 \lstinputlisting[style=CPP, label={cod:traciserver_processsubs}, caption={Rutina de evaluación de suscripciones en \texttt{TraCIServer}. \texttt{subs} es una variable de instancia de \texttt{TraCIServer} correspondiente a un vector de punteros \texttt{VariableSuscription*}, poblado de elementos de clases derivadas de \texttt{VariableSuscription}.}]{codigo/traciserver_processsubs.cpp}
 
-Para agregar suscripciones entonces, \texttt{TraCIServer} debe considerar la categoría de objetos a la cual se está suscribiendo, e insertar un puntero a un objeto con el tipo correspondiente en la variable de instancia \texttt{subs}. Esto sucede al recibir un comando con un identificador correspondiente a una suscripción; los parámetros de la suscripción son extraídos y delegados al método \texttt{addSubscription()} (código \ref{cod:traciserver_parsecommand},línea 15). Este código puede estudiarse en su totalidad en el anexo \ref{chapter:anex_codes}, código \ref{code:addsub}, sin embargo, a continuación se explicará brevemente su funcionamiento con algunos extractos de código.
+\subsubsection{Creación de Nuevas Suscripciones}
 
-Un comando en 
+Por otro lado, para crear nuevas suscripciones, \texttt{TraCIServer} debe considerar la categoría de objetos a la cual se está suscribiendo, e insertar un puntero a un objeto con el tipo correspondiente en la variable de instancia \texttt{subs}. Esto sucede al recibir un comando con un identificador correspondiente a una suscripción; los parámetros de la suscripción son extraídos y delegados al método \texttt{addSubscription()} (código \ref{cod:traciserver_parsecommand},línea 15). Este código puede estudiarse en su totalidad en el anexo \ref{chapter:anex_codes}, código \ref{code:addsub}, sin embargo, a continuación se explicará brevemente su funcionamiento con algunos extractos de código.
 
+Como se comentó en la descripción del protocolo TraCI (sección \ref{sec:traci}), un comando de suscripción puede solicitar tanto la creación de una nueva suscripción como la actualización o cancelación de una ya existente. Esto se determina basado en si, al recibir el comando de suscripción, ya existe una suscripción asociada a dicha categoría y objeto. Esto es lo primero en verificarse en \texttt{addSubscription()}, mediante llamados al método \texttt{updateSubscription()} de cada suscripción ya existente en el servidor.
+
+El funcionamiento de este método se detalla en el código \ref{code:variablesubscription_main}, a partir de la línea 70. Verifica si los parámetros recibidos corresponden a una suscripción ya existente, y retorna un byte cuyo valor representa el estado de la suscripción, valor interpretado por \texttt{addSubscription()} para determinar el curso de acción a tomar:
+\begin{enumerate}
+    \item \texttt{STATUS\_NOUPD}: Los parámetros entregados no corresponden a esta suscripción. \texttt{addSubscription()} sigue recorriendo las suscripciones restantes para verificar si corresponde a alguna ya existente.
+    \item \texttt{STATUS\_UNSUB}: Los parámetros corresponden a una solicitud de cancelación de esta suscripción (categoría e identificador de objeto son los mismos, número de variables a suscribir es $0$). \texttt{addSubscription()} entonces procede a eliminar esta suscripción del vector \texttt{subs} en \texttt{TraCIServer} y dealocar la memoria asignada al puntero.
+    \item \texttt{STATUS\_ERROR}: Los parámetros corresponden a una actualización de esta suscripción (categoría e identificador de objeto son los mismos), pero sucedió un error en la actualización. \texttt{addSubscription()} escribe un mensaje de notificación al cliente y retorna.
+    \item \texttt{STATUS\_OK}: Los parámetros corresponden a una actualización de esta suscripción (categoría e identificador de objeto son los mismos), y la actualización fue exitosa. \texttt{addSubscription()} escribe un mensaje de notificación al cliente y retorna.
+\end{enumerate}
+
+\lstinputlisting[style=CPP, label={code:addsub_upd},caption={Verificación de actualización en \texttt{addSubscription()}.}, linerange={7-38}]{codigo/traciserver_addsubscription.cpp}
+
+La segunda parte del método es más simple. De corresponder el comando a una solicitud de creación de una suscripción nueva, se verifica su tipo y se instancia dinámicamente un objeto de la clase apropiada (como se explicó anteriormente, derivada de \texttt{VariableSubscription}). Finalmente, se verifica el correcto funcionamiento de la nueva suscripción mediante un llamado a su método \texttt{handleSubscription()} y se notifica al cliente del resultado.
+
+\lstinputlisting[style=CPP, label={code:addsub_instance},caption={Creación de una nueva suscripción. Notar la instanciación polimórfica.}, linerange={56-70}]{codigo/traciserver_addsubscription.cpp}
     
 %\begin{figure}
 %    \centering

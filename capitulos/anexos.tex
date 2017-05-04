@@ -1,6 +1,11 @@
 \chapter{Códigos}\label{chapter:anex_codes}
-\lstinputlisting[style=CPP, label={code:pluginc},caption={Archivo \texttt{src/plugin.c} en su totalidad.}]{codigo/plugin.c}
+{ % para scope de cambio de settings y etc
 
-\lstinputlisting[style=CPP, label={code:variablesubscription_main},caption={Métodos base de todas las suscripciones.}]{codigo/variablesubscription_mainmethods.cpp}
+\captionsetup[lstlisting]{font={Large}, justification=justified, singlelinecheck=false, format=plain}
+\lstinputlisting[style=CPP, captionpos=t, label={code:pluginc},caption={Archivo \texttt{src/plugin.c} en su totalidad.}]{codigo/plugin.c}
 
-\lstinputlisting[style=CPP, label={code:addsub},caption={Método de actualización y creación de suscripciones en \texttt{TraCIServer} en su totalidad.}]{codigo/traciserver_addsubscription.cpp}
+\lstinputlisting[style=CPP, captionpos=t, label={code:variablesubscription_main},caption={Métodos base de todas las suscripciones.}]{codigo/variablesubscription_mainmethods.cpp}
+
+\lstinputlisting[style=CPP, captionpos=t, label={code:addsub},caption={Método de actualización y creación de suscripciones en \texttt{TraCIServer} en su totalidad.}]{codigo/traciserver_addsubscription.cpp}
+
+} % end scope

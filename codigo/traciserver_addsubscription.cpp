@@ -35,7 +35,6 @@ void traci_api::TraCIServer::addSubscription(uint8_t sub_type, std::string objec
         default:
             throw std::runtime_error("Received unexpected result " + std::to_string(result) + " when trying to update subscription.");
         }
-
     }
 
     // if we reach here, it means we need to add a new subscription.
@@ -55,23 +54,16 @@ void traci_api::TraCIServer::addSubscription(uint8_t sub_type, std::string objec
 
     debugPrint("No update. Adding new subscription.");
     VariableSubscription* sub;
-
     switch (sub_type)
     {
     case CMD_SUB_VHCVAR:
-
         debugPrint("Adding VHC subscription.");
-
         sub = new VehicleVariableSubscription(object_id, start_time, end_time, variables);
         break;
-
     case CMD_SUB_SIMVAR:
-
         debugPrint("Adding SIM subscription.");
-
         sub = new SimulationVariableSubscription(object_id, start_time, end_time, variables);
         break;
-
     default:
         writeStatusResponse(sub_type, STATUS_NIMPL, "Subscription type not implemented: " + std::to_string(sub_type));
         return;
