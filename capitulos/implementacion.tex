@@ -48,7 +48,7 @@ Implementa el funcionamiento base del servidor TraCI. Es el primer módulo como 
         \item El comando de avance de simulación es ejecutado parcialmente por este módulo y el módulo \texttt{Simulation} (ver sección \ref{sec:simulation}). Específicamente, se delega el avance del estado de la simulación a \texttt{Simulation}, luego del cual se realiza la evaluación de las suscripciones en \texttt{TraCIServer}.
         \item Demás comandos son delegados a los módulos pertinentes.
     \end{itemize}
-    \item Escribir mensajes de estado y respuesta a comandos TraCI.
+    \item Enviar mensajes de estado y respuesta a comandos TraCI.
     \item Al recibir un comando de cierre, finalizar la simulación y cerrar el \emph{socket}.
 \end{enumerate}
 
@@ -92,11 +92,11 @@ Se definieron una serie de comandos en \texttt{TraCIServer} encargados de obtene
     \item Finalmente, enviar un mensaje de estado de la solicitud y, en caso de éxito, el valor de la variable, al cliente.
 \end{enumerate}
 
+\lstinputlisting[style=CPP, label={cod:traciserver_cmdgetvhcvar}, caption={Ejemplo de método de obtención y empaquetado de variables en \texttt{TraCIServer}}]{codigo/cmdGetVhcVar.cpp}
+
 El caso de \texttt{cmdGetPolygonVar()} es especial. En TraCI, un polígono representa un edificio o una estructura presente en las cercanías de la simulación vehicular, la cual puede interferir con el modelo de comunicación inalámbrica en OMNeT++. Sin embargo, el modelador de Paramics no maneja elementos externos a la simulación de transporte, por lo que se decidió, en el caso de comandos de obtención de variables relacionadas, simplemente reportar que no existen polígonos en la simulación para simplificar la integración.
 
-\lstinputlisting[style=CPP, label={cod:traciserver_cmdgetvhcvar}, caption={Ejemplo de método de obtención y empaquetamiento de variables en \texttt{TraCIServer}}]{codigo/cmdGetVhcVar.cpp}
-
-Nótese que no se implementó el protocolo en su totalidad, sino únicamente aquellas funcionalidades críticas para su uso práctico en simulaciones de mediana complejidad.
+%Nótese que no se implementó el protocolo en su totalidad, sino únicamente aquellas funcionalidades críticas para su uso práctico en simulaciones de mediana complejidad.
 
 
 \subsubsection{Avance de Simulación y Evaluación de Suscripciones}\label{sec:traciserver_simstep}
@@ -155,5 +155,15 @@ La segunda parte del método es más simple. De corresponder el comando a una so
 %    \label{fig:subs_tree}
 %\end{figure}
 
+\subsubsection{Envío de resultados al cliente}
+
+\texttt{TraCIServer} mantiene una variable de instancia \texttt{tcpip::Storage outgoing}, en la cual se almacenan los mensajes de estado y resultados de comandos TraCI. El envío de estos al cliente se efectúa al final de cada iteración del \emph{loop} en \texttt{waitForCommands()}, enviando así conjuntamente las respuestas a todos los comandos obtenidos desde el cliente en el último paso de tiempo. Gracias a las clases \texttt{tcpip::Storage} y \texttt{tcpip::Socket} utilizadas, la operación de enviar los datos almacenados se reduce a una invocación del método \texttt{sendExact()} del objeto \texttt{tcpip::Socket}, la cual recibe un objeto \texttt{tcpip::Storage}, le adjunta una cabecera con su tamaño total y lo envía a través del \emph{socket} al cliente.
+
+La escritura de datos en el almacenamiento saliente se implementó en dos métodos de \texttt{TraCIServer}; \texttt{writeStatusResponse()}, método de conveniencia para la escritura de mensajes de estado, y \texttt{writeToOutputWithSize()}, el cual recibe otro objeto de tipo \texttt{tcpip::Storage} que contiene el resultado de algún comando y escribe sus contenidos en \texttt{outgoing}, junto con una cabecera que indique su tamaño. Esto implicó también una decisión de diseño en términos de la comunicación de \texttt{TraCIServer} con los demás módulos del sistema. Se optó por realizar la mayor parte de esta comunicación a mediante objetos de tipo \texttt{tcpip::Storage}, delegando la estructuración de los resultados de cada comando específico a los módulos responsables. De esta manera se aumenta la modularidad, ya que cada módulo sabe como escribir sus resultados de manera correcta, y \texttt{TraCIServer} sólo necesita asumir que recibirá un \texttt{tcpip::Storage} bien formateado como respuesta a los comandos.
+
+\lstinputlisting[style=CPP, label={code:traciserver_writetooutput},caption={Escritura de datos en almacenamiento saliente.}]{codigo/traciserver_writetooutput.cpp}
+
 \subsection{Simulation}\label{sec:simulation}
+
+
 \subsection{VehicleManager}\label{sec:vehiclemanager}
