@@ -12,6 +12,30 @@ La figura \ref{fig:ptraci_arch} ilustra esta arquitectura. A pesar de que se enc
     \label{fig:ptraci_arch}
 \end{figure}
 
+En términos de implementación, el código del \emph{plugin} se separó en una serie de módulos lógicos que encapsulan y abstraen cada uno una categoría de funcionalidades de la interfaz con TraCI. De esta manera, se logró una separación lógica de las funcionalidades implementadas, y se simplifican futuras extensiones al código. 
+
+\begin{figure}
+    \dirtree{%
+        .1 src/.
+        .2 plugin.c\DTcomment{Archivo de inicio del \emph{plugin}}.
+        .2 TraCIAPI/\DTcomment{Implementación de la API}.
+        .3 Constants.h\DTcomment{Constantes utilizadas en el sistema}.
+        .3 Exceptions.h\DTcomment{Excepciones propias del framework}.
+        .3 Network.\{cpp/h\}\DTcomment{Métodos de interacción con la red vehicular}.
+        .3 Simulation.\{cpp/h\}\DTcomment{Métodos de interacción con la simulación vehicular}.
+        .3 Subscriptions.\{cpp/h\}\DTcomment{Suscripciones TraCI}.
+        .3 TraCIServer.\{cpp/h\}\DTcomment{Módulo principal, manejo de conexiones TraCI}.
+        .3 Triggers.\{cpp/h\}\DTcomment{Operaciones disparadas (temporales o situacionales)}.
+        .3 Utils.\{cpp/h\}\DTcomment{Funciones auxiliares y de conveniencia}.
+        .3 VehicleManager.\{cpp/h\}\DTcomment{Métodos de interacción con vehículos}.
+        .2 shawn/\DTcomment{Archivos externos}.
+        .3 socket.\{cpp/h\}\DTcomment{Manejo simplificado de \emph{sockets} TCP}.
+        .3 storage.\{cpp/h\}\DTcomment{Manejo simplificado de paquetes de datos}.
+    }
+    \caption{Estructura de archivos del código fuente del framework.}
+    \label{fig:dirtree}
+\end{figure}
+
 Describir separación de archivos, namespaces.
 
 \section{Módulos Principales}
@@ -165,6 +189,10 @@ La escritura de datos en el almacenamiento saliente se implementó en dos métod
 
 \subsection{Simulation}\label{sec:simulation}
 
-Este módulo abstrae y encapsula el acceso a los parámetros de la simulación vehicular de Paramics.
+La principal funcionalidad de este módulo es controlar el avance de la simulación, y además abstrae y encapsula el acceso a los parámetros de la simulación vehicular de Paramics. Se implementó como una clase de C++ utilizando el patrón de diseño \emph{Singleton}; esto quiere decir que sólo se permite la instanciación de un único objeto de este tipo en la ejecución del programa. Esto ya que, por razones lógicas, cada ejecución del \emph{plugin} está asociada a una única simulación en Paramics, y por ende no tiene sentido que pueda existir más de un objeto de acceso a ésta.
+
+\subsubsection{Avance de la Simulación}
+
+Al recibir un mensaje de avance de simulación, \texttt{TraCIServer} invoca el método \texttt{runSimulation()} del presente módulo. Este método recibe como parámetro un entero representando el instante de tiempo hasta cual se quiere avanzar la simulación (de ser $0$ se interpreta como solicitud de avance de un único paso de simulación).
 
 \subsection{VehicleManager}\label{sec:vehiclemanager}
