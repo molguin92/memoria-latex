@@ -48,20 +48,53 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
 
 Se implementaron los tres comandos principales de esta categoría:
 \begin{enumerate}
-    \item \texttt{0x00} Obtención de Versión
-    \item \texttt{0x02} Avance de Simulación
-    \item \texttt{0xff} Cierre de Conexión
-\end{enumerate}
-
-\begin{enumerate}
-    \item test
     \begin{multicols}{2}
-        \begin{enumerate}
-            \item 1
-            \item 2
-        \end{enumerate}
+        \item \texttt{0x00} Obtención de Versión
+        \item \texttt{0x02} Avance de Simulación
+        \item \texttt{0xff} Cierre de Conexión
     \end{multicols}
 \end{enumerate}
+
+\subsubsection{Comandos de Obtención de Variables}
+
+\begin{description}
+    \item[\texttt{0x00}] Variables de Simulación
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x70} Tiempo de simulación}
+            \mcitem{\texttt{0x73} Número de vehículos liberados a la red en el último paso de simulación}
+            \mcitem{\texttt{0x74} Lista de vehículos liberados a la red en el último paso de simulación}
+            \mcitem{\texttt{0x79} Número de vehículos que han llegado a su destino en el último paso de simulación}
+            \mcitem{\texttt{0x7a} Lista de vehículos que han llegado a su destino en el último paso de simulación}
+            \mcitem{\texttt{0x7b} Tamaño del paso de simulación}
+            \mcitem{\texttt{0x7c} Coordenadas de los límites de la red vehicular}
+        \end{itemize}
+    \end{multicols}
+    
+    Las variables \texttt{0x75}, \texttt{0x76}, \texttt{0x77} y \texttt{0x78}, correspondientes a los números y listas de vehículos que comienzaron y terminaron de teletransportarse en el último paso de simulación, así como las variables \texttt{0x6c}, \texttt{0x6d}, \texttt{0x6e} y \texttt{0x6f}, las cuales corresponden a números y listas de vehículos que comenzaron y terminaron de estar estacionados, fueron implementadas ``parcialmente''. En estricto rigor, los mecanismos subyacentes no se implementaron porque no se consideraron críticos, pero se implementó una respuesta \emph{dummy} de 0 vehículos para asegurar su funcionamiento con VEINS.
+    
+    \item[\texttt{0xa4}] Variables de vehículos
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de vehículos activos en la red}
+            \mcitem{\texttt{0x01} Número de vehículos activos en la red}
+            \mcitem{\texttt{0x36} Inclinación actual}
+            \mcitem{\texttt{0x39} Posición actual (3D)}
+            \mcitem{\texttt{0x40} Velocidad actual}
+            \mcitem{\texttt{0x42} Posición actual (2D)}
+            \mcitem{\texttt{0x43} Ángulo actual}
+            \mcitem{\texttt{0x44} Largo}
+            \mcitem{\texttt{0x4d} Ancho}
+            \mcitem{\texttt{0x4f} Tipo de vehículo}
+            \mcitem{\texttt{0x50} Calle actual}
+            \mcitem{\texttt{0x51} Identificador de pista actual}
+            \mcitem{\texttt{0x52} Índice de pista actual}
+            \mcitem{\texttt{0xbc} Altura}
+        \end{itemize}
+    \end{multicols}
+    
+\end{description}
+
 
 \section{Módulos Principales}
 \subsection{plugin.c}

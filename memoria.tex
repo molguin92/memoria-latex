@@ -28,6 +28,11 @@
 \usepackage{tikz-qtree}
 \usepackage{dirtree}
 \usepackage[labelfont=bf]{caption}
+\usepackage{enumitem}
+\setlist{  
+    listparindent=\parindent
+}
+
 \captionsetup{format=hang}
 
 % CPP style definition: %
@@ -91,6 +96,8 @@
     \end{minipage}
 }
 
+\newcommand\mcitem[1]{\item\begin{minipage}[t]{\linewidth}#1\end{minipage}}
+
 % footnote spacing
 \setlength{\footnotesep}{.7cm}
 
@@ -132,9 +139,9 @@ Den här är för Aros och Skatt.
     %\bibliography{bibliografia}
     %\printbibliography
 %\end{multicols*}
-\begin{multicols}{2}[\printbibheading]
+\begin{multicols*}{2}[\printbibheading]
     \printbibliography[heading=none]
-\end{multicols}
+\end{multicols*}
 
 \appendix
 \input{capitulos/anexos.tex}
