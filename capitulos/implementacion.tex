@@ -5,7 +5,7 @@ El software desarrollado consiste en un \emph{plugin} que extiende la funcionali
 
 La figura \ref{fig:ptraci_arch} ilustra esta arquitectura. A pesar de que se encuentra implementado como un \emph{plugin} de Paramics, el servidor TraCI es prácticamente un programa independiente, y su interacción con el simulador de transporte se limita a un conjunto acotado de llamados a su API.
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \input{figuras/plugin_serverflow.tex}
     \caption{Arquitectura del Framework}
@@ -37,6 +37,31 @@ En términos de implementación, el código del \emph{plugin} se separó en una 
 \end{figure}
 
 Describir separación de archivos, namespaces.
+
+\section{Funcionalidad Implementada}
+
+Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más de 30 comandos distintos, cada uno con una gran cantidad de variables y parámetros asociados. Implementar esta gran cantidad de funcionalidades no hubiese sido factible, por lo que se escogió un subconjunto acotado de éstas a implementar, considerando en específico aquellos comandos esenciales para simulaciones de ITS.
+
+\subsection{Comandos Implementados}
+
+\subsubsection{Comandos de Control de Simulación}
+
+Se implementaron los tres comandos principales de esta categoría:
+\begin{enumerate}
+    \item \texttt{0x00} Obtención de Versión
+    \item \texttt{0x02} Avance de Simulación
+    \item \texttt{0xff} Cierre de Conexión
+\end{enumerate}
+
+\begin{enumerate}
+    \item test
+    \begin{multicols}{2}
+        \begin{enumerate}
+            \item 1
+            \item 2
+        \end{enumerate}
+    \end{multicols}
+\end{enumerate}
 
 \section{Módulos Principales}
 \subsection{plugin.c}
@@ -189,10 +214,10 @@ La escritura de datos en el almacenamiento saliente se implementó en dos métod
 
 \subsection{Simulation}\label{sec:simulation}
 
-La principal funcionalidad de este módulo es controlar el avance de la simulación, y además abstrae y encapsula el acceso a los parámetros de la simulación vehicular de Paramics. Se implementó como una clase de C++ utilizando el patrón de diseño \emph{Singleton}; esto quiere decir que sólo se permite la instanciación de un único objeto de este tipo en la ejecución del programa. Esto ya que, por razones lógicas, cada ejecución del \emph{plugin} está asociada a una única simulación en Paramics, y por ende no tiene sentido que pueda existir más de un objeto de acceso a ésta.
+La principal funcionalidad de este módulo es controlar el avance de la simulación, además de abstraer y encapsular el acceso a los parámetros de la simulación vehicular de Paramics. Se implementó como una clase de C++ utilizando el patrón de diseño \emph{Singleton}; esto quiere decir que sólo se permite la instanciación de un único objeto de este tipo en la ejecución del programa. Esto ya que, por razones lógicas, cada ejecución del \emph{plugin} está asociada a una única simulación en Paramics, y por ende no tiene sentido que pueda existir más de un objeto de acceso a ésta.
 
 \subsubsection{Avance de la Simulación}
 
-Al recibir un mensaje de avance de simulación, \texttt{TraCIServer} invoca el método \texttt{runSimulation()} del presente módulo. Este método recibe como parámetro un entero representando el instante de tiempo hasta cual se quiere avanzar la simulación (de ser $0$ se interpreta como solicitud de avance de un único paso de simulación).
+Al recibir un mensaje de avance de simulación, \texttt{TraCIServer} invoca el método \texttt{runSimulation()} del presente módulo, detallado en los anexos, código \ref{code:simstep}. Este método recibe como parámetro un entero representando el instante de tiempo hasta cual se quiere avanzar la simulación (de ser $0$ se interpreta como solicitud de avance de un único paso de simulación) y ejecuta los llamados necesarios a la API de Paramics, además de notificar a \texttt{VehicleManager} que debe actualizar sus listas de vehículos.
 
 \subsection{VehicleManager}\label{sec:vehiclemanager}
