@@ -42,37 +42,22 @@ Describir separación de archivos, namespaces.
 
 Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más de 30 comandos distintos, cada uno con una gran cantidad de variables y parámetros asociados. Implementar esta gran cantidad de funcionalidades no hubiese sido factible, por lo que se escogió un subconjunto acotado de éstas a implementar, considerando en específico aquellos comandos esenciales para simulaciones de ITS.
 
-\subsection{Comandos Implementados}
+\subsection{Comandos Implementados} \label{sec:comandos}
 
 \subsubsection{Comandos de Control de Simulación}
 
-Se implementaron los tres comandos principales de esta categoría:
-\begin{enumerate}
+\begin{itemize}
     \begin{multicols}{2}
-        \item \texttt{0x00} Obtención de Versión
-        \item \texttt{0x02} Avance de Simulación
-        \item \texttt{0xff} Cierre de Conexión
+        \mcitem{\texttt{0x00} Obtención de Versión}
+        \mcitem{\texttt{0x02} Avance de Simulación}
+        \mcitem{\texttt{0xff} Cierre de Conexión}
     \end{multicols}
-\end{enumerate}
+\end{itemize}
 
 \subsubsection{Comandos de Obtención de Variables}
 
-\begin{description}
-    \item[\texttt{0x00}] Variables de Simulación
-    \begin{multicols}{2}
-        \begin{itemize}
-            \mcitem{\texttt{0x70} Tiempo de simulación}
-            \mcitem{\texttt{0x73} Número de vehículos liberados a la red en el último paso de simulación}
-            \mcitem{\texttt{0x74} Lista de vehículos liberados a la red en el último paso de simulación}
-            \mcitem{\texttt{0x79} Número de vehículos que han llegado a su destino en el último paso de simulación}
-            \mcitem{\texttt{0x7a} Lista de vehículos que han llegado a su destino en el último paso de simulación}
-            \mcitem{\texttt{0x7b} Tamaño del paso de simulación}
-            \mcitem{\texttt{0x7c} Coordenadas de los límites de la red vehicular}
-        \end{itemize}
-    \end{multicols}
-    
-    Las variables \texttt{0x75}, \texttt{0x76}, \texttt{0x77} y \texttt{0x78}, correspondientes a los números y listas de vehículos que comienzaron y terminaron de teletransportarse en el último paso de simulación, así como las variables \texttt{0x6c}, \texttt{0x6d}, \texttt{0x6e} y \texttt{0x6f}, las cuales corresponden a números y listas de vehículos que comenzaron y terminaron de estar estacionados, fueron implementadas ``parcialmente''. En estricto rigor, los mecanismos subyacentes no se implementaron porque no se consideraron críticos, pero se implementó una respuesta \emph{dummy} de 0 vehículos para asegurar su funcionamiento con VEINS.
-    
+\begin{description}[style=multiline]
+        
     \item[\texttt{0xa4}] Variables de vehículos
     \begin{multicols}{2}
         \begin{itemize}
@@ -92,7 +77,89 @@ Se implementaron los tres comandos principales de esta categoría:
             \mcitem{\texttt{0xbc} Altura}
         \end{itemize}
     \end{multicols}
+
+    \item[\texttt{0xa5}] Variables de tipos de vehículos
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de tipos definidos}
+            \mcitem{\texttt{0x01} Número de tipos definidos}
+            \mcitem{\texttt{0x41} Velocidad máxima}
+            \mcitem{\texttt{0x44} Largo}
+            \mcitem{\texttt{0x46} Aceleración máxima}
+            \mcitem{\texttt{0x47} Deceleración máxima}
+            \mcitem{\texttt{0x4d} Ancho}
+            \mcitem{\texttt{0xbc} Altura}
+        \end{itemize}
+    \end{multicols}
+
+    \item[\texttt{0xa6}] Variables de rutas
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de rutas definidas}
+            \mcitem{\texttt{0x01} Número de rutas definidas}
+            \mcitem{\texttt{0x54} Arcos (calles) componentes de la ruta}
+        \end{itemize}
+    \end{multicols}
+
+    \item[\texttt{0xa8}] Variables de polígonos (edificios y estructuras)
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de polígonos}
+            \mcitem{\texttt{0x01} Número de polígonos}
+        \end{itemize}
+    \end{multicols}
+
+    Cabe notar que Paramics no maneja edificios en sus simulaciones, al menos no edificios accesibles a través de la API de programación, por lo que estos métodos se implementaron de manera que reportan siempre 0 polígonos en la simulación.
+
+    \item[\texttt{0xa9}] Variables de nodos (intersecciones) de la red
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de intersecciones}
+            \mcitem{\texttt{0x01} Número de intersecciones}
+            \mcitem{\texttt{0x42} Posición de la intersección}
+        \end{itemize}
+    \end{multicols}
+
+    \item[\texttt{0xaa}] Variables de arcos (calles) de la red
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de calles}
+            \mcitem{\texttt{0x01} Número de calles}
+        \end{itemize}
+    \end{multicols}
+
+    \item[\namedlabel{item:simvars}{\texttt{0xab}}] Variables de Simulación
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x70} Tiempo de simulación}
+            \mcitem{\texttt{0x73} Número de vehículos liberados a la red en el último paso de simulación}
+            \mcitem{\texttt{0x74} Lista de vehículos liberados a la red en el último paso de simulación}
+            \mcitem{\texttt{0x79} Número de vehículos que han llegado a su destino en el último paso de simulación}
+            \mcitem{\texttt{0x7a} Lista de vehículos que han llegado a su destino en el último paso de simulación}
+            \mcitem{\texttt{0x7b} Tamaño del paso de simulación}
+            \mcitem{\texttt{0x7c} Coordenadas de los límites de la red vehicular}
+        \end{itemize}
+    \end{multicols}
     
+    Las variables \texttt{0x75}, \texttt{0x76}, \texttt{0x77} y \texttt{0x78}, correspondientes a los números y listas de vehículos que comienzaron y terminaron de teletransportarse en el último paso de simulación, así como las variables \texttt{0x6c}, \texttt{0x6d}, \texttt{0x6e} y \texttt{0x6f}, las cuales corresponden a números y listas de vehículos que comenzaron y terminaron de estar estacionados, fueron implementadas ``parcialmente''. En estricto rigor, los mecanismos subyacentes no se implementaron porque no se consideraron críticos, pero se implementó una respuesta \emph{dummy} de 0 vehículos para asegurar su funcionamiento con VEINS.
+    
+\end{description}
+
+\subsection{Comandos de modificación de estado}
+
+\begin{description}[style=multiline]
+    \item [\texttt{0xc4}] Variables de vehículo
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x13} Cambio de pista}
+            \mcitem{\texttt{0x14} Cambio de velocidad (lineal)}
+            \mcitem{\texttt{0x40} Cambio de velocidad (instantáneo)}
+            \mcitem{\texttt{0x41} Cambio de velocidad máxima}
+            \mcitem{\texttt{0x45} Coloreado}
+            \mcitem{\texttt{0x57} Cambio de ruta (a una lista de arcos otorgada por el cliente)}
+            
+        \end{itemize}
+    \end{multicols}
 \end{description}
 
 
@@ -251,6 +318,25 @@ La principal funcionalidad de este módulo es controlar el avance de la simulaci
 
 \subsubsection{Avance de la Simulación}
 
-Al recibir un mensaje de avance de simulación, \texttt{TraCIServer} invoca el método \texttt{runSimulation()} del presente módulo, detallado en los anexos, código \ref{code:simstep}. Este método recibe como parámetro un entero representando el instante de tiempo hasta cual se quiere avanzar la simulación (de ser $0$ se interpreta como solicitud de avance de un único paso de simulación) y ejecuta los llamados necesarios a la API de Paramics, además de notificar a \texttt{VehicleManager} que debe actualizar sus listas de vehículos.
+Al recibir un mensaje de avance de simulación, \texttt{TraCIServer} invoca el método \texttt{runSimulation()} del presente módulo, detallado en los anexos, código \ref{code:simstep}. Este método recibe como parámetro un entero representando el instante de tiempo hasta cual se quiere avanzar la simulación (de ser $0$ se interpreta como solicitud de avance de un único paso de simulación) y ejecuta los llamados necesarios a la API de Paramics, además de notificar a \texttt{VehicleManager} que debe actualizar sus listas de vehículos y ejecutar las acciones diferidas correspondientes (ver sección \ref{sec:vehiclemanager}).
+
+Se debe notar que dada la representación en tiempo discreto de los pasos de simulación, el avance de esta en muchos casos no alcanza exactamente el tiempo deseado. Si definimos el paso de simulación como $\triangle T$, el instante de tiempo en que se recibe el comando de avance como $T_{i}$ y el instante de tiempo objetivo $T_{o}$, la simulación se avanzará un número $n \in \mathbb{N}$ de pasos, tal que
+
+\[ T_{i} + (n \times \triangle T) = T_{f} \]
+\[ T_{i} + ((n - 1) \times \triangle T) = T_{f}' \]
+\[ T_{f} \geq T_{o} \]
+\[ T_{f}' < T_{o} \]
+
+En otras palabras, la simulación se avanzará el mínimo número de pasos tal que el tiempo final es \emph{igual o mayor} al instante de tiempo objetivo. Esto es para asegurar que se ejecuten todas las acciones diferidas por lo menos hasta dicho instante.
+
+\subsubsection{Obtención de variables}
+
+Las variables obtenibles desde este módulo son todas aquellas que se relacionan con la simulación como ente abstracto, enumeradas en el ítem \ref{item:simvars} de la sección \ref{sec:comandos}.
+
+Sin embargo, algunas de éstas variables si bien se encuentran comprendidas en la categoría mencionada, están fuertemente ligadas a otras también. En específico, las variables referentes a los vehículos que comenzaron o terminaron su viaje en el último paso de simulación son accesibles desde este módulo, pero su obtención fue implementada en el módulo \texttt{VehicleManager}. Esto ya que dicho módulo debe mantener una lista interna de todos los vehículos de la simulación en todo instante de tiempo, por lo que obtener estos valores era mucho más directo de implementar allá. Ver la sección sobre \texttt{VehicleManager}, \ref{sec:vehiclemanager}, para más detalles.
+
+De las variables efectivamente implementadas en este módulo, vale destacar un par de detalles. En primer lugar, existe una diferencia entre cómo VEINS y OMNeT++ manejan el tiempo de simulación, y cómo lo hace Paramics; los primeros ocupan mili-segundos, mientras que este último ocupa segundos. Esto implicó realizar las respectivas conversiones necesarias.
+
+En segundo lugar se hablará del comando de obtención de las coordenadas de los límites de la simulación.
 
 \subsection{VehicleManager}\label{sec:vehiclemanager}

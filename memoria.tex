@@ -33,6 +33,15 @@
     listparindent=\parindent
 }
 
+% reference description items
+\makeatletter
+\def\namedlabel#1#2{\begingroup
+    #2%
+    \def\@currentlabel{#2}%
+    \phantomsection\label{#1}\endgroup
+}
+\makeatother
+
 \captionsetup{format=hang}
 
 % CPP style definition: %
