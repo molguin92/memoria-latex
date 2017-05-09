@@ -164,7 +164,7 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
 
 
 \section{Módulos Principales}
-\subsection{plugin.c}
+\subsection{plugin.c}\label{sec:plugin.c}
 
 Si bien en estricto rigor no es un módulo del \emph{framework}, merece ser mencionado al ser el archivo principal del \emph{plugin} desarrollado. En este archivo se definen las funciones de extensión (prefijo \texttt{QPX}, ver sección \ref{sec:paramics_api}) a ser invocadas por Paramics al inicializar el \emph{plugin}. A continuación se describirán brevemente las más importantes de estas funciones, mientras que el archivo \texttt{plugin.c} puede estudiarse en su totalidad en el código \ref{code:pluginc} en los anexos.
 
@@ -184,6 +184,10 @@ Función invocada por Paramics cada vez que un vehículo es liberado a la red de
 \subsubsection{\texttt{void qpx\_VHC\_arrive(VEHICLE* vehicle, LINK* link, ZONE* zone)}}
 
 Invocada cuando un vehículo alcanza su destino final, esta función notifica al \texttt{VehicleManager} para eliminar el vehículo en cuestión de la representación interna.
+
+\subsubsection{\texttt{void qpx\_VHC\_transfer(VEHICLE* vehicle, LINK* link1, LINK* link2)}}
+
+Este método es ejecutado por Paramics cada vez que un vehículo pasa de una calle a otra. También se utiliza en el \emph{plugin} para notificar a \texttt{VehicleManager} para que actualice su estado interno.
 
 \subsection{TraCIServer}\label{sec:traciserver}
 
@@ -350,7 +354,17 @@ Para la implementación de éste módulo, se utilizó nuevamente el paradigma de
 
 A continuación se tratará de detallar los aspectos más importantes de este módulo.
 
+\subsubsection{Estado interno}
+
+Para simplificar muchas de las operaciones de obtención de variables y modificación de estados, el módulo mantiene un estado interno congruente con el estado de la simulación en Paramics. Para este fin se ocupan los llamados de la API de Paramics mencionados en la sección \ref{sec:plugin.c}.
+
+En específico, se utilizan las siguientes variables para almacenar información sobre el estado de la simulación en todo instante:
+
+\begin{description}[]
+    \item[\texttt{std::unordered\_map<int, VEHICLE*>\@ vehicles\_in\_sim}] \emph{Hashmap} que almacena el ID y un puntero a cada vehículo presente en la simulación. Se utiliza ya que Paramics no provee un método directo para obtener un puntero a un vehículo dada su ID, sino que es necesario buscarlo en la red. Este método elimina esa búsqueda y facilita además el conteo de vehículos en la simulación (basta con obtener la cantidad de pares \texttt{\{llave, valor\}} en el \emph{hashmap}). Se actualiza dinámicamente cada vez que ingresa un vehículo nuevo a la red, a través del llamado al método \texttt{vehicleDepart()} del presente módulo desde \texttt{plugin.c}.
+\end{description}
+
 \subsubsection{Obtención de variables}
 
-La función más básica de \texttt{VehicleManager} es la de abstraer el acceso a las variables de simulación directamente relacionadas con vehículos y tipos de vehículos. Los principales métodos encargados de estas funcionalidades son \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()}, respectivamente, aunque éstos por lo general son invocados por \texttt{packVehicleVariable()} y \texttt{packVhcTypesVariable()}, respectivamente.
+La función más básica de \texttt{VehicleManager} es la de abstraer el acceso a las variables de simulación directamente relacionadas con vehículos y tipos de vehículos. Los principales métodos encargados de estas funcionalidades son \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()}, respectivamente, aunque éstos por lo general son invocados por \texttt{packVehicleVariable()} y \texttt{packVhcTypesVariable()}, respectivamente, métodos que empaquetan los resultados en un \texttt{tcpip::Storage} para su fácil manejo.
 
