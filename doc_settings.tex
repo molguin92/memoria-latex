@@ -1,0 +1,98 @@
+\usepackage{lipsum}
+\usepackage{multicol}
+\usepackage[]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{bytefield}
+\usepackage{subcaption}
+\usepackage{pgf-umlsd}
+\usepackage{pgf-umlcd}
+\usepackage[spanish]{babel}
+\usepackage[style=ieee, sorting=none]{biblatex}
+\usepackage{csquotes}
+\usepackage{appendix}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{sourcecodepro}
+\usepackage{tikz}
+\usepackage{tikz-qtree}
+\usepackage{dirtree}
+\usepackage[labelfont=bf]{caption}
+\usepackage{enumitem}
+\setlist{  
+    listparindent=\parindent
+}
+
+% reference description items
+\makeatletter
+\def\namedlabel#1#2{\begingroup
+    #2%
+    \def\@currentlabel{#2}%
+    \phantomsection\label{#1}\endgroup
+}
+\makeatother
+
+\captionsetup{format=hang}
+
+% CPP style definition: %
+\renewcommand{\lstlistingname}{Código}% Listing -> Código
+\renewcommand{\lstlistlistingname}{Lista de \lstlistingname s}% List of Listings -> List of Algorithms
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{lightgray}{rgb}{0.95, 0.95, 0.95}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstdefinestyle{CPP}{ % Estilo de lenguaje C++11
+    language=[11]C++,
+    frame=Lb,
+    xleftmargin=\parindent,
+    captionpos=b,
+    aboveskip=3mm,
+    belowskip=3mm,
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{purple},
+    commentstyle=\color{gray},
+    stringstyle=\color{dkgreen},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4,
+    morekeywords={string},
+    backgroundcolor=\color{lightgray},
+    escapeinside={/l*}{*l/}
+}
+
+% new an instance thread
+% Example:
+% \newthread[edge distance]{var}{thread name}
+\renewcommand{\newthread}[3][0.2]{
+    \newinst[#1]{#2}{#3}
+    \stepcounter{threadnum}
+    \node[below of=inst\theinstnum,node distance=0.8cm] (thread\thethreadnum) {};
+    \tikzstyle{threadcolor\thethreadnum}=[fill=gray!30]
+    \tikzstyle{instcolor#2}=[fill=gray!30]
+}
+
+\newcommand{\blankpage}{
+    \newpage
+    %\thispagestyle{empty}
+    \mbox{}
+    \newpage
+}
+
+\newcommand{\minipagelisting}[3]{
+    \noindent
+    \begin{minipage}{\linewidth}
+        \lstinputlisting[style=CPP, label={#3}, caption={#2}]{#1}
+    \end{minipage}
+}
+
+\newcommand\mcitem[1]{\item\begin{minipage}[t]{\linewidth}#1\end{minipage}}
+
+% footnote spacing
+\setlength{\footnotesep}{.7cm}
+\addbibresource{bibliografia.bib}
