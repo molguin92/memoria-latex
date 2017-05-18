@@ -62,19 +62,38 @@ En el contexto de integración de simuladores de comunicaciones y de tráfico pa
 
 \subsection{Simuladores de Redes Inalámbricas}
 
-Kumar \emph{et al.} realizaron en 2012 un estudio comparativo en el ámbito de Simuladores para Redes Inalámbricas \autocite{networksimcomparativestudy}, nombrando cinco simuladores como los principales en uso en academia; QualNet/GloMoSim, OMNeT++, ns-2, OPNET y JSim. A continuación se discutirán brevemente las particularidades de cada uno de estos entornos de simulación, destacando especialmente sus fortalezas y debilidades.
+Kumar \emph{et al.} realizaron en 2012 un estudio comparativo en el ámbito de Simuladores para Redes Inalámbricas \autocite{networksimcomparativestudy}, trabajo basado parcialmente en el estudio realizado en 2009 por Weingartner, vom Lehn y Wehrle sobre la eficiencia de estos simuladores \autocite{perf_comp_recentnetworksims}. Paralelamente, investigadores de la Universidad de Malasia y la Universidad Carlos III de Madrid, España, publicaron también en 2012 un estudio enfocado específicamente en aquellos entornos de software de fuente abierta para la simulación de redes inalámbricas de sensores \autocite{perf_comp_opensourcenetworksims}.
+
+A continuación se discutirán brevemente las particularidades de los siguientes cuatro entornos de simulación, destacados en los artículos previamente mencionados: GloMoSim/QualNet, OMNeT++, ns-2 y ns-3. Se escogieron específicamente esto simuladores dada su prominencia en dichos estudios y en la literatura académica en general.
+ 
+\subsubsection{GloMoSim}
 
 En primer lugar, GloMoSim es un simulador de fuente abierta desarrollado por investigadores de la Universidad de California, Los Ángeles \autocite{glomosim}. El simulador utiliza las capacidades de simulación de eventos discretos y paralelos otorgadas por el lenguaje de programación Parsec, desarrollado en el Laboratorio de Computación Paralela de la UCLA \autocite{parsec}. QualNet es un derivado comercial de este mismo software, basado en C++ en vez de Parsec. 
 
 Las desventajas de GloMoSim y QualNet son varias. Para nombrar un par, no presentan soporte para un número considerable de implementaciones de TCP, y su interfaz gráfica es deficiente. Finalmente, además GloMoSim ya no se encuentra en desarrollo activo, por lo que es poco probable que esto se solucione en el futuro.
 
+\subsubsection{OMNeT++}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=.8\linewidth]{figuras/omnetpp_aloha}
+    \caption{Entorno de simulación gráfica de OMNeT++.}
+    \label{fig:omnetpp_simgui}
+\end{figure}
+
 OMNeT++, \emph{\textbf{O}bjective \textbf{M}odular \textbf{Ne}twork \textbf{T}estbed in C\textbf{++}}, es un entorno modular y basado en componentes para la simulación de sistemas de eventos discretos \cite{omnet2008overview}. Está escrito en C++, y si bien en estricto rigor OMNeT++ en sí sólo conforma el \emph{framework} genérico para la definición de modelos, la distribución incluye además múltiples extenciones para el modelamiento de redes de comunicación -- siendo la principal de éstas INET.
- 
+
 INET incluye modelos para la simulación de múltiples \emph{stacks} de protocolos para la comunicación tanto cableada como inalámbrica, a través de una gran cantidad de protocolos (IPV6, WSN, etc.). Finalmente, INET incluye además modelos de movilidad, para el estudio de redes con nodos en movimiento.
 
 OMNeT++ presenta una gran ventaja en su diseño modular y extensible, y se posiciona como una excelente opción para simulaciones que requieran un alto nivel de flexibilidad.
 
+\subsubsection{ns-2 y ns-3}
 
+ns-2 es un simulador de eventos discretos para la simulación de redes de comunicación, cuyo desarrollo comenzó en 1989 y que a lo largo de los años ha recibido grandes contribuciones tanto de la comunidad científico como de corporaciones como DARPA, Xerox, etc. Gracias a su larga trayectoria y extenso soporte, actualmente cuenta con un gran renombre en academia.
+
+El simulador y sus módulos en sí están escritos en C++, pero se utiliza una extensión del lenguaje Tcl para su configuración y la definición de topologías de red. Esta decisión de diseño fue producto de un deseo de evitar la recompilación del simulador al realizar cambios en algún escenario, lo cual tenía mucho sentido en un tiempo en que la compilación implicaba extensos tiempos de espera. Hoy en día sin embargo, con los avances en potencia computacional, es más una desventaja, perjudicando la escalabilidad del sistema \autocite{perf_comp_recentnetworksims} a cambio de una marginal mejora en tiempos de recompilación. 
+
+ns-3 es considerado el sucesor de ns-2, llevando el exitoso simulador al siglo XXI. A diferencia de su ancestro, ns-3 está escrito completamente en C++, y opcionalmente algunos módulos pueden definirse en Python. Además, ns-3 incluye extensas optimizaciones en términos de escalabilidad y paralelismo, a cambio de una incompatibilidad con antiguos modelos desarrollados para ns-2
 
 \subsection{Entornos de Simulación Bidireccional}
 
@@ -93,7 +112,7 @@ Otro ejemplo de esto es la investigación presentada por Goebel \emph{et al.} en
 \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{figuras/evolution_bidirectional_sim_sommerdressler.png}
-    \caption{Evolución de simulaciones integradas para ITS (fuente: \autocite{sommer_dressler2}).}
+    \caption{Evolución de simulaciones integradas para ITS (fuente: Sommer y Dressler \autocite{sommer_dressler2}).}
     \label{fig:bidir_evol}
 \end{figure}
 
