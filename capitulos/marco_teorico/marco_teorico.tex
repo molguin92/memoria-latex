@@ -2,31 +2,58 @@
 
 En esta sección se detallarán los conceptos esenciales para la comprensión del presente trabajo de memoria.
 
-\subsection{Sistemas de Transporte}
+\subsection{Sistemas Inteligentes de Transporte}
 
-Cascetta define en \autocite{cascetta2013transportation} a los sistemas de transporte como aquella combinación de elementos que generan demanda de viaje en un cierta área geográfica, y que otorgan los servicios de transporte para suplir dicha demanda. Esta definición es amplia y otorga una visión general del concepto. En la práctica, en la presente memoria se denominará como sistema de transporte a aquel conjunto de infraestructura vial que permite el flujo de vehículos desde uno o más puntos de origen a uno o más puntos de destino.
+Cascetta define en \autocite{cascetta2013transportation} los sistemas de transporte como aquella combinación de elementos que generan demanda de viaje en un cierta área geográfica, y que otorgan los servicios de transporte para suplir dicha demanda. Esta definición es amplia y otorga una visión general del concepto. En la práctica, en la presente memoria se denominará como sistema de transporte a aquel conjunto de infraestructura vial que permite el flujo de vehículos desde uno o más puntos de origen a uno o más puntos de destino.
 
-\subsubsection{Sistemas Inteligentes de Transporte}
+Los Sistemas Inteligentes de Transporte (en adelante \emph{ITS}, por sus siglas en inglés -- \textit{Intelligent Transportation Systems}) surgen como una respuesta a la necesidad de optimización y modernización de sistemas de transporte existentes. La Unión Europea define a los ITS como aplicaciones avanzadas que, sin incorporar inteligencia como tal, pretenden proveer servicios innovadores relacionados con distintos modos de transporte y de administración de tráfico, que además otorgan información a los usuarios, permitiéndoles utilizar el sistema de transporte de manera más segura, coordinada e inteligente \autocite{eudirective}. 
 
-Los Sistemas Inteligentes de Transporte (en adelante \emph{ITS}, por sus siglas en inglés -- \textit{Intelligent Transportation Systems}) surgen como una respuesta a la necesidad de optimización y modernización de sistemas de transporte existentes. La Unión Europea define a los ITS como aplicaciones avanzadas que, sin incorporar inteligencia como tal, pretenden proveer servicios innovadores relacionados con distintos modos de transporte y de administración de tráfico, que además otorgan información a los usuarios, permitiéndoles utilizar el sistema de transporte de manera más segura, coordinada e inteligente \autocite{eudirective}. De acuerdo al Departamento de Transportes de los EEUU, estos sistemas se pueden dividir en dos grandes categorías \autocite{usdot}:
-\begin{description}
-    \item [Sistemas de Infraestructura Inteligente] Tienen como enfoque el manejo de los sistemas de transporte a niveles macro, y la transmisión de información oportuna a los usuarios. Esta categoría incluye, entre otros, sistemas de advertencia y señalización dinámica en ruta (ya sea a través de pantallas o sistemas de comunicación inalámbrica), sistemas de pago electrónico y de coordinación del flujo de tráfico.
-    
-    \item [Sistemas de Vehículos Inteligentes] Engloba todo aquello relacionado con la automatización y optimización de la operación de un vehículo. Dentro de esta categoría se incluyen sistemas de advertencia y prevención de colisiones, de asistencia al conductor --- por ejemplo, sistemas de navegación --- y control autónomo de vehículos.
-    
-\end{description}
+De acuerdo al Departamento de Transportes de los EEUU, los ITS se pueden dividir en dos grandes categorías \autocite{usdot}; Sistemas de Infraestructura Inteligente y Sistemas de Vehículos Inteligentes.
 
-\subsection{Simulaciones de Eventos Discretos}
+\subsubsection{Sistemas de Infraestructura Inteligente}
 
-Se denominan \emph{simulaciones de eventos discretos} a la categoría de simulaciones en las cuales el estado del modelo cambia en instantes de tiempo discreto \autocite{SchriberDiscreteSim}. Este tipo de simulaciones tienen diversos usos, siendo dos de los principales (y de interés para el presente trabajo de memoria) las simulaciones de redes de comunicaciones y de tráfico.
+Tienen como enfoque el manejo de los sistemas de transporte a niveles macro, y la transmisión de información oportuna a los usuarios a través de sistemas de comunicación vehículo-infraestructura (\emph{V2I}). Esta categoría incluye, entre otros, sistemas de advertencia y señalización dinámica en ruta (ya sea a través de pantallas o sistemas de comunicación inalámbrica), sistemas de pago electrónico y de coordinación del flujo de tráfico.
+
+\subsubsection{Sistemas de Vehículos Inteligentes}
+
+Engloba todo aquello relacionado con la automatización y optimización de la operación de un vehículo. Dentro de esta categoría se incluyen sistemas de advertencia y prevención de colisiones, de asistencia al conductor --- por ejemplo, sistemas de navegación --- y control autónomo de vehículos. Esta categoría se caracteriza por el extenso uso de comunicaciones vehículo-vehículo (\emph{V2V}), es decir, redes de comunicaciones distribuidas \emph{ad-hoc} (ver sección \ref{sec:its_comms:v2v}).
+
+\subsection{Tecnologías de Comunicaciones para ITS}\label{sec:its_comms}
+
+Una de las principales características de los ITS es la capacidad del sistema de otorgar información a los usuarios para la optimización del sistema. Con este fin, se han establecido distintos tipos de categorías de tecnologías de transmisión inalámbrica para el uso en variados escenarios \autocite{dar2010wireless}.
+
+\subsubsection{V2I}
+
+\emph{Vehicle-to-Infraestructure}, V2I, se refiere a toda comunicación en un ITS que ocurra entre un vehículo y la infraestructura, por ejemplo, para la transmisión de información del estado de la ruta, velocidad máxima, etc. 
+ 
+\subsubsection{V2V}\label{sec:its_comms:v2v}
+
+\emph{Vehicle-to-Vehicle}, V2V, es el nombre otorgado a la categoría de tecnologías que posibilitan la comunicación directa entre vehículos en un ITS. Este tipo de comunicaciones tiende a ser de índole crítico (por ejemplo, transmisión de advertencias por accidente), y deben poder funcionar en ausencia de un sistema centralizado, por lo que generalmente se utilizan redes \emph{ad-hoc}; es decir, redes descentralizadas en las cuales cada vehículo conforma un nodo que se comunica directamente con sus vecinos. 
+
+\subsubsection{V2X}
+
+Finalmente, \emph{Vehicle-to-Any}, V2X, se refiere a la combinación de las dos categorías anteriores.
+
+\subsubsection{IEEE 802.11p/WAVE}\label{sec:its_comms:wave}
+
+El estándar más común para las tres categorías de comunicaciones mencionadas anteriormente es hoy en el IEEE 802.11p, también conocido como WAVE (\emph{Wireless Access for Vehicular Applications}).
+
+IEEE 802.11p es una modificación al estándar 802.11 de la IEEE -- el cual define el funcionamiento de redes inalámbricas de área local (popularmente conocidas como \emph{Wi-Fi}) -- para adaptarlo al funcionamiento en Sistemas Inteligentes de Transporte \autocite{80211wave}. Su principal modificación es la habilidad de nodos en la red de comunicarse directamente sin antes tener que asociarse y autentificarse, ya que esto es costoso en términos de tiempo y las conexiones en un ITS son extremadamente efímeras.
+
+
+%\subsection{Simulaciones de Eventos Discretos}
+%
+%Se denominan \emph{simulaciones de eventos discretos} a la categoría de simulaciones en las cuales el estado del modelo cambia en instantes de tiempo discreto \autocite{SchriberDiscreteSim}. Este tipo de simulaciones tienen diversos usos, siendo dos de los principales (y de interés para el presente trabajo de memoria) las simulaciones de redes de comunicaciones y de tráfico.
 
 \subsection{Simulación de Redes de Comunicaciones}
 
-Las simulaciones de redes de comunicaciones tienen como fin modelar el comportamiento de sistemas interconectados mediante tecnologías de comunicaciones, sean estas cableadas o no. Para el fin del presente trabajo, por razones evidentes ligadas a la naturaleza de las comunicaciones dentro de un sistema altamente dinámico como lo son los sistemas de transporte, se consideraron únicamente sistemas de comunicación inalámbrica.
+Las simulaciones de redes de comunicaciones tienen como fin modelar el comportamiento de sistemas interconectados mediante tecnologías de comunicaciones, sean estas cableadas o no. Generalmente, esto se hace a través del empleo de modelos de eventos discretos, es decir, simulaciones en las cuales el estado del modelo cambia en instantes de tiempo discreto \autocite{SchriberDiscreteSim}.
+
+Para el fin del presente trabajo, por razones evidentes ligadas a la naturaleza de las comunicaciones dentro de un sistema altamente dinámico como lo son los sistemas de transporte, se consideraron únicamente sistemas de comunicación inalámbrica.
 
 \subsubsection{Comunicación Inalámbrica}
 
-En el contexto de la presente memoria, se entenderá por \emph{comunicación inalámbrica} todo acto de transmisión de información entre dos o más entidades mediante la interacción con un campo electromagnético, sin otra conexión física entre dichas entidades (\emph{e.g.} cables). Estas entidades denominarán \emph{nodos}, y al establecerse una configuración que permita la comunicación inalámbrica entre múltiples nodos cercanos, se hablará de una \emph{red inalámbrica}.
+%En el contexto de la presente memoria, se entenderá por \emph{comunicación inalámbrica} todo acto de transmisión de información entre dos o más entidades mediante la interacción con un campo electromagnético, sin otra conexión física entre dichas entidades (\emph{e.g.} cables). Estas entidades denominarán \emph{nodos}, y al establecerse una configuración que permita la comunicación inalámbrica entre múltiples nodos cercanos, se hablará de una \emph{red inalámbrica}.
 
 La simulación de una red de comunicaciones inalámbrica consiste en tres etapas principales \autocite{shalaby}:
 \begin{enumerate}
@@ -49,10 +76,11 @@ A continuación, se describirán brevemente las tres principales categorías de 
 
 La presente memoria considera únicamente la integración de una simulación de tipo microscópica, dada su fácil adaptación al modelo utilizado por las simulaciones de comunicaciones inalámbricas -- un nodo en la red de comunicaciones corresponde directamente a un vehículo en el sistema de transporte.
 
-
 \subsection{Simulación Bidireccional}
 
 En el contexto de integración de simuladores de comunicaciones y de tráfico para el estudio de Sistemas Inteligentes de Transporte, se entenderá por \emph{Simulación Bidireccional} aquél entorno de simulación en que un simulador de redes de comunicación y otro de tráfico se ejecuten de manera paralela, cada uno obteniendo \emph{feedback} continuo del otro.
+
+De esta manera es posible no sólo estudiar el efecto que tiene el movimiento de los vehículos sobre la red de comunicaciones en un Sistema Inteligente de Transporte, sino también se hace posible estudiar las repercusiones de la diseminación de información en la red vehicular. Por ejemplo, permite analizar el efecto de que un grupo de conductores cambien su ruta dentro de la red de transporte en respuesta a la recepción de una notificación de un accidente más adelante en su ruta original.
 
 \section{Estado del Arte}
 

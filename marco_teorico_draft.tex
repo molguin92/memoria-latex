@@ -1,7 +1,10 @@
-\documentclass[upright, contnum]{book}
+\documentclass[12pt,letter]{report}
 \input{doc_settings.tex}
 
 \inputencoding{utf8}
 \begin{document}
 \input{capitulos/marco_teorico/capitulo}
+\begin{multicols*}{2}[\printbibheading]
+    \printbibliography[heading=none]
+\end{multicols*}
 \end{document}
