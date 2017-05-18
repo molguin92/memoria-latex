@@ -57,8 +57,52 @@ En el contexto de integración de simuladores de comunicaciones y de tráfico pa
 \section{Estado del Arte}
 
 \subsection{Simuladores de Tráfico}
+
+Actualmente, existe una gran oferta de simuladores de tráfico, ya sean de fuente abierta o propietarios. Ratrout y Rahman listan 14 de estos en su análisis comparativo del año 2009 \autocite{ratrout2009comparative}, mientras que Boxill y Yu, ya en el año 2000 presentaban 8 simuladores distintos en su estudio de simuladores para el desarrollo de Sistemas Inteligentes de Transporte \autocite{boxill2000evaluation}.
+
+En esta sección se presentará brevemente el estado del arte de los más prominentes de estos simuladores, basándose en la revisión de literatura realizada por Mubasher y ul Qounain en \autocite{traffic_sim_review}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figuras/popular_trafficsims}
+    \caption{Los cinco simuladores más prominentes en la literatura (fuente: Mubasher y ul Qounain \autocite{traffic_sim_review}).}
+    \label{fig:prom_trafficsim}
+\end{figure}
+
+\subsubsection{VISSIM}
+
+VISSIM es un entorno de simulación discreto y microscópico, desarrollado propietariamente por el Grupo PVT en Alemania \autocite{vissim}. Es un simulador generalista, capaz de modelar sistemas de transporte multi-modales, en los que interactúan tanto vehículos ``convencionales'' como bicicletas, tranvías y hasta trenes pesados \autocite{fellendorf2010microscopic}. Modela el movimiento de cada entidad dinámica- y estocásticamente, en instantes discretos de tiempo. 
+
+VISSIM es considerado actualmente el líder en términos de popularidad y número de publicaciones en estudios de sistemas de transporte.
+
+\subsubsection{Aimsun}
+
+Aimsun es un simulador de tráfico con una larga trayectoria, desarrollado por \emph{TSS - Trasport Simulation Systems}, una empresa basada en Barcelona. El desarrollo del simulador comenzó en el año 1989, y actualmente se encuentra en su versión 8.2 \autocite{aimsunweb}.
+
+Aimsun cuenta con la particularidad de ser un entorno integrado micro- y mesoscópico de simulación de tráfico. Esto le da adaptabilidad a los problemas; para redes que requieran detalle del movimiento de sus entidades, se utiliza el modelo macroscópico, mientras que para redes de mayor escala se puede utilizar el modelo mesoscópico.
+
+Este simulador es muy popular en la literatura académica dada su extensibilidad y adaptabilidad a un gran número de escenarios. Sin embargo, existe una crítica común a su complicado nivel de programación de sus redes (se estima un complejidad hasta 8(\textbf{!}) veces mayor que para otros simuladores \autocite{jones2004traffic}), y a su necesidad de meticulosa calibración para obtener resultados realistas \autocite{jones2004traffic,ratrout2009comparative}.
+
+\subsubsection{CORSIM}
+
+TSIS-CORSIM, actualmente en su versión 6.3, es un simulador de tráfico de tipo microscópico desarrollado por el \emph{Centro McTrans} del Instituto de Transportes de la Universidad de Florida \autocite{tsis-corsim}. Al igual que Aimsun, CORSIM es muy popular en la literatura académica, y destaca por ser más apto para el modelamiento de redes de transporte complejas.  
+
+El simulador incluye dos modelos de simulación microscópica distintos - NETSIM para entornos urbanos, y FRESIM para tráfico en carreteras y zonas rurales. Si bien esto significa una mayor especialización y modelos más precisos para cada uno de estos casos, esto viene en desmedro de la posibilidad de simular de manera integrada un entorno que incluya ambas categorías \autocite{jones2004traffic}.
+
 \subsubsection{SUMO}
-\subsubsection{Quadstone Paramics}
+
+SUMO, \emph{\textbf{S}imulation of \textbf{U}rban \textbf{MO}bility} \autocite{sumo}, es un simulador de sistemas de transporte desarrollado por el Instituto de Sistemas de Transporte Alemán \autocite{dlr}. 
+Es de fuente abierta, y utiliza un modelo microscópico para la simulación de redes de transporte.
+
+Comparado con los simuladores presentados anteriormente, SUMO es relativamente nuevo, y todavía no cuenta con el mismo nivel de soporte y renombre que CORSIM o Aimsun, especialmente en el área de investigación de sistemas de transporte. Sin embargo, su popularidad ha aumentado de manera exponencial los últimos años, y ha ganado relevancia especialmente en estudios de Sistemas Inteligentes de Transporte \autocite{sumo-popularity}, alcanzando el primer lugar en cantidad de publicaciones relacionadas con comunicaciones vehiculares \autocite{sumo-popularity2}. Se especula que esto se debe a su naturaleza abierta, lo cual lo hace más accesible a investigadores, y además significa que es naturalmente extensible y adaptable a nuevos desafíos.
+
+\subsubsection{Paramics}
+
+Paramics, desarrollado por Quadstone Paramics, un subsidiary de Pitney Bowess \autocite{paramics} es un simulador microscópico de redes de transporte. Es capaz de simular el espectro completo de tamaño de redes de transporte - desde intersecciones aisladas a redes de transporte a escala nacional.
+
+El simulador cuenta también con una API de extensión para la implementación de \emph{plugins} enfocados a la integración de aplicaciones de Sistemas Inteligentes de Transporte. Esta API permite interactuar con todos los aspectos de la simulación, desde la simple obtención de datos desde las entidades internas hasta la modificación de los modelos de movilidad internos.
+
+Finalmente, Paramics es además el simulador de preferencia del Área de Transportes del Departamento de Ingeniería Civil de la Universidad de Chile.
 
 \subsection{Simuladores de Redes Inalámbricas}
 
@@ -81,7 +125,7 @@ Las desventajas de GloMoSim y QualNet son varias. Para nombrar un par, no presen
     \label{fig:omnetpp_simgui}
 \end{figure}
 
-OMNeT++, \emph{\textbf{O}bjective \textbf{M}odular \textbf{Ne}twork \textbf{T}estbed in C\textbf{++}}, es un entorno modular y basado en componentes para la simulación de sistemas de eventos discretos \cite{omnet2008overview}. Está escrito en C++, y si bien en estricto rigor OMNeT++ en sí sólo conforma el \emph{framework} genérico para la definición de modelos, la distribución incluye además múltiples extenciones para el modelamiento de redes de comunicación -- siendo la principal de éstas INET.
+OMNeT++, \emph{\textbf{O}bjective \textbf{M}odular \textbf{Ne}twork \textbf{T}estbed in C\textbf{++}}, es un entorno modular y basado en componentes para la simulación de sistemas de eventos discretos \cite{omnet2008overview}. Está escrito en C++, y si bien en estricto rigor OMNeT++ en sí sólo conforma el \emph{framework} genérico para la definición de modelos, la distribución incluye además múltiples extensiones para el modelamiento de redes de comunicación -- siendo la principal de éstas INET.
 
 INET incluye modelos para la simulación de múltiples \emph{stacks} de protocolos para la comunicación tanto cableada como inalámbrica, a través de una gran cantidad de protocolos (IPV6, WSN, etc.). Finalmente, INET incluye además modelos de movilidad, para el estudio de redes con nodos en movimiento.
 
