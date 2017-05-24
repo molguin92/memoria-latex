@@ -1,24 +1,30 @@
 \begin{sequencediagram}
-    \newthread{D}{OMNeT++}{}
-    \newinst[1]{A}{VEINS}{}
-    \newinst[3]{B}{Plugin}{}
-    \newthread[3]{C}{Paramics}{}
-    
-    \begin{messcall}{C}{run()}{B}
-        \postlevel
-        \begin{call}{B}{waitForCommands()}{B}{}
-        \end{call}
-    \end{messcall}
-    
-    \begin{call}{D}{Solicitud}{A}{Resultado}
-    
-        \begin{call}{A}{Comando TraCI}{B}{Respuesta TraCI}
-            \begin{call}{B}{parseCommand()}{B}{sendResponse()}
+    \newthread{C}{Paramics}{}
+    \newinst[2]{B}{Plugin (TraciServer)}{}
+    \newthread[3]{A}{OMNeT++/VEINS}{}
+
+    \begin{messcall}{C}{\texttt{run()}}{B}
+        \begin{sdblock}{Loop de simulación}{}
+            \begin{call}{B}{\texttt{waitForCommands()}}{B}{}
                 \postlevel
-                \begin{call}{B}{API Paramics}{C}{Datos}
+                \begin{messcall}{A}{Mensaje TraCI}{B}{}
+                    \postlevel
+                    \begin{sdblock}{Loop de interpretación de comandos}{}
+                        \begin{call}{B}{\texttt{parseCommand()}}{B}{Fin de comandos}
+                            \begin{call}{B}{API Paramics}{C}{Datos}
+                                \postlevel
+                            \end{call}
+                        \end{call}
+                    \end{sdblock}
+                \end{messcall}
+            
+                \begin{call}{B}{\texttt{sendResponse()}}{B}{}
+                    \postlevel
+                    \begin{messcall}{B}{Respuesta TraCI}{A}
+                    \end{messcall}
                 \end{call}
-                \postlevel
             \end{call}
-        \end{call}
-    \end{call}
+        \end{sdblock}
+    \end{messcall}
+
 \end{sequencediagram}

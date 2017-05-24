@@ -1,15 +1,45 @@
 \chapter{Comunicando Paramics con OMNeT++ mediante TraCI}
 \section{Diseño Arquitectural}\label{sec:architecture}
 
-El software desarrollado consiste en un \emph{plugin} que extiende la funcionalidad de Paramics, agregándole la capacidad de comportarse como un servidor TraCI. Específicamente, el \emph{plugin} consiste en una implementación parcial de un servidor TraCI, el cual se ejecuta en un \emph{thread} paralelo a Paramics; este se encuentra a su vez simulando en modo discreto, esperando instrucciones para avanzar la simulación. La comunicación entre ambos se efectúa a través de la API de extensión de Paramics.
+El software desarrollado consiste en un \emph{plugin} que extiende la funcionalidad de Paramics, agregándole la capacidad de comportarse como un servidor TraCI. Específicamente, el \emph{plugin} consiste en una implementación parcial de un servidor TraCI, el cual interpreta mensajes entrantes a través de un \emph{socket} TCP, ejecuta las acciones solicitadas, y responde a través del mismo medio.
 
-La figura \ref{fig:ptraci_arch} ilustra esta arquitectura. A pesar de que se encuentra implementado como un \emph{plugin} de Paramics, el servidor TraCI es prácticamente un programa independiente, y su interacción con el simulador de transporte se limita a un conjunto acotado de llamados a su API.
+La arquitectura general del \emph{framework} se desarrolló en dos versiones distintas, la primera de éstas siendo descartada al realizar las pruebas de validación del proyecto. A continuación, se describirán brevemente estas dos iteraciones del diseño del software, destacando principalmente las razones del descarte de la versión preliminar.
 
-\begin{figure}[h]
+\subsubsection{Arquitectura Preliminar}
+
+Originalmente, el \emph{framework} se implementó como un hilo de ejecución (un \emph{thread}) paralelo a Paramics. La principal ventaja de este diseño era evitar el bloqueo de la interfaz del simulador al encontrarse el servidor TraCI bloqueado esperando mensajes entrantes en el \emph{socket}. 
+
+Un diagrama de la arquitectura general de esta implementación puede observarse en la figura \ref{fig:ptraci_arch}. Al iniciarse Paramics, el \emph{plugin} inicializaba el servidor en un \emph{thread} paralelo; el servidor luego se enlazaba a un \emph{socket} TCP y se bloqueaba en espera de mensajes entrantes desde un cliente TraCI (en nuestro caso, VEINS). Al recibir una serie de comandos TraCI, el servidor los interpretaba, comunicándose con Paramics a través de su API, obteniendo datos y modificando el estado de la simulación. El servidor interpretaba todos los comandos en un mensaje TraCI antes de enviar todos los mensajes de respuesta correspondientes en un único mensaje TraCI.
+
+Esta arquitectura funcionaba de manera eficiente y permitía la ejecución de la simulación de Paramics completamente sin la intervención del usuario (ya que el \emph{thread} mismo del \emph{plugin} era capaz de llamar el método de inicio de simulación). 
+
+Sin embargo, al comenzar a realizar pruebas con redes de tamaño más extenso se presentó un problema imprevisto, y -- a la larga -- irreparable sin acceso al código fuente de Paramics. El problema radicaba en la función de avance de simulación definido en la API de Paramics, \texttt{qps\_GUI\_runSimulation()}, la cual, como se descubrió más tarde, también actualiza la interfaz gráfica de el modelador de Paramics a través de llamados a la librería Qt4 \cite{qt}. Estos llamados no son \emph{thread-safe}\footnote{Es decir, no incluyen medidas para asegurar el acceso exclusivo de recursos a un sólo \emph{thread}.}, y en redes grandes de Paramics generan \emph{data races} al ser invocados desde un \emph{thread} paralelo al principal del simulador. Esto finalmente generaba corrupción de memoria en el motor gráfico (principalmente, lecturas de direcciones inválidas de memoria), lo cual causaba un error fatal en la simulación.
+
+Se estudiaron múltiples maneras de resolver este problema manteniendo la estructura paralela del \emph{plugin} sin éxito, ya que la única manera confiable de forzar un avance de la simulación desde el \emph{plugin} es a través de la función anteriormente mencionada. Se decidió entonces abordar el problema desde un ángulo distinto, enfoque que se discutirá en la siguiente sección.
+
+\begin{figure}[]
     \centering
     \input{figuras/plugin_serverflow.tex}
-    \caption{Arquitectura del Framework}
+    \caption{Arquitectura preliminar}
     \label{fig:ptraci_arch}
+\end{figure}
+
+\subsubsection{Arquitectura Final}
+
+El problema presentado por la incompatibilidad de \texttt{qps\_GUI\_runSimulation()}, función de avance de simulación de la API de Paramics, con múltiples \emph{threads} implicó la necesidad de reevaluar la arquitectura general del \emph{framework} en su totalidad. Se decidió descartar la idea de un \emph{thread} paralelo para el servidor, y se implementó un esquema secuencial de interpretación de mensajes TraCI, utilizando \emph{loops} bloqueantes para controlar la ejecución de pasos de simulación.
+
+Esta arquitectura puede visualizarse en la figura \ref{fig:ptraci_arch2}. Al principio de cada paso de simulación, el simulador invoca la función \texttt{qpx\_CLK\_startOfSimLoop()}, definida en el \emph{plugin}, antes de realizar cualquier otra acción. Esta función a su vez invoca el método \texttt{preStep()} del servidor, dentro del cual se ejecuta un \emph{loop} de interpretación de comandos TraCI (y de envío de respuestas a éstos). Este \emph{loop} se interrumpe al recibir un mensaje de paso de simulación, retornando así de \texttt{preStep()} y \texttt{qpx\_CLK\_startOfSimLoop()}, y liberando al simulador para que realice su procedimiento interno de avance de simulación. 
+
+Luego de realizar el avance de simulación, Paramics invoca la función \texttt{qpx\_CLK\_endOfSimLoop()}, también definida en el \emph{plugin}. Esta invoca a su vez el método \texttt{postStep()} del servidor, el cual se encarga de realizar la recolección de datos post-paso de simulación, de terminar de interpretar eventuales comandos recibidos previo al paso de simulación y de enviar respuestas pendientes al cliente. Finalmente, esta función retorna el control de la ejecución a Paramics, y el ciclo comienza nuevamente.
+
+Mediante esta arquitectura se logró eliminar por completo el problema presentado por \texttt{qps\_GUI\_runSimulation()}, obteniendo incluso una leve mejora en rendimiento respecto al diseño antiguo, dado que, ya que todo corre en un sólo \emph{thread}, se evita el uso de primitivas de sincronización de \emph{threads}, las cuales pueden agregar \emph{overhead} al procedimiento.
+
+
+\begin{figure}[]
+    \centering
+    \input{figuras/plugin_serverflow_lockstep.tex}
+    \caption{Arquitectura final del \emph{framework}}
+    \label{fig:ptraci_arch2}
 \end{figure}
 
 En términos de implementación, el código del \emph{plugin} se separó en una serie de módulos lógicos que encapsulan y abstraen cada uno una categoría de funcionalidades de la interfaz con TraCI. De esta manera, se logró una separación lógica de las funcionalidades implementadas, y se simplifican futuras extensiones al código. 

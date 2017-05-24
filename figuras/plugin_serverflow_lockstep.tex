@@ -1,0 +1,39 @@
+\begin{sequencediagram}
+    \newthread{B}{Paramics + Plugin}{}
+    \newthread[7]{A}{OMNeT++/VEINS}{}
+
+    \begin{sdblock}{Loop de simulación}{}
+        \postlevel
+        \begin{call}{B}{\texttt{qpx\_CLK\_startOfSimLoop()}}{B}{}
+            \begin{sdblock}{Loop pre-simulación}{}
+                \begin{call}{B}{\texttt{server->preStep()}}{B}{Comando: Paso de Simulación}
+                    \begin{call}{A}{Mensajes TraCI}{B}{Respuestas TraCI}
+                        \postlevel
+                    \end{call}
+                \end{call}
+            \end{sdblock}
+        \end{call}
+        \begin{sdblock}{Paso de simulación}{}
+            \postlevel
+            \postlevel
+            \begin{call}{B}{\begin{minipage}{8cm}
+                        Actualización de estado:
+                        \begin{itemize}
+                            \item Salida y llegada de vehículos
+                            \item Modificación de velocidades y rutas
+                        \end{itemize}
+                \end{minipage}}{B}{}
+            \end{call}
+        \end{sdblock}
+        \postlevel
+        \begin{call}{B}{\texttt{qpx\_CLK\_endOfSimLoop()}}{B}{}
+            \begin{sdblock}{Loop post-simulación}{}
+                \begin{call}{B}{\texttt{server->postStep()}}{B}{Fin de Comandos}
+                    \begin{call}{A}{Mensajes TraCI}{B}{Respuestas TraCI}
+                        \postlevel
+                    \end{call}
+                \end{call}
+            \end{sdblock}
+        \end{call}
+    \end{sdblock}
+\end{sequencediagram}
