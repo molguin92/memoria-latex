@@ -1,0 +1,34 @@
+\section{plugin.c}\label{sec:plugin.c}
+
+Si bien en estricto rigor no es un módulo del \emph{framework}, merece ser mencionado al ser el archivo principal del \emph{plugin} desarrollado. En este archivo se definen las funciones de extensión y \emph{override} (prefijos \texttt{QPX} y \texttt{QPO}, ver apéndice \ref{anex:paramics_api} para un detalle sobre la API de Paramics) a ser invocadas por Paramics. A continuación se describirán brevemente las más importantes de estas funciones, mientras que el archivo \texttt{plugin.c} puede estudiarse en su totalidad en el código \ref{code:pluginc} en los anexos.
+
+\subsubsection{\texttt{void qpx\_NET\_postOpen()}}\label{sec:qpx_postopen}
+
+Invocada inmediatamente luego de que Paramics carga la red y el \emph{plugin}, esta función inicializa el servidor TraCI. Para esto, crea un \emph{thread} donde corre una función auxiliar \texttt{runner\_fn()}, la cual se encarga de:
+
+\begin{enumerate}
+    \item Obtener el puerto en el cual esperar conexiones entrantes desde los parámetros de ejecución de Paramics. De no haberse especificado puerto, utiliza uno por defecto.
+    \item Inicializar un objeto \texttt{TraCIServer} (ver sección \ref{sec:traciserver}) encargado de las conexiones entrantes en el puerto anteriormente definido.
+\end{enumerate}
+
+\subsubsection{\texttt{void qpx\_CLK\_startOfSimLoop()} y \texttt{void qpx\_CLK\_endOfSimLoop()}}
+
+Estas funciones se ejecutan antes y después de cada paso de simulación respectivamente, y llaman a los procedimientos correspondientes en el servidor, los método \texttt{preStep()} y \texttt{postStep()}. Ver sección \ref{sec:traciserver} para más detalle sobre estos métodos y el avance de simulación en general.
+
+\subsubsection{\texttt{void qpx\_VHC\_release(\dots)} y \texttt{void qpx\_VHC\_arrive(\dots)}}
+
+\texttt{qpx\_VHC\_release(VEHICLE* vehicle)} es invocada por Paramics cada vez que un vehículo es liberado a la red de transporte. Simplemente se encarga de notificar al \texttt{VehicleManager} (ver sección \ref{sec:vehiclemanager}) para su inclusión en el modelo interno del \emph{plugin}.
+
+Por otro lado, \texttt{qpx\_VHC\_arrive(VEHICLE* vehicle, LINK* link, ZONE* zone)} es invocada cuando un vehículo alcanza su destino final, y notifica al \texttt{VehicleManager} para eliminar el vehículo en cuestión de la representación interna.
+
+\subsubsection{\texttt{int qpo\_RTM\_decision(\dots)}}
+
+Esta función de \emph{override} sobrescribe la elección de rutas de vehículos que hayan recibido un mensaje de cambio de ruta a través de TraCI.
+
+\subsubsection{\texttt{void qpx\_VHC\_transfer(\dots)}}
+
+Este método es ejecutado por Paramics cada vez que un vehículo pasa de una calle a otra, y se utiliza para determinar si es necesario recalcular la ruta del vehículo en cuestión.
+
+\subsubsection{\texttt{float qpo\_CFM\_leadSpeed(\dots)} y \texttt{float qpo\_CFM\_followSpeed(\dots)}}
+
+Sobrescriben las velocidades de vehículos que hayan recibido modificaciones a su comportamiento desde TraCI.\texttt{leadSpeed()} realiza esta modificación para vehículos que no tienen otro vehículo delante, y \texttt{followSpeed()} lo hace para aquellos que se encuentran detrás de otro vehículo.

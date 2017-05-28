@@ -1,0 +1,123 @@
+\section{Funcionalidad Implementada}
+
+El protocolo TraCI define más de 30 comandos distintos, cada uno con una gran cantidad de variables y parámetros asociados (ver apéndice \ref{anex:traci} para una descripción más detallada del funcionamiento de este protocolo). Implementar esta gran cantidad de funcionalidades no hubiese sido factible, por lo que se escogió un subconjunto acotado de éstas a implementar, considerando en específico aquellos comandos esenciales para simulaciones de ITS.
+
+\subsection{Comandos Implementados} \label{sec:comandos}
+
+\subsubsection{Comandos de Control de Simulación}
+
+\begin{itemize}
+    \begin{multicols}{2}
+        \mcitem{\texttt{0x00} Obtención de Versión}
+        \mcitem{\texttt{0x02} Avance de Simulación}
+        \mcitem{\texttt{0xff} Cierre de Conexión}
+    \end{multicols}
+\end{itemize}
+
+\subsubsection{Comandos de Obtención de Variables}
+
+\begin{description}[style=multiline]
+    
+    \item[\texttt{0xa4}] Variables de vehículos
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de vehículos activos en la red}
+            \mcitem{\texttt{0x01} Número de vehículos activos en la red}
+            \mcitem{\texttt{0x36} Inclinación actual}
+            \mcitem{\texttt{0x39} Posición actual (3D)}
+            \mcitem{\texttt{0x40} Velocidad actual}
+            \mcitem{\texttt{0x42} Posición actual (2D)}
+            \mcitem{\texttt{0x43} Ángulo actual}
+            \mcitem{\texttt{0x44} Largo}
+            \mcitem{\texttt{0x4d} Ancho}
+            \mcitem{\texttt{0x4f} Tipo de vehículo}
+            \mcitem{\texttt{0x50} Calle actual}
+            \mcitem{\texttt{0x51} Identificador de pista actual}
+            \mcitem{\texttt{0x52} Índice de pista actual}
+            \mcitem{\texttt{0xbc} Altura}
+        \end{itemize}
+    \end{multicols}
+    
+    \item[\texttt{0xa5}] Variables de tipos de vehículos
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de tipos definidos}
+            \mcitem{\texttt{0x01} Número de tipos definidos}
+            \mcitem{\texttt{0x41} Velocidad máxima}
+            \mcitem{\texttt{0x44} Largo}
+            \mcitem{\texttt{0x46} Aceleración máxima}
+            \mcitem{\texttt{0x47} Deceleración máxima}
+            \mcitem{\texttt{0x4d} Ancho}
+            \mcitem{\texttt{0xbc} Altura}
+        \end{itemize}
+    \end{multicols}
+    
+    \item[\texttt{0xa6}] Variables de rutas
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de rutas definidas}
+            \mcitem{\texttt{0x01} Número de rutas definidas}
+            \mcitem{\texttt{0x54} Arcos (calles) componentes de la ruta}
+        \end{itemize}
+    \end{multicols}
+    
+    \item[\texttt{0xa8}] Variables de polígonos (edificios y estructuras)
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de polígonos}
+            \mcitem{\texttt{0x01} Número de polígonos}
+        \end{itemize}
+    \end{multicols}
+    
+    Cabe notar que Paramics no maneja edificios en sus simulaciones, al menos no edificios accesibles a través de la API de programación, por lo que estos métodos se implementaron de manera que reportan siempre 0 polígonos en la simulación.
+    
+    \item[\texttt{0xa9}] Variables de nodos (intersecciones) de la red
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de intersecciones}
+            \mcitem{\texttt{0x01} Número de intersecciones}
+            \mcitem{\texttt{0x42} Posición de la intersección}
+        \end{itemize}
+    \end{multicols}
+    
+    \item[\texttt{0xaa}] Variables de arcos (calles) de la red
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x00} Lista de calles}
+            \mcitem{\texttt{0x01} Número de calles}
+        \end{itemize}
+    \end{multicols}
+    
+    \item[\namedlabel{item:simvars}{\texttt{0xab}}] Variables de Simulación
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x70} Tiempo de simulación}
+            \mcitem{\texttt{0x73} Número de vehículos liberados a la red en el último paso de simulación}
+            \mcitem{\texttt{0x74} Lista de vehículos liberados a la red en el último paso de simulación}
+            \mcitem{\texttt{0x79} Número de vehículos que han llegado a su destino en el último paso de simulación}
+            \mcitem{\texttt{0x7a} Lista de vehículos que han llegado a su destino en el último paso de simulación}
+            \mcitem{\texttt{0x7b} Tamaño del paso de simulación}
+            \mcitem{\texttt{0x7c} Coordenadas de los límites de la red vehicular}
+        \end{itemize}
+    \end{multicols}
+    
+    Las variables \texttt{0x75}, \texttt{0x76}, \texttt{0x77} y \texttt{0x78}, correspondientes a los números y listas de vehículos que comienzaron y terminaron de teletransportarse en el último paso de simulación, así como las variables \texttt{0x6c}, \texttt{0x6d}, \texttt{0x6e} y \texttt{0x6f}, las cuales corresponden a números y listas de vehículos que comenzaron y terminaron de estar estacionados, fueron implementadas ``parcialmente''. En estricto rigor, los mecanismos subyacentes no se implementaron porque no se consideraron críticos, pero se implementó una respuesta \emph{dummy} de 0 vehículos para asegurar su funcionamiento con VEINS.
+    
+\end{description}
+
+\subsection{Comandos de modificación de estado}\label{sec:mod_state}
+
+\begin{description}[style=multiline]
+    \item [\texttt{0xc4}] Variables de vehículo
+    \begin{multicols}{2}
+        \begin{itemize}
+            \mcitem{\texttt{0x13} Cambio de pista}
+            \mcitem{\texttt{0x14} Cambio de velocidad (lineal)}
+            \mcitem{\texttt{0x40} Cambio de velocidad (instantáneo)}
+            \mcitem{\texttt{0x41} Cambio de velocidad máxima}
+            \mcitem{\texttt{0x45} Coloreado}
+            \mcitem{\texttt{0x57} Cambio de ruta (a una lista de arcos otorgada por el cliente)}
+            
+        \end{itemize}
+    \end{multicols}
+\end{description}

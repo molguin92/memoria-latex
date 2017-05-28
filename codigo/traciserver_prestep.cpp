@@ -9,7 +9,6 @@ void traci_api::TraCIServer::preStep()
 
     multiple_timestep = false;
     target_time = 0;
-
     
     tcpip::Storage cmdStore; // individual commands in the message
 

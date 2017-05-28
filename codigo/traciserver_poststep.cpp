@@ -26,7 +26,6 @@ void traci_api::TraCIServer::postStep()
 
         debugPrint("Got command of length " + std::to_string(cmdlen));
 
-
         for (uint8_t i = 0; i < cmdlen - 1; i++)
             cmdStore.writeUnsignedByte(incoming.readUnsignedByte());
 
@@ -39,7 +38,8 @@ void traci_api::TraCIServer::postStep()
             if(!multiple_timestep)
             {
                 multiple_timestep = true;
-                target_time = Simulation::getInstance()->getCurrentTimeMilliseconds() + Simulation::getInstance()->getTimeStepSizeMilliseconds();
+				Simulation* sim = Simulation::getInstance();
+                target_time = sim->getCurrentTimeMilliseconds() + sim->getTimeStepSizeMilliseconds();
             }
             VehicleManager::getInstance()->reset();
             return;

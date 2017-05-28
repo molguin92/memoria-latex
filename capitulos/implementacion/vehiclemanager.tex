@@ -1,0 +1,29 @@
+\section{VehicleManager}\label{sec:vehiclemanager}
+
+El módulo más complejo y grande (en términos de líneas de código) del \emph{framework}. \texttt{VehicleManager} tiene como función abstraer el acceso a variables directamente relacionadas con los vehículos presentes en la simulación, mantener registros de dichos vehículos, y encargarse de ejecutar los diversos cambios de estado de éstos que puede solicitar el cliente (ver \ref{sec:mod_state}). Además, varios de éstos cambios de estado requieren acciones en múltiples instantes de tiempo (por ejemplo, el cambio de velocidad lineal, el cual se ejecuta durante un periodo de tiempo determinado), por lo que adicionalmente el módulo mantiene colas de eventos diferidos a ejecutar en instantes determinados.
+
+Para la implementación de éste módulo, se utilizó nuevamente el paradigma de \emph{singleton}, por las mismas razones esgrimidas que para \texttt{Simulation}.
+
+A continuación se tratará de detallar los aspectos más importantes de este módulo.
+
+\subsection{Estado interno}
+
+Para simplificar muchas de las operaciones de obtención de variables y modificación de estados, el módulo mantiene un estado interno congruente con el estado de la simulación en Paramics. Para este fin se ocupan los llamados de la API de Paramics mencionados en la sección \ref{sec:plugin.c}.
+
+Se utilizan las siguientes variables para almacenar información sobre el estado de la simulación en todo instante:
+
+\begin{description}[]
+    \item[\texttt{vehicles\_in\_sim}] \emph{Hashmap} que almacena el ID y un puntero a cada vehículo presente en la simulación. Se utiliza ya que Paramics no provee un método directo para obtener un puntero a un vehículo dada su ID, sino que es necesario buscarlo en la red. Este método elimina esa búsqueda y facilita además el conteo de vehículos en la simulación (basta con obtener la cantidad de pares \texttt{\{llave, valor\}} en el \emph{hashmap}). Se actualiza dinámicamente cada vez que ingresa un vehículo nuevo a la red, a través del llamado al método \texttt{vehicleDepart()} del presente módulo desde \texttt{plugin.c}.
+    
+    \item[\texttt{departed\_vehicles} y \texttt{arrived\_vehicles}] Vectores de punteros a vehículos, actualizados por Paramics a través de las funciones de extensión de la API \texttt{qpx\_VHC\_release()} y \texttt{qpx\_VHC\_arrive()} en \texttt{plugin.c} (ver sección \ref{sec:plugin.c}). Mantienen punteros a vehículos que iniciaron su viaje y que llegaron a su destino, respectivamente, en último paso de simulación. Se vacían al antes de cada paso.
+    
+    \item[\texttt{speed\_controllers}] Mapa que relaciona vehículos con controladores de velocidad (ver sección \ref{sec:speedoverride}), para efectuar cambios de velocidad dictados por el cliente TraCI.
+    
+    \item[\texttt{lane\_set\_triggers}] \emph{Hashmap} utilizado para relacionar vehículos con eventuales comandos de cambio de pista (ver sección \ref{sec:laneoverride}).
+    
+    \item [\texttt{vhc\_routes}] Mapa para el manejo de cambios de ruta desde TraCI (ver sección \ref{sec:routeoverride}).
+\end{description}
+
+\subsection{Obtención de variables}
+
+La función más básica de \texttt{VehicleManager} es la de abstraer el acceso a las variables de simulación directamente relacionadas con vehículos y tipos de vehículos. Los principales métodos encargados de estas funcionalidades son \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()}, respectivamente, aunque éstos por lo general son invocados por \texttt{packVehicleVariable()} y \texttt{packVhcTypesVariable()}, respectivamente, métodos que empaquetan los resultados en un \texttt{tcpip::Storage} para su fácil manejo.
