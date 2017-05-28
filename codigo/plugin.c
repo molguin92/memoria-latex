@@ -1,3 +1,10 @@
+/* -----------------------------------------------------------------------
+ * Paramics Programmer API    (paramics-support@quadstone.com)
+ * Quadstone Ltd.             Tel: +44 131 220 4491
+ * 16 Chester Street          Fax: +44 131 220 4492
+ * Edinburgh, EH3 7RA, UK     WWW: http://www.paramics-online.com
+ * ----------------------------------------------------------------------- */
+
 #include "programmer.h"
 #include <thread>
 #include "TraCIAPI/TraCIServer.h"
@@ -10,7 +17,6 @@
 
 std::thread* runner;
 traci_api::TraCIServer* server;
-
 
 /* checks a string for a matching prefix */
 bool starts_with(std::string const& in_string,
@@ -52,13 +58,11 @@ void runner_fn()
         }
 
         server = new traci_api::TraCIServer(port);
-        server->run();
-        server->close();
-        delete(server);
+        server->waitForConnection();
     }
     catch (std::exception& e)
     {
-        traci_api::debugPrint("Uncaught exception in server thread.");
+        traci_api::debugPrint("Uncaught while initializing server.");
         traci_api::debugPrint(e.what());
         traci_api::debugPrint("Exiting...");
         throw;
@@ -68,16 +72,39 @@ void runner_fn()
 // Called once after the network is loaded.
 void qpx_NET_postOpen(void)
 {
-    qps_GUI_singleStep(PTRUE);
+    qps_GUI_singleStep(PFALSE);
     traci_api::infoPrint("TraCI support enabled");
     runner = new std::thread(runner_fn);
 }
 
-void qpx_NET_reload()
+void qpx_CLK_startOfSimLoop(void)
+{
+    if (runner->joinable())
+        runner->join();
+
+    server->preStep();
+}
+
+void qpx_CLK_endOfSimLoop(void)
+{
+    server->postStep();
+}
+
+void close()
 {
     server->close();
-    runner->join();
-    qpx_NET_postOpen();
+    delete server;
+    delete runner;
+}
+
+void qpx_NET_complete(void)
+{
+    close();
+}
+
+void qpx_NET_close()
+{
+    close();
 }
 
 void qpx_VHC_release(VEHICLE* vehicle)
@@ -89,4 +116,44 @@ void qpx_VHC_arrive(VEHICLE* vehicle, LINK* link, ZONE* zone)
 
 {
     traci_api::VehicleManager::getInstance()->vehicleArrive(vehicle);
+}
+
+// routing through TraCI
+Bool qpo_RTM_enable(void)
+{
+    return PTRUE;
+}
+
+int qpo_RTM_decision(LINK *linkp, VEHICLE *Vp)
+{
+    return traci_api::VehicleManager::getInstance()->rerouteVehicle(Vp, linkp);
+}
+
+void qpx_VHC_timeStep(VEHICLE* vehicle)
+{
+    //traci_api::VehicleManager::getInstance()->routeReEval(vehicle);
+}
+
+void qpx_VHC_transfer(VEHICLE* vehicle, LINK* link1, LINK* link2)
+{
+    traci_api::VehicleManager::getInstance()->routeReEval(vehicle);
+}
+
+// speed control override
+float qpo_CFM_followSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
+{
+    float speed = 0;
+    if (traci_api::VehicleManager::getInstance()->speedControlOverride(v, speed))
+        return speed;
+    else
+        return qpg_CFM_followSpeed(link, v, ahead);
+}
+
+float qpo_CFM_leadSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
+{
+    float speed = 0;
+    if (traci_api::VehicleManager::getInstance()->speedControlOverride(v, speed))
+        return speed;
+    else
+        return qpg_CFM_leadSpeed(link, v, ahead);
 }

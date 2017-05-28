@@ -1,0 +1,41 @@
+\chapter{Paramics API} \label{anex:paramics_api}
+
+La API de Paramics consiste en un conjunto de \emph{headers} de código \texttt{C}, los cuales definen un conjunto de funciones accesibles (o incluso, que pueden ser sobrescritas) por \emph{plugins} para el simulador. A continuación se describirán de manera resumida las distintas categorías de funciones expuestas por el \emph{software}.
+
+En primer lugar, los nombres de los métodos de la API siguen el siguiente patrón:
+\begin{center}
+    \texttt{CATEGORIA\_DOMINIO\_nombre\_de\_funcion()}
+\end{center}
+
+\texttt{CATEGORIA} y \texttt{DOMINIO} corresponden a identificadores de tres caracteres, los cuales indican el tipo de función (por ejemplo, de obtención de valores) y su dominio (\emph{e.g.} vehículos o calles).
+
+\section{Categorías de Funciones}
+
+Se definen cuatro categorías de funciones:
+
+\begin{itemize}
+    \item Funciones de \emph{override}, prefijo \texttt{QPO}
+    \item Funciones de extensión, prefijo \texttt{QPX}
+    \item Funciones de obtención de valores, prefijo \texttt{QPG}
+    \item Funciones de modificación de valores, prefijo \texttt{QPS}
+\end{itemize}
+
+\subsection{Funciones \texttt{QPO}}
+
+Las funciones de \emph{override}, con prefijo \texttt{QPO}, corresponden a funciones que controlan algún comportamiento clave del modelo interno de Paramics y que son sobrescribibles por el usuario. Por ejemplo, la función \texttt{float qpo\_CFM\_leadSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])} se utiliza para modificar las velocidades de cada vehículo que no tiene otro vehículo delante, en cada paso de simulación; esta función es sobrescrita en el \emph{plugin} desarrollado para retornar velocidades distintas a las que retornaría Paramics por defecto, para los casos de vehículos que han recibido comandos de modificación de velocidad desde OMNeT++.
+
+\subsection{Funciones \texttt{QPX}}
+
+Las funciones de prefijo \texttt{QPX}, correspondiente a funciones de extensión de funcionalidad, son funciones definibles por el usuario que extienden algún funcionamiento de Paramics. Por lo general, estos métodos están ligados a eventos disparados o periódicos en Paramics; \emph{e.g.}, la función \texttt{void qpx\_NET\_postOpen()} se ejecuta una única vez inmediatamente luego de terminar de cargar la red de Paramics, y en el \emph{plugin} se utiliza para inicializar el servidor TraCI. Por otro lado, la función \texttt{void qpx\_CLK\_startOfSimLoop()} se ejecuta antes de cada paso de simulación, y se utiliza en el \emph{framework} para ejecutar un \emph{loop} de recepción y interpretación de mensajes desde el cliente TraCI.
+
+\subsection{Funciones \texttt{QPG}}
+
+La obtención de valores desde la simulación se realiza a través de estas funciones con prefijo \texttt{QPG}. Ejemplos de estas son \texttt{int qpg\_VHC\_uniqueID(VEHICLE* V)}, utilizada para obtener el identificador único de algún vehículo, y \texttt{float qpg\_CFG\_simulationTime()}, la cual retorna el tiempo de simulación actual (en segundos).
+
+\subsection{Funciones \texttt{QPS}}
+
+Finalmente, las funciones \texttt{QPS} sobrescriben valores internos de la simulación, o modifican comportamientos puntuales. Por ejemplo, \texttt{void qps\_DRW\_vehicleColour(VEHICLE* vehicle, int colour)} cambia el color de un vehículo, y \texttt{void qps\_VHC\_changeLane (VEHICLE*, int direction)} fuerza un cambio de pista.
+
+\section{Dominios}
+
+El segundo trío de caracteres en el nombre de cada función de la API indica el dominio de esta, es decir, a qué categoría de objetos o funcionalidades dentro del modelo de Paramics está asociada. Dada la gran cantidad de dominios definidos en la API, no se detallarán aquí. Sin embargo, cabe notar que los principales dominios de funciones utilizados en el desarrollo del presente trabajo corresponden a los dominios \texttt{VHC}, ligado a los vehículos presentes en la red, \texttt{LNK}, ligado a los arcos (calles) de la red y \texttt{NET}, ligado a propiedades de la red en su totalidad.

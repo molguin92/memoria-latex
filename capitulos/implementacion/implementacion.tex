@@ -24,7 +24,7 @@ Se estudiaron múltiples maneras de resolver este problema manteniendo la estruc
     \label{fig:ptraci_arch}
 \end{figure}
 
-\subsubsection{Arquitectura Final}
+\subsubsection{Arquitectura Final} \label{sec:architecture:final}
 
 El problema presentado por la incompatibilidad de \texttt{qps\_GUI\_runSimulation()}, función de avance de simulación de la API de Paramics, con múltiples \emph{threads} implicó la necesidad de reevaluar la arquitectura general del \emph{framework} en su totalidad. Se decidió descartar la idea de un \emph{thread} paralelo para el servidor, y se implementó un esquema secuencial de interpretación de mensajes TraCI, utilizando \emph{loops} bloqueantes para controlar la ejecución de pasos de simulación.
 
@@ -32,8 +32,18 @@ Esta arquitectura puede visualizarse en la figura \ref{fig:ptraci_arch2}. Al pri
 
 Luego de realizar el avance de simulación, Paramics invoca la función \texttt{qpx\_CLK\_endOfSimLoop()}, también definida en el \emph{plugin}. Esta invoca a su vez el método \texttt{postStep()} del servidor, el cual se encarga de realizar la recolección de datos post-paso de simulación, de terminar de interpretar eventuales comandos recibidos previo al paso de simulación y de enviar respuestas pendientes al cliente. Finalmente, esta función retorna el control de la ejecución a Paramics, y el ciclo comienza nuevamente.
 
-Mediante esta arquitectura se logró eliminar por completo el problema presentado por \texttt{qps\_GUI\_runSimulation()}, obteniendo incluso una leve mejora en rendimiento respecto al diseño antiguo, dado que, ya que todo corre en un sólo \emph{thread}, se evita el uso de primitivas de sincronización de \emph{threads}, las cuales pueden agregar \emph{overhead} al procedimiento.
+Mediante esta arquitectura se logró eliminar por completo el problema presentado por \texttt{qps\_GUI\_runSimulation()}, obteniendo incluso una leve mejora en rendimiento respecto al diseño antiguo, dado que, ya que todo corre en un sólo \emph{thread}, se evita el uso de elementos de sincronización, los cuales pueden agregar \emph{overhead} al procedimiento.
 
+Este nuevo diseño presenta una única desventaja: es necesario el inicio de la simulación de manera manual por parte del usuario, luego de lo cual funciona de manera autónoma. Esto ya que no existe manera de iniciar el \emph{loop} de simulación de Paramics a través de la API sin recurrir a \emph{threads}.
+
+Finalmente, se debe notar que dada la representación en tiempo discreto de los pasos de simulación, el avance de esta en muchos casos no alcanza exactamente el tiempo deseado. Si definimos el paso de simulación como $\triangle T$, el instante de tiempo en que se recibe el comando de avance como $T_{i}$ y el instante de tiempo objetivo $T_{o}$, la simulación se avanzará un número $n \in \mathbb{N}$ de pasos, tal que
+
+\[ T_{i} + (n \times \triangle T) = T_{f} \]
+\[ T_{i} + ((n - 1) \times \triangle T) = T_{f}' \]
+\[ T_{f} \geq T_{o} \]
+\[ T_{f}' < T_{o} \]
+
+En otras palabras, la simulación se avanzará el mínimo número de pasos tal que el tiempo final es \emph{igual o mayor} al instante de tiempo objetivo. Esto es para asegurar que se ejecuten todas las acciones que dependan del tiempo de simulación por lo menos hasta dicho instante.
 
 \begin{figure}[]
     \centering
@@ -42,35 +52,9 @@ Mediante esta arquitectura se logró eliminar por completo el problema presentad
     \label{fig:ptraci_arch2}
 \end{figure}
 
-En términos de implementación, el código del \emph{plugin} se separó en una serie de módulos lógicos que encapsulan y abstraen cada uno una categoría de funcionalidades de la interfaz con TraCI. De esta manera, se logró una separación lógica de las funcionalidades implementadas, y se simplifican futuras extensiones al código. 
-
-\begin{figure}
-    \dirtree{%
-        .1 src/.
-        .2 plugin.c\DTcomment{Archivo de inicio del \emph{plugin}}.
-        .2 TraCIAPI/\DTcomment{Implementación de la API}.
-        .3 Constants.h\DTcomment{Constantes utilizadas en el sistema}.
-        .3 Exceptions.h\DTcomment{Excepciones propias del framework}.
-        .3 Network.\{cpp/h\}\DTcomment{Métodos de interacción con la red vehicular}.
-        .3 Simulation.\{cpp/h\}\DTcomment{Métodos de interacción con la simulación vehicular}.
-        .3 Subscriptions.\{cpp/h\}\DTcomment{Suscripciones TraCI}.
-        .3 TraCIServer.\{cpp/h\}\DTcomment{Módulo principal, manejo de conexiones TraCI}.
-        .3 Triggers.\{cpp/h\}\DTcomment{Operaciones disparadas (temporales o situacionales)}.
-        .3 Utils.\{cpp/h\}\DTcomment{Funciones auxiliares y de conveniencia}.
-        .3 VehicleManager.\{cpp/h\}\DTcomment{Métodos de interacción con vehículos}.
-        .2 shawn/\DTcomment{Archivos externos}.
-        .3 socket.\{cpp/h\}\DTcomment{Manejo simplificado de \emph{sockets} TCP}.
-        .3 storage.\{cpp/h\}\DTcomment{Manejo simplificado de paquetes de datos}.
-    }
-    \caption{Estructura de archivos del código fuente del framework.}
-    \label{fig:dirtree}
-\end{figure}
-
-Describir separación de archivos, namespaces.
-
 \section{Funcionalidad Implementada}
 
-Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más de 30 comandos distintos, cada uno con una gran cantidad de variables y parámetros asociados. Implementar esta gran cantidad de funcionalidades no hubiese sido factible, por lo que se escogió un subconjunto acotado de éstas a implementar, considerando en específico aquellos comandos esenciales para simulaciones de ITS.
+El protocolo TraCI define más de 30 comandos distintos, cada uno con una gran cantidad de variables y parámetros asociados (ver apéndice \ref{anex:traci} para una descripción más detallada del funcionamiento de este protocolo). Implementar esta gran cantidad de funcionalidades no hubiese sido factible, por lo que se escogió un subconjunto acotado de éstas a implementar, considerando en específico aquellos comandos esenciales para simulaciones de ITS.
 
 \subsection{Comandos Implementados} \label{sec:comandos}
 
@@ -87,7 +71,7 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
 \subsubsection{Comandos de Obtención de Variables}
 
 \begin{description}[style=multiline]
-        
+    
     \item[\texttt{0xa4}] Variables de vehículos
     \begin{multicols}{2}
         \begin{itemize}
@@ -107,7 +91,7 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
             \mcitem{\texttt{0xbc} Altura}
         \end{itemize}
     \end{multicols}
-
+    
     \item[\texttt{0xa5}] Variables de tipos de vehículos
     \begin{multicols}{2}
         \begin{itemize}
@@ -121,7 +105,7 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
             \mcitem{\texttt{0xbc} Altura}
         \end{itemize}
     \end{multicols}
-
+    
     \item[\texttt{0xa6}] Variables de rutas
     \begin{multicols}{2}
         \begin{itemize}
@@ -130,7 +114,7 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
             \mcitem{\texttt{0x54} Arcos (calles) componentes de la ruta}
         \end{itemize}
     \end{multicols}
-
+    
     \item[\texttt{0xa8}] Variables de polígonos (edificios y estructuras)
     \begin{multicols}{2}
         \begin{itemize}
@@ -138,9 +122,9 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
             \mcitem{\texttt{0x01} Número de polígonos}
         \end{itemize}
     \end{multicols}
-
+    
     Cabe notar que Paramics no maneja edificios en sus simulaciones, al menos no edificios accesibles a través de la API de programación, por lo que estos métodos se implementaron de manera que reportan siempre 0 polígonos en la simulación.
-
+    
     \item[\texttt{0xa9}] Variables de nodos (intersecciones) de la red
     \begin{multicols}{2}
         \begin{itemize}
@@ -149,7 +133,7 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
             \mcitem{\texttt{0x42} Posición de la intersección}
         \end{itemize}
     \end{multicols}
-
+    
     \item[\texttt{0xaa}] Variables de arcos (calles) de la red
     \begin{multicols}{2}
         \begin{itemize}
@@ -157,7 +141,7 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
             \mcitem{\texttt{0x01} Número de calles}
         \end{itemize}
     \end{multicols}
-
+    
     \item[\namedlabel{item:simvars}{\texttt{0xab}}] Variables de Simulación
     \begin{multicols}{2}
         \begin{itemize}
@@ -192,32 +176,70 @@ Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define más 
     \end{multicols}
 \end{description}
 
+\section{Organización Lógica del Código}
+
+En términos de implementación, el código del \emph{plugin} se separó en una serie de módulos lógicos que encapsulan y abstraen cada uno una categoría de funcionalidades de la interfaz con TraCI. De esta manera, se logró una separación lógica de las funcionalidades implementadas, y se simplifican futuras extensiones al código. La organización en archivos de éstos módulos puede observarse en la figura \ref{fig:dirtree}.
+
+Cabe notar también que se utilizó el \emph{namespace} \texttt{traci\_api} para agrupar los elementos propios del framework. 
+
+\begin{figure}
+    \dirtree{%
+        .1 src/.
+        .2 plugin.c\DTcomment{Archivo de inicio del \emph{plugin}}.
+        .2 TraCIAPI/\DTcomment{Implementación de la API}.
+        .3 Constants.h\DTcomment{Constantes utilizadas en el sistema}.
+        .3 Exceptions.h\DTcomment{Excepciones propias del framework}.
+        .3 Network.\{cpp/h\}\DTcomment{Métodos de interacción con la red vehicular}.
+        .3 Simulation.\{cpp/h\}\DTcomment{Métodos de interacción con la simulación vehicular}.
+        .3 Subscriptions.\{cpp/h\}\DTcomment{Suscripciones TraCI}.
+        .3 TraCIServer.\{cpp/h\}\DTcomment{Módulo principal, manejo de conexiones TraCI}.
+        .3 Triggers.\{cpp/h\}\DTcomment{Operaciones disparadas (temporales o situacionales)}.
+        .3 Utils.\{cpp/h\}\DTcomment{Funciones auxiliares y de conveniencia}.
+        .3 VehicleManager.\{cpp/h\}\DTcomment{Métodos de interacción con vehículos}.
+        .2 shawn/\DTcomment{Archivos externos}.
+        .3 socket.\{cpp/h\}\DTcomment{Manejo simplificado de \emph{sockets} TCP}.
+        .3 storage.\{cpp/h\}\DTcomment{Manejo simplificado de paquetes de datos}.
+    }
+    \caption{Estructura de archivos del código fuente del framework.}
+    \label{fig:dirtree}
+\end{figure}
+
 
 \section{Módulos Principales}
 \subsection{plugin.c}\label{sec:plugin.c}
 
-Si bien en estricto rigor no es un módulo del \emph{framework}, merece ser mencionado al ser el archivo principal del \emph{plugin} desarrollado. En este archivo se definen las funciones de extensión (prefijo \texttt{QPX}, ver sección \ref{sec:paramics_api}) a ser invocadas por Paramics al inicializar el \emph{plugin}. A continuación se describirán brevemente las más importantes de estas funciones, mientras que el archivo \texttt{plugin.c} puede estudiarse en su totalidad en el código \ref{code:pluginc} en los anexos.
+Si bien en estricto rigor no es un módulo del \emph{framework}, merece ser mencionado al ser el archivo principal del \emph{plugin} desarrollado. En este archivo se definen las funciones de extensión y \emph{override} (prefijos \texttt{QPX} y \texttt{QPO}, ver apéndice \ref{anex:paramics_api} para un detalle sobre la API de Paramics) a ser invocadas por Paramics. A continuación se describirán brevemente las más importantes de estas funciones, mientras que el archivo \texttt{plugin.c} puede estudiarse en su totalidad en el código \ref{code:pluginc} en los anexos.
 
-\subsubsection{\texttt{void qpx\_NET\_postOpen(void)}}\label{sec:qpx_postopen}
+\subsubsection{\texttt{void qpx\_NET\_postOpen()}}\label{sec:qpx_postopen}
 
-Invocada inmediatamente luego de que Paramics carga la red y el \emph{plugin}, esta función cambia el modo de ejecución de Paramics a su modo discreto e inicializa el servidor TraCI. Para esto, crea un \emph{thread} donde corre una función auxiliar \texttt{runner\_fn()}, la cual se encarga de:
+Invocada inmediatamente luego de que Paramics carga la red y el \emph{plugin}, esta función inicializa el servidor TraCI. Para esto, crea un \emph{thread} donde corre una función auxiliar \texttt{runner\_fn()}, la cual se encarga de:
 
 \begin{enumerate}
     \item Obtener el puerto en el cual esperar conexiones entrantes desde los parámetros de ejecución de Paramics. De no haberse especificado puerto, utiliza uno por defecto.
     \item Inicializar un objeto \texttt{TraCIServer} (ver sección \ref{sec:traciserver}) encargado de las conexiones entrantes en el puerto anteriormente definido.
 \end{enumerate}
 
-\subsubsection{\texttt{void qpx\_VHC\_release(VEHICLE* vehicle)}}
+\subsubsection{\texttt{void qpx\_CLK\_startOfSimLoop()} y \texttt{void qpx\_CLK\_endOfSimLoop()}}
 
-Función invocada por Paramics cada vez que un vehículo es liberado a la red de transporte. Simplemente se encarga de notificar al \texttt{VehicleManager} (ver sección \ref{sec:vehiclemanager}) para su inclusión en el modelo interno del \emph{plugin}.
+Estas funciones se ejecutan antes y después de cada paso de simulación respectivamente, y llaman a los procedimientos correspondientes en el servidor, los método \texttt{preStep()} y \texttt{postStep()}. Ver sección \ref{sec:traciserver} para más detalle sobre estos métodos y el avance de simulación en general.
 
-\subsubsection{\texttt{void qpx\_VHC\_arrive(VEHICLE* vehicle, LINK* link, ZONE* zone)}}
+\subsubsection{\texttt{void qpx\_VHC\_release(\dots)} y \texttt{void qpx\_VHC\_arrive(\dots)}}
 
-Invocada cuando un vehículo alcanza su destino final, esta función notifica al \texttt{VehicleManager} para eliminar el vehículo en cuestión de la representación interna.
+\texttt{qpx\_VHC\_release(VEHICLE* vehicle)} es invocada por Paramics cada vez que un vehículo es liberado a la red de transporte. Simplemente se encarga de notificar al \texttt{VehicleManager} (ver sección \ref{sec:vehiclemanager}) para su inclusión en el modelo interno del \emph{plugin}.
 
-\subsubsection{\texttt{void qpx\_VHC\_transfer(VEHICLE* vehicle, LINK* link1, LINK* link2)}}
+Por otro lado, \texttt{qpx\_VHC\_arrive(VEHICLE* vehicle, LINK* link, ZONE* zone)} es invocada cuando un vehículo alcanza su destino final, y notifica al \texttt{VehicleManager} para eliminar el vehículo en cuestión de la representación interna.
 
-Este método es ejecutado por Paramics cada vez que un vehículo pasa de una calle a otra. También se utiliza en el \emph{plugin} para notificar a \texttt{VehicleManager} para que actualice su estado interno.
+\subsubsection{\texttt{int qpo\_RTM\_decision(\dots)}}
+
+Esta función de \emph{override} sobrescribe la elección de rutas de vehículos que hayan recibido un mensaje de cambio de ruta a través de TraCI.
+
+\subsubsection{\texttt{void qpx\_VHC\_transfer(\dots)}}
+
+Este método es ejecutado por Paramics cada vez que un vehículo pasa de una calle a otra, y se utiliza para determinar si es necesario recalcular la ruta del vehículo en cuestión.
+
+\subsubsection{\texttt{float qpo\_CFM\_leadSpeed(\dots)} y \texttt{float qpo\_CFM\_followSpeed(\dots)}}
+
+Sobrescriben las velocidades de vehículos que hayan recibido modificaciones a su comportamiento desde TraCI.\texttt{leadSpeed()} realiza esta modificación para vehículos que no tienen otro vehículo delante, y \texttt{followSpeed()} lo hace para aquellos que se encuentran detrás de otro vehículo.
 
 \subsection{TraCIServer}\label{sec:traciserver}
 
@@ -226,16 +248,11 @@ Implementa el funcionamiento base del servidor TraCI. Es el primer módulo como 
 \begin{enumerate}
     \item Asociarse a un \emph{socket} TCP, y esperar una conexión de un cliente TraCI.
     \item Mientras exista una conexión abierta, recibir e interpretar comandos TraCI entrantes.
-    \begin{itemize}
-        \item En el caso de los comandos de obtención de versión y cierre de la conexión, estos son ejecutados por el módulo mismo.
-        \item El comando de avance de simulación es ejecutado parcialmente por este módulo y el módulo \texttt{Simulation} (ver sección \ref{sec:simulation}). Específicamente, se delega el avance del estado de la simulación a \texttt{Simulation}, luego del cual se realiza la evaluación de las suscripciones en \texttt{TraCIServer}.
-        \item Demás comandos son delegados a los módulos pertinentes.
-    \end{itemize}
     \item Enviar mensajes de estado y respuesta a comandos TraCI.
     \item Al recibir un comando de cierre, finalizar la simulación y cerrar el \emph{socket}.
 \end{enumerate}
 
-El módulo en cuestión se implementó como una clase de C++ en los archivos \texttt{src/TraCIAPI/TraCIServer.h} y \texttt{src/TraCIAPI/TraCIServer.cpp}, y se instancia en el archivo \texttt{plugin.c}. Se implementó considerando que se ejecutaría en un \emph{thread} paralelo al principal de Paramics, y por lo tanto incluye elementos de sincronización.
+El módulo en cuestión se implementó como una clase de C++ en los archivos \texttt{src/TraCIAPI/TraCIServer.h} y \texttt{src/TraCIAPI/TraCIServer.cpp}, y se instancia en el archivo \texttt{plugin.c}.
 
 Cabe destacar que para facilitar el uso de \emph{sockets} y la obtención y envío de datos a través de éstos, se utilizaron las clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}, definidas en los archivos \texttt{src/shawn/socket.\{cpp/h\}} y \texttt{src/shawn/storage.\{cpp/h\}}. \texttt{tcpip::Socket} abstrae el funcionamiento de un \textit{socket} TCP, y provee métodos de conveniencia que permiten leer y escribir mensajes TraCI completos como objetos \texttt{tcpip::Storage}. Estos a su vez proveen métodos para escribir y leer todo tipo de variables en dichos mensajes, sin la necesidad de hacer la conversión manual a bytes.
 
@@ -245,29 +262,44 @@ A continuación se detalla la implementación de las funcionalidades anteriormen
 
 \subsubsection{Inicio de conexión TraCI}
 
-Como se mencionó en la sección \ref{sec:qpx_postopen}, al iniciarse el \emph{plugin} se crea un nuevo \emph{thread}, en el cual se instancia un objeto de la clase \texttt{TraCIServer}, al cual se le invoca su método \texttt{run()} (código \ref{cod:traciserver_run}).
+Como se mencionó en la sección \ref{sec:qpx_postopen}, al iniciarse el \emph{plugin} se crea un nuevo \emph{thread}, en el cual se instancia un objeto de la clase \texttt{TraCIServer}, al cual se le invoca su método \texttt{waitForConnection()} (código \ref{cod:traciserver_waitforconnection}).
 
-\lstinputlisting[float=t, style=CPP, label={cod:traciserver_run}, caption={Rutina de inicio de conexión.}]{codigo/traciserver_run.cpp}
+\lstinputlisting[float=t, style=CPP, label={cod:traciserver_waitforconnection}, caption={Rutina de inicio de conexión.}]{codigo/traciserver_waitforconnection.cpp}
 %\minipagelisting{codigo/traciserver_run.cpp}{Rutina de inicio de conexión.}{cod:traciserver_run}
 
-Este método es simple: imprime información pertinente sobre el \emph{plugin} en la ventana de información de Paramics, y luego procede a bloquear el \emph{thread} mientras espera una conexión entrante en el \emph{socket}. Al recibirla, resume la ejecución y realiza un llamado al método \texttt{waitForCommands()} para comenzar a recibir e interpretar comandos TraCI.
+Este método es simple: imprime información pertinente sobre el \emph{plugin} en la ventana de información de Paramics, y luego espera a recibir una conexión entrante. Este método es además el único del \emph{framework} que corre en un \emph{thread} paralelo a Paramics en la arquitectura final. Se decidió implementarlo de esta manera para que el inicio de Paramics fuera más fluido y no se bloqueara la interfaz mientras el servidor espera una conexión desde un cliente TraCI.
 
 \subsubsection{Recepción e Interpretación de Comandos Entrantes}
 
-El método \texttt{waitForCommands()}, presentado en el código \ref{cod:traciserver_waitforcommands}, se encarga de recibir mensajes TraCI entrantes y separar los comandos para su posterior interpretación.
+Como se explicó en la sección \ref{sec:architecture:final}, la interpretación de comandos entrantes y el avance del \emph{loop} de simulación se realizan en dos etapas; una previa al paso de simulación y una luego de éste. Los métodos encargados de esto son \texttt{preStep()} y \texttt{postStep()}, los cuales se detallarán a continuación.
 
-El código inicia un \emph{loop} dentro del cual monitorea el \emph{socket}. Al recibir datos entrantes, el \emph{socket} retorna un objeto \texttt{tcpip::Storage} con el mensaje completo. Luego, en un \emph{loop} adicional, este mensaje se separa en sus comandos TraCI constituyentes, copiando la información perteneciente a cada comando en otro objeto \texttt{tcpip::Storage} temporal. Este objeto se entrega como parámetro al método \texttt{parseCommand()} para la interpretación del comando, luego de lo cual se limpia y se vuelve a utilizar para el siguiente comando.
+\subsubsection{\texttt{preStep()}}
 
-Finalmente, interpretados todos los comandos, se envía la respuesta al cliente a través del mismo \emph{socket} y se limpian los objetos \texttt{tcpip::Storage} para su reutilización en una nueva iteración del \emph{loop}.
+El método \texttt{preStep()} es invocado por Paramics al principio de cada iteración del \emph{loop} de simulación, antes de ejecutar cualquier otra función. En este método se encarga de recibir mensajes nuevos entrante a través del \emph{socket} desde el cliente TraCI, e interpreta los comandos dentro de un \emph{loop}. 
 
-\lstinputlisting[style=CPP, label={cod:traciserver_waitforcommands}, caption={Recepción de mensajes desde el \emph{socket} TCP.}]{codigo/traciserver_waitforcommands.cpp}
-%\minipagelisting{codigo/traciserver_waitforcommands.cpp}{Recepción de mensajes desde el \emph{socket} TCP.}{cod:traciserver_waitforcommands}
+\lstinputlisting[style=CPP, label={cod:traciserver_prestep}, caption={Método \texttt{preStep()} en \texttt{TraCIServer}}]{codigo/traciserver_prestep.cpp}
+
+Nótese que \texttt{preStep()} continuamente interpreta, ejecuta y responde a comandos, y sólo retorna al recibir un comando de avance de simulación. De esta manera, retorna el control de la ejecución a Paramics, y el simulador mismo se encarga de realizar el paso de simulación.
+
+En términos de la interpretación de los mensajes, al recibir datos entrantes, el \emph{socket} retorna un objeto \texttt{tcpip::Storage} con el mensaje completo. Luego, en un \emph{loop} adicional, este mensaje se separa en sus comandos TraCI constituyentes, copiando la información perteneciente a cada comando en otro objeto \texttt{tcpip::Storage} temporal. Este objeto se entrega como parámetro al método \texttt{parseCommand()} para la interpretación del comando, luego de lo cual se limpia y se vuelve a utilizar para el siguiente comando.
+
+Finalmente, interpretados todos los comandos, se envía la respuesta al cliente a través del mismo \emph{socket} y se limpian los objetos \texttt{tcpip::Storage} para su reutilización en una nueva iteración del \emph{loop} interno.
+
+\subsubsection{postStep()} \label{sec:poststep}
+
+Al recibir un comando de avance de simulación, \texttt{preStep()} inmediatamente retorna el control del flujo del programa a Paramics. El simulador entonces avanza la simulación, y luego ejecuta el método \texttt{postStep()} del servidor.
+
+Este método tiene como fin la recopilación de las eventuales suscripciones existentes (ver sección \ref{sec:subs}), la interpretación de los comandos restantes en el último mensaje recibido antes del comando de avance de simulación y el envío de eventuales respuestas al cliente. Finalmente, este método retorna, y Paramics vuelve a iniciar una nueva iteración del \emph{loop} de simulación y a ejecutar \texttt{preStep()}.
+
+\lstinputlisting[style=CPP, label={cod:traciserver_poststep}, caption={Método \texttt{postStep()} en \texttt{TraCIServer}}]{codigo/traciserver_poststep.cpp}
+
+\subsubsection{Interpretación de comandos TraCI}
 
 Como se mencionó anteriormente, la interpretación de los comandos se lleva a cabo en el método \texttt{parseCommand()}, el cual recibe un único comando encapsulado en un objeto \texttt{tcpip::Storage}. Este método tiene una única misión; interpretar el identificador del comando recibido y delegar su ejecución al método correspondiente de la clase \texttt{TraCIServer}. Su implementación es simple, aunque un poco tediosa, y su esqueleto puede observarse en el código \ref{cod:traciserver_parsecommand}. En específico, el código del método se puede dividir en dos ramas de ejecución; en caso de comando de suscripción (cuyos identificadores se encuentran todos en el rango $[\texttt{0xd0}, \texttt{0xdb}]$) se extraen los parámetros de la suscripción y se invoca el método \texttt{addSubscription()} para la subsecuente validación y activación de ésta. Por el contrario, en case de recibir un comando con identificador fuera de dicho rango, se procede a verificar su tipo mediante un \emph{switch}. Cada caso se relaciona con un comando y método específico a invocar, y en caso de no encontrarse el identificador en cuestión se notifica al cliente que el comando deseado no está implementado.
 
 \lstinputlisting[style=CPP, label={cod:traciserver_parsecommand}, caption={Esqueleto de \texttt{parseCommand()}}]{codigo/traciserver_parsecommand.cpp}
 
-Se definieron una serie de comandos en \texttt{TraCIServer} encargados de obtener variables de la simulación o modificar el estado de esta. El funcionamiento de estos es idéntico en todos los casos (a excepción de \texttt{cmdGetPolygonVar()}), y se limita al siguiente procedimiento (ver ejemplo en el código \ref{cod:traciserver_cmdgetvhcvar}):
+Se definieron una serie de métodos en \texttt{TraCIServer} encargados de obtener variables de la simulación o modificar el estado de ésta. El funcionamiento de éstos es idéntico en todos los casos (a excepción de \texttt{cmdGetPolygonVar()}), y se limita al siguiente procedimiento (ver ejemplo en el código \ref{cod:traciserver_cmdgetvhcvar}):
 
 \begin{enumerate}
     \item Obtener el valor desde el módulo apropiado (por ejemplo, \texttt{VehicleManager} para variables de vehículos, \texttt{Simulation} para variables de la simulación, etc.).
@@ -279,14 +311,12 @@ Se definieron una serie de comandos en \texttt{TraCIServer} encargados de obtene
 
 El caso de \texttt{cmdGetPolygonVar()} es especial. En TraCI, un polígono representa un edificio o una estructura presente en las cercanías de la simulación vehicular, la cual puede interferir con el modelo de comunicación inalámbrica en OMNeT++. Sin embargo, el modelador de Paramics no maneja elementos externos a la simulación de transporte, por lo que se decidió, en el caso de comandos de obtención de variables relacionadas, simplemente reportar que no existen polígonos en la simulación para simplificar la integración.
 
-%Nótese que no se implementó el protocolo en su totalidad, sino únicamente aquellas funcionalidades críticas para su uso práctico en simulaciones de mediana complejidad.
 
+\subsubsection{Evaluación de suscripciones}\label{sec:subs}
 
-\subsubsection{Avance de Simulación y Evaluación de Suscripciones}\label{sec:traciserver_simstep}
+Como se explicó en la sección \ref{sec:poststep}, luego de realizar un paso de avance de simulación, en \texttt{postStep()} se realiza la evaluación de las suscripciones activas en \texttt{TraCIServer}, mediante un llamado al método \texttt{processSubscriptions()}.
 
-En caso de recibir un comando de avance de simulación, \texttt{TraCIServer} ejecuta su método \texttt{cmdSimStep()}, dentro del cual extrae los parámetros del comando y delega la ejecución de dicho avance al módulo \texttt{Simulation}. Sin embargo, al terminar este procedimiento, se realiza la evaluación de las suscripciones activas en \texttt{TraCIServer}, mediante el método \texttt{processSubscriptions()}.
-
-Como se detalló en la sección \ref{sec:traci}, el protocolo TraCI define 12 tipos de suscripciones a variables de objeto, las cuales comparten todas una estructura idéntica. Cada suscripción se caracteriza por su identificador de tipo y sus parámetros: tiempo de inicio, tiempo de fin, identificador del objeto y las variables a las cuales el cliente se ha suscrito. En la práctica, lo único que diferencia a las suscripciones entre sí son las categorías de objetos a las cuales están asociadas, y por ende, cómo obtener esos datos desde la implementación interna del \emph{plugin}. A raíz de esto, se decidió implementar un árbol de clases de C++ para representar las suscripciones en memoria (declarada e implementada en los archivos \texttt{src/TraCIAPI/Subscriptions.h} y \texttt{src/TraCIAPI/Subscriptions.cpp} respectivamente).
+Como se detalla en el apéndice \ref{anex:traci}, el protocolo TraCI define 12 tipos de suscripciones a variables de objeto, las cuales comparten todas una estructura idéntica. Cada suscripción se caracteriza por su identificador de tipo y sus parámetros: tiempo de inicio, tiempo de fin, identificador del objeto y las variables a las cuales el cliente se ha suscrito. En la práctica, lo único que diferencia a las suscripciones entre sí son las categorías de objetos a las cuales están asociadas, y por ende, cómo obtener esos datos desde la implementación interna del \emph{plugin}. A raíz de esto, se decidió implementar un árbol de clases de C++ para representar las suscripciones en memoria (declarada e implementada en los archivos \texttt{src/TraCIAPI/Subscriptions.h} y \texttt{src/TraCIAPI/Subscriptions.cpp} respectivamente).
 
 La raíz de éste árbol, la clase \texttt{VariableSuscription}, implementa la funcionalidad completa de evaluación y actualización de una suscripción en los métodos \texttt{handleSubscription()} y \texttt{updateSubscription()} (implementación completa de estos métodos en \ref{code:variablesubscription_main}), abstrayendo la obtención de datos específicos a cada tipo en los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}. Estos métodos son \emph{virtuales} en la clase base, y son implementados por las clases derivadas, de manera que \texttt{TraCIServer} sólo necesita mantener un vector de variables del tipo base, las cuales se evalúan de manera polimórfica.
 
@@ -298,14 +328,6 @@ La raíz de éste árbol, la clase \texttt{VariableSuscription}, implementa la f
 \end{figure}
 
 En términos más simples, lo único que debe implementar una clase derivada de \texttt{VariableSubscription} para definir un nuevo tipo de suscripción son versiones propias de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}, ya que todo la demás funcionalidad de evaluación de suscripciones está ya implementada en la clase base. 
-%Para dar un ejemplo, para suscripciones de variables de vehículos, estos métodos se ven así:
-
-%\lstinputlisting[style=CPP, label={cod:vehiclesub}, caption={Ejemplo de métodos extendidos en \texttt{VehicleVariableSubscription}}]{codigo/vehiclesub.cpp}
-%\minipagelisting{codigo/vehiclesub.cpp}{Ejemplo de métodos extendidos en \emph{VehicleVariableSubscription}}{cod:vehiclesub}
-
-%Mientras que para variables de simulación son:
-
-%\lstinputlisting[style=CPP, label={cod:simsub}, caption={Ejemplo de métodos extendidos en \texttt{SimulationVariableSubscription}}]{codigo/simsub.cpp}
 
 De esta manera, la evaluación en \texttt{TraCIServer} se simplifica, ya que la instancia sólo necesita mantener un vector con punteros a objetos de la clase base, dado que independiente de la implementación específica de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()} de cada subclase, \texttt{handleSubscription()} es exactamente igual para todas (ver línea 7 en el código \ref{cod:traciserver_processsubs}). Además, esto facilita la extensión futura del software.
 
@@ -315,7 +337,7 @@ De esta manera, la evaluación en \texttt{TraCIServer} se simplifica, ya que la 
 
 Por otro lado, para crear nuevas suscripciones, \texttt{TraCIServer} debe considerar la categoría de objetos a la cual se está suscribiendo, e insertar un puntero a un objeto con el tipo correspondiente en la variable de instancia \texttt{subs}. Esto sucede al recibir un comando con un identificador correspondiente a una suscripción; los parámetros de la suscripción son extraídos y delegados al método \texttt{addSubscription()} (código \ref{cod:traciserver_parsecommand},línea 15). Este código puede estudiarse en su totalidad en el anexo \ref{chapter:anex_codes}, código \ref{code:addsub}, sin embargo, a continuación se explicará brevemente su funcionamiento con algunos extractos de código.
 
-Como se comentó en la descripción del protocolo TraCI (sección \ref{sec:traci}), un comando de suscripción puede solicitar tanto la creación de una nueva suscripción como la actualización o cancelación de una ya existente. Esto se determina basado en si, al recibir el comando de suscripción, ya existe una suscripción asociada a dicha categoría y objeto. Esto es lo primero en verificarse en \texttt{addSubscription()}, mediante llamados al método \texttt{updateSubscription()} de cada suscripción ya existente en el servidor.
+Como se comenta en la descripción del protocolo TraCI (apéndice \ref{anex:traci}), un comando de suscripción puede solicitar tanto la creación de una nueva suscripción como la actualización o cancelación de una ya existente. Esto se determina basado en si, al recibir el comando de suscripción, ya existe una suscripción asociada a dicha categoría y objeto. Esto es lo primero en verificarse en \texttt{addSubscription()}, mediante llamados al método \texttt{updateSubscription()} de cada suscripción ya existente en el servidor.
 
 El funcionamiento de este método se detalla en el código \ref{code:variablesubscription_main}, a partir de la línea 70. Verifica si los parámetros recibidos corresponden a una suscripción ya existente, y retorna un byte cuyo valor representa el estado de la suscripción, valor interpretado por \texttt{addSubscription()} para determinar el curso de acción a tomar:
 \begin{enumerate}
@@ -340,7 +362,7 @@ La segunda parte del método es más simple. De corresponder el comando a una so
 
 \subsubsection{Envío de resultados al cliente}
 
-\texttt{TraCIServer} mantiene una variable de instancia \texttt{tcpip::Storage outgoing}, en la cual se almacenan los mensajes de estado y resultados de comandos TraCI. El envío de estos al cliente se efectúa al final de cada iteración del \emph{loop} en \texttt{waitForCommands()}, enviando así conjuntamente las respuestas a todos los comandos obtenidos desde el cliente en el último paso de tiempo. Gracias a las clases \texttt{tcpip::Storage} y \texttt{tcpip::Socket} utilizadas, la operación de enviar los datos almacenados se reduce a una invocación del método \texttt{sendExact()} del objeto \texttt{tcpip::Socket}, la cual recibe un objeto \texttt{tcpip::Storage}, le adjunta una cabecera con su tamaño total y lo envía a través del \emph{socket} al cliente.
+\texttt{TraCIServer} mantiene una variable de instancia \texttt{tcpip::Storage outgoing}, en la cual se almacenan los mensajes de estado y resultados de comandos TraCI. El envío de estos al cliente se efectúa al final de cada iteración del \emph{loop} en \texttt{preStep()} o, en el caso de recibir un comando de avance de simulación, en \texttt{postStep()}, enviando así conjuntamente las respuestas a todos los comandos obtenidos desde el cliente en el último paso de tiempo. Gracias a las clases \texttt{tcpip::Storage} y \texttt{tcpip::Socket} utilizadas, la operación de enviar los datos almacenados se reduce a una invocación del método \texttt{sendExact()} del objeto \texttt{tcpip::Socket}, la cual recibe un objeto \texttt{tcpip::Storage}, le adjunta una cabecera con su tamaño total y lo envía a través del \emph{socket} al cliente.
 
 La escritura de datos en el almacenamiento saliente se implementó en dos métodos de \texttt{TraCIServer}; \texttt{writeStatusResponse()}, método de conveniencia para la escritura de mensajes de estado, y \texttt{writeToOutputWithSize()}, el cual recibe otro objeto de tipo \texttt{tcpip::Storage} que contiene el resultado de algún comando y escribe sus contenidos en \texttt{outgoing}, junto con una cabecera que indique su tamaño. Esto implicó también una decisión de diseño en términos de la comunicación de \texttt{TraCIServer} con los demás módulos del sistema. Se optó por realizar la mayor parte de esta comunicación mediante objetos de tipo \texttt{tcpip::Storage}, delegando la estructuración de los resultados de cada comando específico a los módulos responsables. De esta manera se aumenta la modularidad, ya que cada módulo sabe como escribir sus resultados de manera correcta, y \texttt{TraCIServer} sólo necesita asumir que recibirá un \texttt{tcpip::Storage} bien formateado como respuesta a los comandos.
 
@@ -348,20 +370,7 @@ La escritura de datos en el almacenamiento saliente se implementó en dos métod
 
 \subsection{Simulation}\label{sec:simulation}
 
-La principal funcionalidad de este módulo es controlar el avance de la simulación, además de abstraer y encapsular el acceso a los parámetros de la simulación vehicular de Paramics. Se implementó como una clase de C++ utilizando el patrón de diseño \emph{Singleton}; esto quiere decir que sólo se permite la instanciación de un único objeto de este tipo en la ejecución del programa. Esto ya que, por razones lógicas, cada ejecución del \emph{plugin} está asociada a una única simulación en Paramics, y por ende no tiene sentido que pueda existir más de un objeto de acceso a ésta.
-
-\subsubsection{Avance de la Simulación}
-
-Al recibir un mensaje de avance de simulación, \texttt{TraCIServer} invoca el método \texttt{runSimulation()} del presente módulo, detallado en los anexos, código \ref{code:simstep}. Este método recibe como parámetro un entero representando el instante de tiempo hasta cual se quiere avanzar la simulación (de ser $0$ se interpreta como solicitud de avance de un único paso de simulación) y ejecuta los llamados necesarios a la API de Paramics, además de notificar a \texttt{VehicleManager} que debe actualizar sus listas de vehículos y ejecutar las acciones diferidas correspondientes (ver sección \ref{sec:vehiclemanager}).
-
-Se debe notar que dada la representación en tiempo discreto de los pasos de simulación, el avance de esta en muchos casos no alcanza exactamente el tiempo deseado. Si definimos el paso de simulación como $\triangle T$, el instante de tiempo en que se recibe el comando de avance como $T_{i}$ y el instante de tiempo objetivo $T_{o}$, la simulación se avanzará un número $n \in \mathbb{N}$ de pasos, tal que
-
-\[ T_{i} + (n \times \triangle T) = T_{f} \]
-\[ T_{i} + ((n - 1) \times \triangle T) = T_{f}' \]
-\[ T_{f} \geq T_{o} \]
-\[ T_{f}' < T_{o} \]
-
-En otras palabras, la simulación se avanzará el mínimo número de pasos tal que el tiempo final es \emph{igual o mayor} al instante de tiempo objetivo. Esto es para asegurar que se ejecuten todas las acciones diferidas por lo menos hasta dicho instante.
+La principal funcionalidad de este módulo es abstraer y encapsular el acceso a los parámetros de la simulación vehicular de Paramics. Se implementó como una clase de C++ utilizando el patrón de diseño \emph{singleton}; esto quiere decir que sólo se permite la instanciación de un único objeto de este tipo en la ejecución del programa. Esto ya que, por razones lógicas, cada ejecución del \emph{plugin} está asociada a una única simulación en Paramics, y por ende no tiene sentido que pueda existir más de un objeto de acceso a ésta. Este patrón de diseño tiene además la ventaja que simplifica el acceso a la instancia global de la clase en el sistema, desde cualquier otro objeto u función.
 
 \subsubsection{Obtención de variables}
 
@@ -388,10 +397,18 @@ A continuación se tratará de detallar los aspectos más importantes de este m�
 
 Para simplificar muchas de las operaciones de obtención de variables y modificación de estados, el módulo mantiene un estado interno congruente con el estado de la simulación en Paramics. Para este fin se ocupan los llamados de la API de Paramics mencionados en la sección \ref{sec:plugin.c}.
 
-En específico, se utilizan las siguientes variables para almacenar información sobre el estado de la simulación en todo instante:
+Se utilizan las siguientes variables para almacenar información sobre el estado de la simulación en todo instante:
 
 \begin{description}[]
-    \item[\texttt{std::unordered\_map<int, VEHICLE*>\@ vehicles\_in\_sim}] \emph{Hashmap} que almacena el ID y un puntero a cada vehículo presente en la simulación. Se utiliza ya que Paramics no provee un método directo para obtener un puntero a un vehículo dada su ID, sino que es necesario buscarlo en la red. Este método elimina esa búsqueda y facilita además el conteo de vehículos en la simulación (basta con obtener la cantidad de pares \texttt{\{llave, valor\}} en el \emph{hashmap}). Se actualiza dinámicamente cada vez que ingresa un vehículo nuevo a la red, a través del llamado al método \texttt{vehicleDepart()} del presente módulo desde \texttt{plugin.c}.
+    \item[\texttt{vehicles\_in\_sim}] \emph{Hashmap} que almacena el ID y un puntero a cada vehículo presente en la simulación. Se utiliza ya que Paramics no provee un método directo para obtener un puntero a un vehículo dada su ID, sino que es necesario buscarlo en la red. Este método elimina esa búsqueda y facilita además el conteo de vehículos en la simulación (basta con obtener la cantidad de pares \texttt{\{llave, valor\}} en el \emph{hashmap}). Se actualiza dinámicamente cada vez que ingresa un vehículo nuevo a la red, a través del llamado al método \texttt{vehicleDepart()} del presente módulo desde \texttt{plugin.c}.
+    
+    \item[\texttt{departed\_vehicles} y \texttt{arrived\_vehicles}] Vectores de punteros a vehículos, actualizados por Paramics a través de las funciones de extensión de la API \texttt{qpx\_VHC\_release()} y \texttt{qpx\_VHC\_arrive()} en \texttt{plugin.c} (ver sección \ref{sec:plugin.c}). Mantienen punteros a vehículos que iniciaron su viaje y que llegaron a su destino, respectivamente, en último paso de simulación. Se vacían al antes de cada paso.
+    
+    \item[\texttt{speed\_controllers}] Mapa que relaciona vehículos con controladores de velocidad (ver sección \ref{sec:speedoverride}), para efectuar cambios de velocidad dictados por el cliente TraCI.
+    
+    \item[\texttt{lane\_set\_triggers}] \emph{Hashmap} utilizado para relacionar vehículos con eventuales comandos de cambio de pista (ver sección \ref{sec:laneoverride}).
+    
+    \item [\texttt{vhc\_routes}] Mapa para el manejo de cambios de ruta desde TraCI (ver sección \ref{sec:routeoverride}).
 \end{description}
 
 \subsubsection{Obtención de variables}
