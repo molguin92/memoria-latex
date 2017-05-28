@@ -26,4 +26,15 @@ Se utilizan las siguientes variables para almacenar información sobre el estado
 
 \subsection{Obtención de variables}
 
-La función más básica de \texttt{VehicleManager} es la de abstraer el acceso a las variables de simulación directamente relacionadas con vehículos y tipos de vehículos. Los principales métodos encargados de estas funcionalidades son \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()}, respectivamente, aunque éstos por lo general son invocados por \texttt{packVehicleVariable()} y \texttt{packVhcTypesVariable()}, respectivamente, métodos que empaquetan los resultados en un \texttt{tcpip::Storage} para su fácil manejo.
+La función más básica de \texttt{VehicleManager} es la de abstraer el acceso a las variables de simulación directamente relacionadas con vehículos y tipos de vehículos. Los principales métodos encargados de estas funcionalidades son \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()}, respectivamente, aunque éstos por lo general son invocados por \texttt{packVehicleVariable()} y \texttt{packVhcTypesVariable()}, respectivamente, métodos que empaquetan los resultados en un \texttt{tcpip::Storage} para su fácil manejo. 
+
+\texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()} son métodos relativamente simples, los cuales simplemente comparan el identificador de variable proporcionado como argumento y obtienen el valor solicitado mediante un llamado a alguna de los métodos auxiliares implementados para la obtención de variables.
+
+\subsection{Modificación de estado de vehículos}
+
+La segunda función de \texttt{VehicleManager} es la de ejecutar los comandos de modificación de estado y comportamiento de los vehículos en la simulación (ver sección \ref{sec:mod_state} para una lista de los comandos de este tipo que se implementaron). El método \texttt{setVehicleState()} es el encargado de la interpretación de comandos de cambio de estado, y su implementación es simple; determina el tipo de cambio de estado solicitado y si se encuentra implementado delega su ejecución al método correspondiente.
+
+Dos de los comandos de cambio de estado implementados, \texttt{0x45 Coloreado} y \texttt{0x41 Cambio de velocidad máxima}, se ejecutan de manera directa a través de la API de Paramics. El resto requiere procedimientos más complejos, los cuales se describirán brevemente a continuación.
+
+\subsubsection{Cambios de velocidad lineal e instantáneo}\label{sec:speedoverride}
+

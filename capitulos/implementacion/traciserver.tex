@@ -81,7 +81,7 @@ Como se detalla en el apéndice \ref{anex:traci}, el protocolo TraCI define 12 t
 
 La raíz de éste árbol, la clase \texttt{VariableSuscription}, implementa la funcionalidad completa de evaluación y actualización de una suscripción en los métodos \texttt{handleSubscription()} y \texttt{updateSubscription()} (implementación completa de estos métodos en \ref{code:variablesubscription_main}), abstrayendo la obtención de datos específicos a cada tipo en los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}. Estos métodos son \emph{virtuales} en la clase base, y son implementados por las clases derivadas, de manera que \texttt{TraCIServer} sólo necesita mantener un vector de variables del tipo base, las cuales se evalúan de manera polimórfica.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \include{figuras/subs_classdiagram}
     \caption{Diagrama de herencia, \texttt{VariableSubscription}}
