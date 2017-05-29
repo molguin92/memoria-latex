@@ -2,14 +2,14 @@
 
 El software desarrollado consiste en un \emph{plugin} que extiende la funcionalidad de Paramics, agregándole la capacidad de comportarse como un servidor TraCI. Específicamente, el \emph{plugin} consiste en una implementación parcial de un servidor TraCI, el cual interpreta mensajes entrantes a través de un \emph{socket} TCP, ejecuta las acciones solicitadas, y responde a través del mismo medio.
 
-\begin{figure}
+La arquitectura general del \emph{framework} se desarrolló en dos versiones distintas, la primera de éstas siendo descartada al realizar las pruebas de validación del proyecto. A continuación, se describirán brevemente estas dos iteraciones del diseño del software, destacando principalmente las razones del descarte de la versión preliminar.
+
+\begin{figure}[h]
     \centering
     \includegraphics[width=\linewidth]{figuras/PVEINSArch.png}
     \caption{Arquitectura macroscópica del framework.}
     \label{fig:pveins_genarch}
 \end{figure}
-
-La arquitectura general del \emph{framework} se desarrolló en dos versiones distintas, la primera de éstas siendo descartada al realizar las pruebas de validación del proyecto. A continuación, se describirán brevemente estas dos iteraciones del diseño del software, destacando principalmente las razones del descarte de la versión preliminar.
 
 \subsubsection{Arquitectura Preliminar}
 

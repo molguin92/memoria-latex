@@ -7,9 +7,11 @@
         \begin{call}{B}{\texttt{qpx\_CLK\_startOfSimLoop()}}{B}{}
             \begin{sdblock}{Loop pre-simulación}{}
                 \begin{call}{B}{\texttt{server->preStep()}}{B}{Comando: Paso de Simulación}
-                    \begin{call}{A}{Mensajes TraCI}{B}{Respuestas TraCI}
-                        \postlevel
-                    \end{call}
+                    \postlevel
+                    \begin{messcall}{A}{Mensajes TraCI}{B}
+                    \end{messcall}
+                    \begin{messcall}{B}{Respuestas TraCI}{A}
+                    \end{messcall}
                 \end{call}
             \end{sdblock}
         \end{call}
@@ -29,9 +31,9 @@
         \begin{call}{B}{\texttt{qpx\_CLK\_endOfSimLoop()}}{B}{}
             \begin{sdblock}{Loop post-simulación}{}
                 \begin{call}{B}{\texttt{server->postStep()}}{B}{Fin de Comandos}
-                    \begin{call}{A}{Mensajes TraCI}{B}{Respuestas TraCI}
-                        \postlevel
-                    \end{call}
+                    \postlevel
+                    \begin{messcall}{B}{Respuestas TraCI}{A}
+                    \end{messcall}
                 \end{call}
             \end{sdblock}
         \end{call}
