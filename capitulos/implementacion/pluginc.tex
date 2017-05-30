@@ -21,14 +21,16 @@ Estas funciones se ejecutan antes y después de cada paso de simulación respect
 
 Por otro lado, \texttt{qpx\_VHC\_arrive(VEHICLE* vehicle, LINK* link, ZONE* zone)} es invocada cuando un vehículo alcanza su destino final, y notifica al \texttt{VehicleManager} para eliminar el vehículo en cuestión de la representación interna.
 
-\subsubsection{\texttt{int qpo\_RTM\_decision(\dots)}}
+\subsubsection{\texttt{int qpo\_RTM\_decision(\dots)}}\label{sec:plugin.c:decision}
 
-Esta función de \emph{override} sobrescribe la elección de rutas de vehículos que hayan recibido un mensaje de cambio de ruta a través de TraCI.
+Esta función de \emph{override} es llamada por el núcleo de simulación de Paramics cada vez que un vehículo necesita evaluar su elección de ruta, y debe retornar el índice de la siguiente salida que el vehículo debe tomar (o 0 si se desea mantener la ruta por defecto). En el \emph{plugin} se utiliza para aplicar rutas personalizadas otorgadas por el cliente TraCI.
 
 \subsubsection{\texttt{void qpx\_VHC\_transfer(\dots)}}
 
 Este método es ejecutado por Paramics cada vez que un vehículo pasa de una calle a otra, y se utiliza para determinar si es necesario recalcular la ruta del vehículo en cuestión.
 
-\subsubsection{\texttt{float qpo\_CFM\_leadSpeed(\dots)} y \texttt{float qpo\_CFM\_followSpeed(\dots)}}
+\subsubsection{\texttt{float qpo\_CFM\_leadSpeed(\dots)} y \texttt{float qpo\_CFM\_followSpeed(\dots)}}\label{sec:plugin.c:speed}
 
-Sobrescriben las velocidades de vehículos que hayan recibido modificaciones a su comportamiento desde TraCI.\texttt{leadSpeed()} realiza esta modificación para vehículos que no tienen otro vehículo delante, y \texttt{followSpeed()} lo hace para aquellos que se encuentran detrás de otro vehículo.
+Estas funciones se invocan en cada de simulación para cada vehículo en la simulación de tráfico de Paramics -- \texttt{leadSpeed()} se invoca para aquellos vehículos que no tienen otro vehículo delante, y \texttt{followSpeed()} es invocada para todos los demás.
+
+Estas funciones deben retornar la rapidez que se le deberá aplicar al vehículo en cuestión en el siguiente paso de simulación. En el \emph{framework}, se utilizan para aplicar cambios de velocidad dictados por comandos TraCI.

@@ -19,9 +19,9 @@ Se utilizan las siguientes variables para almacenar información sobre el estado
     
     \item[\texttt{speed\_controllers}] Mapa que relaciona vehículos con controladores de velocidad (ver sección \ref{sec:speedoverride}), para efectuar cambios de velocidad dictados por el cliente TraCI.
     
-    \item[\texttt{lane\_set\_triggers}] \emph{Hashmap} utilizado para relacionar vehículos con eventuales comandos de cambio de pista (ver sección \ref{sec:laneoverride}).
-    
     \item [\texttt{vhc\_routes}] Mapa para el manejo de cambios de ruta desde TraCI (ver sección \ref{sec:routeoverride}).
+    
+    \item[\texttt{lane\_set\_triggers}] \emph{Hashmap} utilizado para relacionar vehículos con eventuales comandos de cambio de pista (ver sección \ref{sec:laneoverride}).
 \end{description}
 
 \subsection{Obtención de variables}
@@ -40,11 +40,34 @@ Dos de los comandos de cambio de estado implementados, \texttt{0x45 Coloreado} y
 
 Los comandos de cambio de velocidad de TraCI requieren un procedimiento especial ya que el efecto tiene debe aplicarse por un periodo mayor a un sólo paso de simulación, y por lo tanto es necesario un procedimiento que se encargue de mantener el efecto en el tiempo. Esto se implementó mediante la clase \texttt{traci\_api::BaseSpeedController} y sus derivadas.
 
-\texttt{traci\_api::BaseSpeedController} define una clase compuesta únicamente de métodos virtuales, en base a la cual se construyen distintos tipos de controladores de velocidad. Como se comentó anteriormente, en la sección \ref{sec:internalstate}, \texttt{VehicleManager} mantiene un \emph{hashmap} que relaciona vehículos con controladores derivados de la clase anteriormente mencionada. Este mapa es accedido para cada vehículo, en cada paso de simulación por el método \texttt{speedControlOverride()} (a su vez, invocado por \texttt{qpo\_CFM\_followSpeed()} y \texttt{qpo\_CFM\_leadSpeed()} -- ver sección \ref{sec:plugin.c}), el cual verifica si el vehículo en cuestión cuenta con un modificador de velocidad y aplica el cambio necesario.
+\texttt{traci\_api::BaseSpeedController} define una clase compuesta únicamente de métodos virtuales, en base a la cual se construyen distintos tipos de controladores de velocidad. Como se comentó anteriormente, en la sección \ref{sec:internalstate}, \texttt{VehicleManager} mantiene un \emph{hashmap} que relaciona vehículos con controladores derivados de la clase anteriormente mencionada. Este mapa es accedido para cada vehículo, en cada paso de simulación por el método \texttt{speedControlOverride()} (a su vez, invocado por \texttt{qpo\_CFM\_followSpeed()} y \texttt{qpo\_CFM\_leadSpeed()} -- ver sección \ref{sec:plugin.c:speed}), el cual verifica si el vehículo en cuestión cuenta con un modificador de velocidad y aplica el cambio necesario. Además, cada controlador de velocidad cuenta con un método \texttt{repeat()} para verificar si debe seguir aplicándose en pasos de simulación futuros -- de no ser así, se elimina de la representación interna.
 
 \lstinputlisting[style=CPP, label={cod:vehiclemanager_speedcontrol}, caption={Método de verificación de control de velocidad en VehicleManager. Verifica la existencia de un controlador personalizado de velocidad en \texttt{speed\_controllers} y luego guarda el resultado de la evaluación en la variable \texttt{speed}.}]{codigo/vehiclemanager_speedcontrol.cpp}
 
 En la implementación final del \emph{framework} se definieron dos clases derivadas distintas de \texttt{traci\_api::BaseSpeedController}: \texttt{traci\_api::HoldSpeedController} y \texttt{traci\_api::LinearSpeedChangeController}, los cuales implementan, respectivamente, los cambios inmediatos y lineales de velocidad definidos en el protocolo TraCI. La implementación de éstos puede revisarse en los apéndices, código \ref{code:speedcontrollers}.
 
+\subsubsection{Cambio de ruta}\label{sec:routeoverride}
 
+TraCI cuenta con un comando \texttt{0x57 Cambio de Ruta} mediante el cual un cliente puede proveer un número de arcos (calles) que el vehículo en cuestión deberá seguir antes de reencaminarse a su destino original. Este comando es especial en que requiere invalidar el ruteo interno de Paramics para dicho vehículo mientras esté siguiendo la ruta otorgada por el cliente, lo cual puede durar un tiempo indefinido.
 
+Para esto se definió entonces un método \texttt{rerouteVehicle()} en VehicleManager, el cual recibe un puntero a un vehículo y su calle actual, y retorna el índice de la siguiente salida que debe tomar -- en caso de tener una ruta personalizada, este método retornará el índice de la siguiente calle en la ruta, y de otro modo retorna 0, lo cual es interpretado por Paramics como una indicación a seguir la ruta dictada por el modelo interno.
+
+\lstinputlisting[style=CPP, label={cod:vehiclemanager_reroute}, caption={Método de reruteo en VehicleManager, para vehículos con rutas dictadas por un cliente TraCI.}]{codigo/vehiclemanager_reroute.cpp}
+
+Este método es invocado cada vez que un vehículo necesite evaluar su elección de ruta, a través de la función de extensión de la API de Paramics \texttt{int qpo\_RTM\_decision()} (ver sección \ref{sec:plugin.c:decision}).
+
+Las rutas en sí se almacenan en la variable interna \texttt{vhc\_routes}; un \emph{hashmap} que relaciona vehículos con punteros a otro \emph{hashmap} más. Este segundo mapa es de tipo 
+\texttt{<LINK*, int>}, relacionando cada arco en la ruta con un índice a la siguiente salida que deberá tomar el vehículo al encontrarse sobre ese arco. De esta manera no fue necesaria la implementación de una estructura de datos adicional para el almacenamiento de las rutas.
+
+\subsubsection{Cambio de pista}\label{sec:laneoverride}
+
+Finalmente, el comando de cambio de pista de TraCI también debe aplicarse por un tiempo determinado. Desafortunadamente, dadas ciertas limitaciones del modelo que utiliza Paramics para controlar la selección de pistas, este cambio no se pudo implementar como el cambio de ruta o el cambio de velocidad, dejando que la simulación de Paramics misma consultara la pista a tomar en el siguiente paso de simulación, sino que se debió implementar a ``fuerza bruta''.
+
+Esto se logró mediante la implementación de la clase de métodos virtuales \texttt{traci\_api::}
+\texttt{BaseTrigger} y su clase derivada \texttt{traci\_api::LaneSetTrigger}. \texttt{BaseTrigger} define una interfaz general para operaciones de ejecución periódica o diferida, y \texttt{LaneSetTrigger} representa una implementación de ésta interfaz para la ejecución constante de un cambio de pista por un tiempo definido.
+
+\lstinputlisting[style=CPP, label={cod:lanesettrigger}, caption={Cambio de pista, implementado en \texttt{LaneSetTrigger}}]{codigo/lanesettrigger.cpp}
+
+La ejecución de estos \emph{triggers} se maneja en el método \texttt{handleDelayedTriggers()} en \texttt{VehicleManager}, el cual es ejecutado al fin de cada paso de simulación. Cabe notar que si bien en la versión final del \emph{framework} sólo se implementó una clase derivada de \texttt{BaseTrigger}, el diseño polimórfico de la evaluación de los \emph{triggers} hace que en el futuro sea muy fácil la integración de nuevos procedimientos diferidos al sistema.
+
+\lstinputlisting[style=CPP, label={cod:vehiclemanager_handledelayedtriggers}, caption={Manejo de \emph{triggers} para operaciones diferidas en \texttt{VehicleManager}}]{codigo/vehiclemanager_handledelayedtriggers.cpp}
