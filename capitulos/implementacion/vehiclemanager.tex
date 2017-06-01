@@ -28,7 +28,7 @@ Se utilizan las siguientes variables para almacenar información sobre el estado
 
 La función más básica de \texttt{VehicleManager} es la de abstraer el acceso a las variables de simulación directamente relacionadas con vehículos y tipos de vehículos. Los principales métodos encargados de estas funcionalidades son \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()}, respectivamente, aunque éstos por lo general son invocados por \texttt{packVehicleVariable()} y \texttt{packVhcTypesVariable()}, respectivamente, métodos que empaquetan los resultados en un \texttt{tcpip::Storage} para su fácil manejo. 
 
-\texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()} son métodos relativamente simples, los cuales simplemente comparan el identificador de variable proporcionado como argumento y obtienen el valor solicitado mediante un llamado a alguna de los métodos auxiliares implementados para la obtención de variables.
+\texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()} son métodos relativamente simples, los cuales simplemente comparan el identificador de variable proporcionado como argumento y obtienen el valor solicitado mediante un llamado a alguna de los métodos auxiliares implementados para la obtención de variables. Dada su gran similitud con los métodos \texttt{packSimulationVariable()} y \texttt{getSimulationVariable()} ya presentados en la sección \ref{sec:simulation:vars}, dedicada a la obtención de variables desde el módulo \texttt{Simulation}, no se presentará la implementación de los métodos propios del presente módulo en el documento (ver código \ref{code:simvar} para un acercamiento a la implementación real de éstos).
 
 \subsection{Modificación de estado de vehículos}
 

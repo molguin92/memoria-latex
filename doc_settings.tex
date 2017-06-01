@@ -20,6 +20,9 @@
 \usepackage[labelfont=bf]{caption}
 \usepackage{enumitem}
 \usepackage{hyperref}
+
+\usepackage[htt]{hyphenat}
+
 \setlist{  
     listparindent=\parindent
 }
@@ -63,7 +66,8 @@
     breaklines=true,
     breakatwhitespace=true,
     tabsize=4,
-    morekeywords={string},
+    morekeywords={string,define,\#},
+    otherkeywords={\#},
     backgroundcolor=\color{lightgray},
     escapeinside={/l*}{*l/}
 }
