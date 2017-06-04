@@ -1,7 +1,8 @@
 void traci_api::TraCIServer::preStep()
 {
     std::lock_guard<std::mutex> lock(socket_lock);
-    if (multiple_timestep && Simulation::getInstance()->getCurrentTimeMilliseconds() < target_time)
+    if (multiple_timestep 
+        && Simulation::getInstance()->getCurrentTimeMilliseconds() < target_time)
     {
         VehicleManager::getInstance()->reset();
         return;
@@ -34,7 +35,8 @@ void traci_api::TraCIServer::preStep()
 
 
             for (uint8_t i = 0; i < cmdlen - 1; i++)
-                cmdStore.writeUnsignedByte(incoming.readUnsignedByte());
+                cmdStore.writeUnsignedByte(incoming
+                                            .readUnsignedByte());
 
             bool simstep = this->parseCommand(cmdStore);
             cmdStore.reset();

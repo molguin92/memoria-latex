@@ -9,9 +9,9 @@ Implementa el funcionamiento base del servidor TraCI. Es el primer módulo como 
     \item Al recibir un comando de cierre, finalizar la simulación y cerrar el \emph{socket}.
 \end{enumerate}
 
-El módulo en cuestión se implementó como una clase de C++ en los archivos \texttt{src/TraCIAPI/TraCIServer.h} y \texttt{src/TraCIAPI/TraCIServer.cpp}, y se instancia en el archivo \texttt{plugin.c}.
+El módulo en cuestión se implementó como una clase de C++ en los archivos \href{https://github.com/molguin92/paramics_traci/blob/master/src/TraCIAPI/TraCIServer.h}{/src/TraCIAPI/TraCIServer.h} y \href{https://github.com/molguin92/paramics_traci/blob/master/src/TraCIAPI/TraCIServer.cpp}{/src/TraCIAPI/TraCIServer.cpp}, y se instancia en el archivo \href{https://github.com/molguin92/paramics_traci/blob/master/src/plugin.c}{plugin.c}.
 
-Cabe destacar que para facilitar el uso de \emph{sockets} y la obtención y envío de datos a través de éstos, se utilizaron las clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}, definidas en los archivos \texttt{src/shawn/socket.\{cpp/h\}} y \texttt{src/shawn/storage.\{cpp/h\}}. \texttt{tcpip::Socket} abstrae el funcionamiento de un \textit{socket} TCP, y provee métodos de conveniencia que permiten leer y escribir mensajes TraCI completos como objetos \texttt{tcpip::Storage}. Estos a su vez proveen métodos para escribir y leer todo tipo de variables en dichos mensajes, sin la necesidad de hacer la conversión manual a bytes.
+Cabe destacar que para facilitar el uso de \emph{sockets} y la obtención y envío de datos a través de éstos, se utilizaron las clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}, definidas en los archivos \href{https://github.com/molguin92/paramics_traci/blob/master/src/shawn/socket.h}{src/shawn/socket.\{cpp/h\}} y \href{https://github.com/molguin92/paramics_traci/blob/master/src/shawn/storage.h}{src/shawn/storage.\{cpp/h\}}. \texttt{tcpip::Socket} abstrae el funcionamiento de un \textit{socket} TCP, y provee métodos de conveniencia que permiten leer y escribir mensajes TraCI completos como objetos \texttt{tcpip::Storage}. Estos a su vez proveen métodos para escribir y leer todo tipo de variables en dichos mensajes, sin la necesidad de hacer la conversión manual a bytes.
 
 Estos archivos no fueron desarrollados por el memorista, sino que fueron obtenidos desde el código fuente de SUMO \footnote{Fuente SUMO: \url{https://github.com/planetsumo/sumo/tree/master/sumo/src/foreign/tcpip}. Debe notarse que, a su vez, los creadores de SUMO originalmente obtuvieron dichos archivos del código fuente del simulador de eventos discretos para redes de sensores \emph{SHAWN} \cite{kroller2005shawn}. Su fuente original se encuentra en \url{https://github.com/itm/shawn/tree/master/src/apps/tcpip}}, distribuidos bajo una licencia BSD\footnote{Licencia clases \texttt{tcpip::Socket} y \texttt{tcpip::Storage}: \url{http://sumo.dlr.de/wiki/Libraries_Licenses\#tcpip_-_TCP.2FIP_Socket_Class_to_communicate_with_other_programs}}.
 
@@ -24,7 +24,7 @@ Como se mencionó en la sección \ref{sec:qpx_postopen}, al iniciarse el \emph{p
 \lstinputlisting[float=t, style=CPP, label={cod:traciserver_waitforconnection}, caption={Rutina de inicio de conexión.}]{codigo/traciserver_waitforconnection.cpp}
 %\minipagelisting{codigo/traciserver_run.cpp}{Rutina de inicio de conexión.}{cod:traciserver_run}
 
-Este método es simple: imprime información pertinente sobre el \emph{plugin} en la ventana de información de Paramics, y luego espera a recibir una conexión entrante. Este método es además el único del \emph{framework} que corre en un \emph{thread} paralelo a Paramics en la arquitectura final. Se decidió implementarlo de esta manera para que el inicio de Paramics fuera más fluido y no se bloqueara la interfaz mientras el servidor espera una conexión desde un cliente TraCI.
+Este método es simple: imprime información pertinente sobre el \emph{plugin} en la ventana de información de Paramics, y luego espera a recibir una conexión entrante. Es además el único del \emph{framework} que corre en un \emph{thread} paralelo a Paramics en la arquitectura final. Se decidió implementarlo de esta manera para que el inicio de Paramics fuera más fluido y no se bloqueara la interfaz mientras el servidor espera una conexión desde un cliente TraCI.
 
 \subsection{Recepción e Interpretación de Comandos Entrantes}
 
@@ -32,9 +32,7 @@ Como se explicó en la sección \ref{sec:architecture:final}, la interpretación
 
 \subsubsection{\texttt{preStep()}}
 
-El método \texttt{preStep()} es invocado por Paramics al principio de cada iteración del \emph{loop} de simulación, antes de ejecutar cualquier otra función. En este método se encarga de recibir mensajes nuevos entrante a través del \emph{socket} desde el cliente TraCI, e interpreta los comandos dentro de un \emph{loop}. 
-
-\lstinputlisting[style=CPP, label={cod:traciserver_prestep}, caption={Método \texttt{preStep()} en \texttt{TraCIServer}}]{codigo/traciserver_prestep.cpp}
+El método \texttt{preStep()} es invocado por Paramics al principio de cada iteración del \emph{loop} de simulación, antes de ejecutar cualquier otra función. Este método se encarga de recibir mensajes nuevos entrantes a través del \emph{socket} desde el cliente TraCI, e interpreta los comandos dentro de un \emph{loop}. La implementación de éste método puede observarse en los apéndices, código \ref{cod:traciserver_prestep}.
 
 Nótese que \texttt{preStep()} continuamente interpreta, ejecuta y responde a comandos, y sólo retorna al recibir un comando de avance de simulación. De esta manera, retorna el control de la ejecución a Paramics, y el simulador mismo se encarga de realizar el paso de simulación.
 
@@ -44,15 +42,11 @@ Finalmente, interpretados todos los comandos, se envía la respuesta al cliente 
 
 \subsubsection{postStep()} \label{sec:poststep}
 
-Al recibir un comando de avance de simulación, \texttt{preStep()} inmediatamente retorna el control del flujo del programa a Paramics. El simulador entonces avanza la simulación, y luego ejecuta el método \texttt{postStep()} del servidor.
+Al recibir un comando de avance de simulación, \texttt{preStep()} inmediatamente retorna el control del flujo del programa a Paramics. El simulador entonces avanza la simulación, y luego ejecuta el método \texttt{postStep()} del servidor. Al igual que para \texttt{preStep()}, el código de éste método se puede encontrar en los anexos, código \ref{cod:traciserver_poststep}.
 
 Este método tiene como fin la recopilación de las eventuales suscripciones existentes (ver sección \ref{sec:subs}), la interpretación de los comandos restantes en el último mensaje recibido antes del comando de avance de simulación y el envío de eventuales respuestas al cliente. Finalmente, este método retorna, y Paramics vuelve a iniciar una nueva iteración del \emph{loop} de simulación y a ejecutar \texttt{preStep()}.
 
 Cabe notar que \texttt{postStep()} sólo se ejecuta inmediatamente después de la ejecución de un paso de simulación por parte de Paramics, y por ende no se ejecuta si nunca se recibe un comando de avance de simulación.
-
-\lstinputlisting[style=CPP, label={cod:traciserver_poststep}, caption={Método \texttt{postStep()} en \texttt{TraCIServer}}]{codigo/traciserver_poststep.cpp}
-
-
 
 \subsubsection{Interpretación de comandos TraCI}
 
@@ -77,11 +71,11 @@ El caso de \texttt{cmdGetPolygonVar()} es especial. En TraCI, un polígono repre
 
 Como se explicó en la sección \ref{sec:poststep}, luego de realizar un paso de avance de simulación, en \texttt{postStep()} se realiza la evaluación de las suscripciones activas en \texttt{TraCIServer}, mediante un llamado al método \texttt{processSubscriptions()}.
 
-Como se detalla en el apéndice \ref{anex:traci}, el protocolo TraCI define 12 tipos de suscripciones a variables de objeto, las cuales comparten todas una estructura idéntica. Cada suscripción se caracteriza por su identificador de tipo y sus parámetros: tiempo de inicio, tiempo de fin, identificador del objeto y las variables a las cuales el cliente se ha suscrito. En la práctica, lo único que diferencia a las suscripciones entre sí son las categorías de objetos a las cuales están asociadas, y por ende, cómo obtener esos datos desde la implementación interna del \emph{plugin}. A raíz de esto, se decidió implementar un árbol de clases de C++ para representar las suscripciones en memoria (declarada e implementada en los archivos \texttt{src/TraCIAPI/Subscriptions.h} y \texttt{src/TraCIAPI/Subscriptions.cpp} respectivamente).
+Como se detalla en el apéndice \ref{anex:traci}, el protocolo TraCI define 12 tipos de suscripciones a variables de objeto, las cuales comparten todas una estructura idéntica. Cada suscripción se caracteriza por su identificador de tipo y sus parámetros: tiempo de inicio, tiempo de fin, identificador del objeto y las variables a las cuales el cliente se ha suscrito. En la práctica, lo único que diferencia a las suscripciones entre sí son las categorías de objetos a las cuales están asociadas, y por ende, cómo obtener esos datos desde la implementación interna del \emph{plugin}. A raíz de esto, se decidió implementar un árbol de clases de C++ para representar las suscripciones en memoria (declarada e implementada en los archivos \href{https://github.com/molguin92/paramics_traci/blob/master/src/TraCIAPI/Subscriptions.h}{src/TraCIAPI/Subscriptions.h} y \href{https://github.com/molguin92/paramics_traci/blob/master/src/TraCIAPI/Subscriptions.cpp}{src/TraCIAPI/Subscriptions.cpp} respectivamente).
 
 La raíz de éste árbol, la clase \texttt{VariableSuscription}, implementa la funcionalidad completa de evaluación y actualización de una suscripción en los métodos \texttt{handleSubscription()} y \texttt{updateSubscription()} (implementación completa de estos métodos en \ref{code:variablesubscription_main}), abstrayendo la obtención de datos específicos a cada tipo en los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()}. Estos métodos son \emph{virtuales} en la clase base, y son implementados por las clases derivadas, de manera que \texttt{TraCIServer} sólo necesita mantener un vector de variables del tipo base, las cuales se evalúan de manera polimórfica.
 
-\begin{figure}[h]
+\begin{figure}[]
     \centering
     \include{figuras/subs_classdiagram}
     \caption{Diagrama de herencia, \texttt{VariableSubscription}}
@@ -92,7 +86,9 @@ En términos más simples, lo único que debe implementar una clase derivada de 
 
 De esta manera, la evaluación en \texttt{TraCIServer} se simplifica, ya que la instancia sólo necesita mantener un vector con punteros a objetos de la clase base, dado que independiente de la implementación específica de los métodos \texttt{getObjectVariable()} y \texttt{getResponseCode()} de cada subclase, \texttt{handleSubscription()} es exactamente igual para todas (ver línea 7 en el código \ref{cod:traciserver_processsubs}). Además, esto facilita la extensión futura del software.
 
+\begin{figure*}[h]
 \lstinputlisting[style=CPP, label={cod:traciserver_processsubs}, caption={Rutina de evaluación de suscripciones en \texttt{TraCIServer}. \texttt{subs} es una variable de instancia de \texttt{TraCIServer} correspondiente a un vector de punteros \texttt{VariableSuscription*}, poblado de elementos de clases derivadas de \texttt{VariableSuscription}.}]{codigo/traciserver_processsubs.cpp}
+\end{figure*}
 
 \subsubsection{Creación de Nuevas Suscripciones}
 
@@ -112,7 +108,9 @@ El funcionamiento de este método se detalla en el código \ref{code:variablesub
 
 La segunda parte del método es más simple. De corresponder el comando a una solicitud de creación de una suscripción nueva, se verifica su tipo y se instancia dinámicamente un objeto de la clase apropiada (como se explicó anteriormente, derivada de \texttt{VariableSubscription}). Finalmente, se verifica el correcto funcionamiento de la nueva suscripción mediante un llamado a su método \texttt{handleSubscription()} y se notifica al cliente del resultado.
 
-\lstinputlisting[style=CPP, label={code:addsub_instance},caption={Creación de una nueva suscripción. Notar la instanciación polimórfica.}, linerange={56-70}]{codigo/traciserver_addsubscription.cpp}
+\begin{figure*}[h]
+    \lstinputlisting[style=CPP, label={code:addsub_instance},caption={Creación de una nueva suscripción. Notar la instanciación polimórfica.}, linerange={56-70}]{codigo/traciserver_addsubscription.cpp}
+\end{figure*}
     
 %\begin{figure}
 %    \centering
@@ -127,4 +125,6 @@ La segunda parte del método es más simple. De corresponder el comando a una so
 
 La escritura de datos en el almacenamiento saliente se implementó en dos métodos de \texttt{TraCIServer}; \texttt{writeStatusResponse()}, método de conveniencia para la escritura de mensajes de estado, y \texttt{writeToOutputWithSize()}, el cual recibe otro objeto de tipo \texttt{tcpip::Storage} que contiene el resultado de algún comando y escribe sus contenidos en \texttt{outgoing}, junto con una cabecera que indique su tamaño. Esto implicó también una decisión de diseño en términos de la comunicación de \texttt{TraCIServer} con los demás módulos del sistema. Se optó por realizar la mayor parte de esta comunicación mediante objetos de tipo \texttt{tcpip::Storage}, delegando la estructuración de los resultados de cada comando específico a los módulos responsables. De esta manera se aumenta la modularidad, ya que cada módulo sabe como escribir sus resultados de manera correcta, y \texttt{TraCIServer} sólo necesita asumir que recibirá un \texttt{tcpip::Storage} bien formateado como respuesta a los comandos.
 
+\begin{figure*}[h]
 \lstinputlisting[style=CPP, label={code:traciserver_writetooutput},caption={Escritura de datos en almacenamiento saliente.}]{codigo/traciserver_writetooutput.cpp}
+\end{figure*}

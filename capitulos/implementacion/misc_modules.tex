@@ -18,7 +18,7 @@ La implementación del módulo es muy simple, ya que sólo otorga acceso a eleme
 
 En \texttt{Utils.\{cpp/h\}} se implementaron una serie de funciones de conveniencia:
 \begin{itemize}
-    \item \texttt{debugPrint()} e \texttt{infoPrint()}, para la escritura de mensajes a la ventana de información de Paramics, además de la salida de error y estándar respectivamente.
+    \item \texttt{debugPrint()} e \texttt{infoPrint()}, para la escritura de mensajes a la ventana de información de Paramics, además de la salida de error y estándar respectivamente. 
     
     \item Las funciones \texttt{readTypeChecking<tipo>()}, las cuales reciben un elemento de tipo \texttt{tcpip::Storage} y leen el primer elemento contenido ahí, verificando que sea del tipo deseado. Estas funciones no fueron implementadas por el memorista, sino obtenidas del código fuente de SUMO.
     
@@ -45,7 +45,7 @@ En el archivo de cabecera \texttt{Constants.h} se declararon una serie de consta
     \caption{Definición del preprocesador (izq.) \emph{vs} variable constante estática (der.).}
 \end{figure}
 
-La diferencia entre ambos métodos de definición radica en la interpretación que el \emph{toolchain} de compilación les da. Las \emph{definiciones del preprocesador} son interpretadas por el \emph{preprocesador}, antes de pasar por el compilador, y se ejecutan como simples reemplazos textuales en el código por el valor definido. Por otro lado, las variables constantes son tratadas como cualquier otra variable, y por ende cuentan con todas las propiedades de éstas. La decisión de utilizar este segundo método se tomó en base a que las variables constantes tienen la particularidad de estar restringidas a su \emph{scope} -- es decir, si se declaran por ejemplo dentro de un \emph{namespace} (como es el caso en \texttt{Constants.h}), su identificador no queda definido fuera de dicho \emph{namespace}.
+La diferencia entre ambos métodos de definición radica en la interpretación que el \emph{toolchain} de compilación les da. Las \emph{definiciones del preprocesador} son interpretadas por el \emph{preprocesador}, antes de pasar por el compilador, y se ejecutan como simples reemplazos textuales en el código por el valor definido. Por otro lado, las variables constantes son tratadas como cualquier otra variable, y por ende cuentan con todas las propiedades de éstas. La decisión de utilizar este segundo método se tomó en base a que las variables constantes tienen la particularidad de estar restringidas a su \emph{scope} -- es decir, si se declaran por ejemplo dentro de un \emph{namespace} (como es el caso en \texttt{Constants.h}), su identificador no queda definido fuera de dicho entorno.
 Esto es altamente deseable para futuras extensiones del \emph{framework}, \emph{e.g.} en el caso que se desee integrar con algún otro \emph{plugin} que ya cuente con sus propias constantes, ya que de esta manera se facilita la distinción de cual valor pertenece a qué parte del software. Por otro lado, las \emph{definiciones de preprocesador} tienen la ventaja de que no ocupan memoria en el programa final compilado (ya que los identificadores en el código se reemplazan directamente por el valor antes de compilarse el código); no obstante, dado que el número de constantes definidas es altamente acotado, el impacto en memoria de declararlas como variables del lenguage es negligible.
 
 \subsection{paramics-launchd.py}

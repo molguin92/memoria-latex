@@ -16,10 +16,3 @@ void traci_api::LaneSetTrigger::handleTrigger()
     else
         qps_VHC_laneChange(vehicle, 0); // stay in this lane
 }
-
-bool traci_api::LaneSetTrigger::repeat()
-{
-    if (Simulation::getInstance()->getCurrentTimeMilliseconds() >= end_time)
-        return false;
-    else return true;
-}

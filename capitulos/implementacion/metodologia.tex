@@ -1,11 +1,12 @@
-\section{Metodología de desarrollo}
+\section{Metodología de desarrollo} \label{sec:metodologia}
 
 El desarrollo del \emph{plugin} se llevó a cabo de manera iterativa, implementando funcionalidades esenciales en primera instancia, y luego construyendo sobre esta base, cuidando en cada paso de no pasar a llevar las funcionalidades previamente implementadas y perfeccionando implementaciones anteriores. El orden de desarrollo de las funcionalidades fue cuidadosamente planeado, tomando en cuenta que en muchos casos se requería un orden específico de implementación de funcionalidades; \emph{e.g.} era imperativo el desarrollo de la funcionalidad de obtención de variables de vehículos antes de poder implementar suscripciones, ya estas últimas dependen de la funcionalidad de la primera. Las etapas generales de desarrollo que se siguieron fueron:
 
 \begin{enumerate}
     \item En primer lugar, se desarrolló la base de comunicaciones del \emph{framework}, es decir, comunicación con el \emph{socket}, recepción e interpretación de mensajes. 
     
-    \item A continuación, se implementó la funcionalidad esencial de control de simulación (los comandos presentados en la sección \ref{sec:comandos:controlsim}), con el fin de poder establecer una primera conexión con un cliente TraCI y simplemente ejecutar una simulación sin otros comandos.
+    \item A continuación, se implementó la funcionalidad esencial de control de simulación (los comandos presentados en la sección \ref{sec:comandos:controlsim}), con el fin de poder establecer una primera conexión con un cliente TraCI y simplemente ejecutar una simulación sin otros comandos. 
+    El protocolo define un ``\emph{handshake}'' consistente en la verificación de versiones de TraCI compatibles entre cliente y servidor, por lo que el correcto funcionamiento del comando de obtención de versión fue prioridad en esta etapa.
     
     \item En tercer lugar se implementaron los comandos de obtención de variables de la simulación. Teniendo ya la base de comunicaciones funcionando, la implementación de éstos fue mucho más directa.
     

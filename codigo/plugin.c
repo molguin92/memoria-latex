@@ -1,10 +1,3 @@
-/* -----------------------------------------------------------------------
- * Paramics Programmer API    (paramics-support@quadstone.com)
- * Quadstone Ltd.             Tel: +44 131 220 4491
- * 16 Chester Street          Fax: +44 131 220 4492
- * Edinburgh, EH3 7RA, UK     WWW: http://www.paramics-online.com
- * ----------------------------------------------------------------------- */
-
 #include "programmer.h"
 #include <thread>
 #include "TraCIAPI/TraCIServer.h"
@@ -143,7 +136,8 @@ void qpx_VHC_transfer(VEHICLE* vehicle, LINK* link1, LINK* link2)
 float qpo_CFM_followSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 {
     float speed = 0;
-    if (traci_api::VehicleManager::getInstance()->speedControlOverride(v, speed))
+    if (traci_api::VehicleManager::getInstance()
+                ->speedControlOverride(v, speed))
         return speed;
     else
         return qpg_CFM_followSpeed(link, v, ahead);
@@ -152,7 +146,8 @@ float qpo_CFM_followSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 float qpo_CFM_leadSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 {
     float speed = 0;
-    if (traci_api::VehicleManager::getInstance()->speedControlOverride(v, speed))
+    if (traci_api::VehicleManager::getInstance()
+                ->speedControlOverride(v, speed))
         return speed;
     else
         return qpg_CFM_leadSpeed(link, v, ahead);

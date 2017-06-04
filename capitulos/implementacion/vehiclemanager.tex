@@ -44,7 +44,7 @@ Los comandos de cambio de velocidad de TraCI requieren un procedimiento especial
 
 \lstinputlisting[style=CPP, label={cod:vehiclemanager_speedcontrol}, caption={Método de verificación de control de velocidad en VehicleManager. Verifica la existencia de un controlador personalizado de velocidad en \texttt{speed\_controllers} y luego guarda el resultado de la evaluación en la variable \texttt{speed}.}]{codigo/vehiclemanager_speedcontrol.cpp}
 
-En la implementación final del \emph{framework} se definieron dos clases derivadas distintas de \texttt{traci\_api::BaseSpeedController}: \texttt{traci\_api::HoldSpeedController} y \texttt{traci\_api::LinearSpeedChangeController}, los cuales implementan, respectivamente, los cambios inmediatos y lineales de velocidad definidos en el protocolo TraCI. La implementación de éstos puede revisarse en los apéndices, código \ref{code:speedcontrollers}.
+En la implementación final del \emph{framework} se definieron dos clases derivadas distintas de \texttt{traci\_api::BaseSpeedController}: \texttt{traci\_api::HoldSpeedController} y \texttt{traci\_api::LinearSpeedChangeController}, las cuales implementan, respectivamente, los cambios inmediatos y lineales de velocidad definidos en el protocolo TraCI. La implementación de éstos puede revisarse en los apéndices, código \ref{code:speedcontrollers}.
 
 \subsubsection{Cambio de ruta}\label{sec:routeoverride}
 

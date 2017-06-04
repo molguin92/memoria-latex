@@ -71,7 +71,8 @@ float traci_api::HoldSpeedController::nextTimeStep()
     return current_speed + (qpg_CFG_timeStep()*accel);
 }
 
-traci_api::LinearSpeedChangeController::LinearSpeedChangeController(VEHICLE* vhc, float target_speed, int duration) : vhc(vhc), duration(0), done(false)
+traci_api::LinearSpeedChangeController
+::LinearSpeedChangeController(VEHICLE* vhc, float target_speed, int duration) : vhc(vhc), duration(0), done(false)
 {
     /* 
      * calculate acceleration needed for each timestep. if duration is too short, i.e.
