@@ -20,8 +20,9 @@
 \usepackage[labelfont=bf]{caption}
 \usepackage{enumitem}
 \usepackage{hyperref}
-
 \usepackage[htt]{hyphenat}
+
+\renewcommand{\labelenumii}{\roman{enumii}.}
 
 \setlist{  
     listparindent=\parindent
@@ -50,7 +51,7 @@
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
 \lstdefinestyle{CPP}{ % Estilo de lenguaje C++11
     language=[11]C++,
-    frame=Lb,
+    frame=Lbtr,
     xleftmargin=\parindent,
     captionpos=b,
     aboveskip=3mm,
@@ -68,6 +69,54 @@
     tabsize=4,
     morekeywords={string,define,\#},
     otherkeywords={\#},
+    backgroundcolor=\color{lightgray},
+    escapeinside={/l*}{*l/}
+}
+
+\lstdefinestyle{myXML}{ % Estilo de lenguaje C++11
+    language=XML,
+    frame=Lbtr,
+    xleftmargin=\parindent,
+    captionpos=b,
+    aboveskip=3mm,
+    belowskip=3mm,
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{purple},
+    commentstyle=\color{gray},
+    stringstyle=\color{dkgreen},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4,
+    morekeywords={xml,version, launch, basedir, network, seed},
+    otherkeywords={\#},
+    backgroundcolor=\color{lightgray},
+    escapeinside={/l*}{*l/}
+}
+
+\lstdefinestyle{MyPython}{ % Estilo de lenguaje C++11
+    language=Python,
+    frame=Lbtr,
+    xleftmargin=\parindent,
+    captionpos=b,
+    aboveskip=3mm,
+    belowskip=3mm,
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\small\ttfamily},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    keywordstyle=\color{purple},
+    commentstyle=\color{gray},
+    stringstyle=\color{dkgreen},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=4,
+    morekeywords={traci, print},
+    otherkeywords={},
     backgroundcolor=\color{lightgray},
     escapeinside={/l*}{*l/}
 }

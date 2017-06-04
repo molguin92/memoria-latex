@@ -1,0 +1,18 @@
+\section{Pruebas preliminares}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figuras/network8.png}
+    \caption{Red de transporte utilizada para las pruebas preliminares.}
+    \label{fig:network8}
+\end{figure}
+
+La validación preliminar del \emph{framework} se realizó utilizando la implementación de TraCI en Python incluída en la distribución de SUMO. Esta consiste en una librería para Python 2.7, la cual implementa un cliente TraCI en su totalidad \autocite{pytraci, pytracisrc}, permitiendo así la validación del correcto funcionamiento de los comandos implementados en el \emph{framework} PVeins.
+
+Por otro lado, la red de transporte utilizada para las pruebas corresponde a una red simple, incluida por defecto en la instalación de Paramics. Esta red consiste en un corredor central y conjunto de calles que lo intersectan (ver figura \ref{fig:network8}).
+
+\lstinputlisting[style=MyPython, caption={Ejemplo de prueba, cambio de ruta.}, label={code:py_routechange}]{codigo/pytraci_routechange.py}
+
+\begin{figure}
+    \centering
+    \input{figuras/n_vhcs_vs_time.pgf}
+\end{figure}

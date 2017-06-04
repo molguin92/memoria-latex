@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <basedir path="X:\PVEINS\pveins" />
+	<network name="example8_network" />
+    <seed value="1234" />
+</launch>

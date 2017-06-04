@@ -27,7 +27,7 @@ En \texttt{Utils.\{cpp/h\}} se implementaron una serie de funciones de convenien
 
 \subsection{Constants}
 
-Finalmente, en el archivo de cabecera \texttt{Constants.h} se declararon una serie de constantes globales al sistema. No obstante, cada módulo maneja además un conjunto de constantes propias. Cabe notar que las constantes del \emph{framework} fueron definidas como \emph{variables constantes estáticas}, y no como \emph{definiciones del preprocesador}.
+En el archivo de cabecera \texttt{Constants.h} se declararon una serie de constantes globales al sistema. No obstante, cada módulo maneja además un conjunto de constantes propias. Cabe notar que las constantes del \emph{framework} fueron definidas como \emph{variables constantes estáticas}, y no como \emph{definiciones del preprocesador}.
 
 \begin{figure}[h]
     \centering
@@ -47,3 +47,30 @@ Finalmente, en el archivo de cabecera \texttt{Constants.h} se declararon una ser
 
 La diferencia entre ambos métodos de definición radica en la interpretación que el \emph{toolchain} de compilación les da. Las \emph{definiciones del preprocesador} son interpretadas por el \emph{preprocesador}, antes de pasar por el compilador, y se ejecutan como simples reemplazos textuales en el código por el valor definido. Por otro lado, las variables constantes son tratadas como cualquier otra variable, y por ende cuentan con todas las propiedades de éstas. La decisión de utilizar este segundo método se tomó en base a que las variables constantes tienen la particularidad de estar restringidas a su \emph{scope} -- es decir, si se declaran por ejemplo dentro de un \emph{namespace} (como es el caso en \texttt{Constants.h}), su identificador no queda definido fuera de dicho \emph{namespace}.
 Esto es altamente deseable para futuras extensiones del \emph{framework}, \emph{e.g.} en el caso que se desee integrar con algún otro \emph{plugin} que ya cuente con sus propias constantes, ya que de esta manera se facilita la distinción de cual valor pertenece a qué parte del software. Por otro lado, las \emph{definiciones de preprocesador} tienen la ventaja de que no ocupan memoria en el programa final compilado (ya que los identificadores en el código se reemplazan directamente por el valor antes de compilarse el código); no obstante, dado que el número de constantes definidas es altamente acotado, el impacto en memoria de declararlas como variables del lenguage es negligible.
+
+\subsection{paramics-launchd.py}
+
+El archivo \texttt{paramics-launchd.py} corresponde a una versión modificada del \emph{script} de Python 2.7 \texttt{sumo-launchd.py} incluído con la distribución de VEINS, alterado para su funcionamiento con Paramics en vez de SUMO.
+
+Este archivo funciona como un \emph{daemon} de ejecución del \emph{framework}, cuya labor es la de recibir conexiones entrantes desde clientes TraCI y preparar la simulación de Paramics para dar inicio a la simulación bidireccional. Su funcionamiento se detalla a continuación:
+
+\begin{enumerate}
+    \item El usuario inicia el \emph{script} en el \emph{host} donde se desea correr la simulación vehicular de Paramics. Gracias a la arquitectura cliente-servidor de VEINS (y por extensión, del presente proyecto), ambos simuladores pueden ejecutarse en equipos distintos (virtuales o físicos).
+    
+    \item Por defecto, el \emph{script} se asocia a un \emph{socket} en el puerto 9999 y espera conexiones TraCI entrantes.
+    
+    \item Por otro lado, el usuario inicia la simulación de VEINS en OMNeT++. Esta automáticamente se conecta con el puerto 9999 del \emph{host}, y le transfiere los contenidos de un archivo XML \texttt{paramics-launchd.xml}, definido por el usuario. Este archivo define parámetros de simulación como la red vehicular a utilizar y la \emph{semilla} deseada para la generación de valores pseudoaleatorios.
+    
+\lstinputlisting[style=myXML, label={cod:launchd_xml}, caption={Ejemplo de archivo XML de inicialización de la simulación.}, xleftmargin=\dimexpr-\csname @totalleftmargin\endcsname]{codigo/paramics_example.launchd.xml}
+    
+    \item Al recibir una conexión entrante junto con el archivo de configuración, \texttt{paramics-launchd.py} prepara el inicio de la simulación integrada siguiendo los siguientes pasos:
+    
+    \begin{enumerate}
+        \item En primer lugar, encuentra un puerto de red disponible en el \emph{host} y notifica al cliente de esta elección.
+        \item Luego, prepara la red vehicular, copiando los archivos de definición y configuración de ésta a una ubicación temporal y modificándolos para incluir el valor de semilla especificado por el usuario y la dirección al \emph{dll} del \emph{plugin}.
+        \item Finalmente, inicia el modelador de Paramics con el \emph{plugin}, especificando la red a simular y el puerto asignado.
+    \end{enumerate}
+
+    \item Finalmente, al terminar la simulación bidireccional, el \emph{script} finaliza la conexión entre ambos simuladores y limpia los archivos temporales generados (esta acción puede suprimirse mediante un parámetro de consola al ejecutar el \emph{script}).
+    
+\end{enumerate}
