@@ -1,0 +1,19 @@
+\section{Metodología de desarrollo}
+
+El desarrollo del \emph{plugin} se llevó a cabo de manera iterativa, implementando funcionalidades esenciales en primera instancia, y luego construyendo sobre esta base, cuidando en cada paso de no pasar a llevar las funcionalidades previamente implementadas y perfeccionando implementaciones anteriores. El orden de desarrollo de las funcionalidades fue cuidadosamente planeado, tomando en cuenta que en muchos casos se requería un orden específico de implementación de funcionalidades; \emph{e.g.} era imperativo el desarrollo de la funcionalidad de obtención de variables de vehículos antes de poder implementar suscripciones, ya estas últimas dependen de la funcionalidad de la primera. Las etapas generales de desarrollo que se siguieron fueron:
+
+\begin{enumerate}
+    \item En primer lugar, se desarrolló la base de comunicaciones del \emph{framework}, es decir, comunicación con el \emph{socket}, recepción e interpretación de mensajes. 
+    
+    \item A continuación, se implementó la funcionalidad esencial de control de simulación (los comandos presentados en la sección \ref{sec:comandos:controlsim}), con el fin de poder establecer una primera conexión con un cliente TraCI y simplemente ejecutar una simulación sin otros comandos.
+    
+    \item En tercer lugar se implementaron los comandos de obtención de variables de la simulación. Teniendo ya la base de comunicaciones funcionando, la implementación de éstos fue mucho más directa.
+    
+    \item Cuarto, sobre la implementación de los comandos de obtención de variables, se desarrollaron los distintos tipos de suscripciones disponibles.
+    
+    \item Finalmente, en última instancia, se desarrollaron los comandos de modificación de estados, ya que éstos necesariamente requerían una fundación sólida dada su relativa complejidad.
+\end{enumerate}
+
+Cabe destacar que, pese a la cuidadosa planificación realizada previa al desarrollo del \emph{framework} (y como siempre sucede en el desarrollo de \emph{software}), en muchas oportunidades fue necesario volver a un paso anterior para rediseñar o mejorar una implementación. El principal ejemplo de ésto es el rediseño de la arquitectura general del \emph{plugin}, detallado en la sección \ref{sec:architecture}, el cual implicó el rediseño y posterior reimplementación de gran parte de las etapas 1 (base de comunicaciones) y 2 (funcionalidad de control de simulación) del \emph{plugin}.
+
+En términos de control de versiones y manejo del historial del desarrollo se escogió utilizar el sistema \emph{git} \autocite{git}, dada su popularidad, extenso soporte y documentación y la familiaridad del memorista con este sistema. El servicio de \emph{hosting} específico escogido para sistema fue \emph{GitHub} \autocite{github}; el código fuente del proyecto puede encontrarse en el perfil personal del autor \autocite{molguin_github}, en el repositorio \autocite{pveins_github}.
