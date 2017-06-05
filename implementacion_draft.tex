@@ -1,9 +1,58 @@
-\documentclass[12pt,a4paper]{report}
+\documentclass[upright, contnum]{umemoria}
+\depto{DEPARTAMENTO DE CIENCIAS DE LA COMPUTACIÓN}
+\author{Manuel Osvaldo J. Olguín Muñoz}
+\title{Diseño e Implementación de un Framework Integrado para Simulaciones de Sistemas Inteligentes de Transporte en OMNeT++ y Paramics}
+\auspicio{NIC Chile Research Labs}
+\date{Julio 2017}
+\guia{Sandra Céspedes U.}
+\carrera{INGENIERO CIVIL EN COMPUTACIÓN}
+\memoria{MEMORIA PARA OPTAR AL TÍTULO DE INGENIERO CIVIL EN COMPUTACIÓN}
+\comision{Javier Bustos, Nancy Hitschfeld}
+
 \input{doc_settings.tex}
-\usepackage{amsfonts}
 
 \begin{document}
-\input{capitulos/implementacion/capitulo.tex}
-\appendix
-\input{capitulos/anexos/listings.tex}
+    
+    \frontmatter
+    \maketitle
+    
+    %\begin{abstract}
+    %    \lipsum[1-4]
+    %\end{abstract}
+    
+    %\begin{dedicatoria}
+    %    Den här är för Aros och Skatt.
+    %\end{dedicatoria}
+    
+    %\begin{thanks}
+    %    \lipsum[1-2]
+    %\end{thanks}
+    
+%    \cleardoublepage
+%    \tableofcontents
+%    \cleardoublepage
+%    \listoftables
+%    \cleardoublepage
+%    \listoffigures
+    
+    \mainmatter
+    
+    \input{capitulos/implementacion/capitulo.tex}
+    
+    %\nocite{*} %incluye todas las citas en la bibliografia, aunque no se hayan referenciado
+    \blankpage
+    \cleardoublepage
+    %\begin{multicols*}{2}
+    %\bibliographystyle{ieeetr}
+    %\bibliography{bibliografia}
+    %\printbibliography
+    %\end{multicols*}
+    
+    \printbibliography[heading=bibintoc]
+    %\begin{multicols*}{1}[]%\printbibheading]
+    
+    %\end{multicols*}
+    
+    \appendix
+    \input{capitulos/anexos/anexos.tex}
 \end{document}

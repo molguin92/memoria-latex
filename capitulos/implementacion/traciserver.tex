@@ -26,7 +26,7 @@ Como se mencionó en la sección \ref{sec:qpx_postopen}, al iniciarse el \emph{p
 
 Este método es simple: imprime información pertinente sobre el \emph{plugin} en la ventana de información de Paramics, y luego espera a recibir una conexión entrante. Es además el único del \emph{framework} que corre en un \emph{thread} paralelo a Paramics en la arquitectura final. Se decidió implementarlo de esta manera para que el inicio de Paramics fuera más fluido y no se bloqueara la interfaz mientras el servidor espera una conexión desde un cliente TraCI.
 
-\subsection{Recepción e Interpretación de Comandos Entrantes}
+\subsection{Recepción e interpretación de comandos entrantes}
 
 Como se explicó en la sección \ref{sec:architecture:final}, la interpretación de comandos entrantes y el avance del \emph{loop} de simulación se realizan en dos etapas; una previa al paso de simulación y una posterior a éste. Los métodos encargados de esto son \texttt{preStep()} y \texttt{postStep()}, los cuales se detallarán a continuación.
 
@@ -90,7 +90,7 @@ De esta manera, la evaluación en \texttt{TraCIServer} se simplifica, ya que la 
 \lstinputlisting[style=CPP, label={cod:traciserver_processsubs}, caption={Rutina de evaluación de suscripciones en \texttt{TraCIServer}. \texttt{subs} es una variable de instancia de \texttt{TraCIServer} correspondiente a un vector de punteros \texttt{VariableSuscription*}, poblado de elementos de clases derivadas de \texttt{VariableSuscription}.}]{codigo/traciserver_processsubs.cpp}
 \end{figure*}
 
-\subsubsection{Creación de Nuevas Suscripciones}
+\subsubsection{Creación de nuevas suscripciones}
 
 Por otro lado, para crear nuevas suscripciones, \texttt{TraCIServer} debe considerar la categoría de objetos a la cual se está suscribiendo, e insertar un puntero a un objeto con el tipo correspondiente en la variable de instancia \texttt{subs}. Esto sucede al recibir un comando con un identificador correspondiente a una suscripción; los parámetros de la suscripción son extraídos y delegados al método \texttt{addSubscription()} (código \ref{cod:traciserver_parsecommand},línea 15). Este código puede estudiarse en su totalidad en el anexo \ref{chapter:anex_codes}, código \ref{code:addsub}, sin embargo, a continuación se explicará brevemente su funcionamiento con algunos extractos de código.
 

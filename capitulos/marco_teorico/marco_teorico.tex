@@ -1,4 +1,4 @@
-\section{Marco Teórico}
+\section{Marco teórico}
 
 En esta sección se detallarán los conceptos esenciales para la comprensión del presente trabajo de memoria.
 
@@ -18,7 +18,7 @@ Tienen como enfoque el manejo de los sistemas de transporte a niveles macro, y l
 
 Engloba todo aquello relacionado con la automatización y optimización de la operación de un vehículo. Dentro de esta categoría se incluyen sistemas de advertencia y prevención de colisiones, de asistencia al conductor --- por ejemplo, sistemas de navegación --- y control autónomo de vehículos. Esta categoría se caracteriza por el extenso uso de comunicaciones vehículo-vehículo (\emph{V2V}), es decir, redes de comunicaciones distribuidas \emph{ad-hoc} (ver sección \ref{sec:its_comms:v2v}).
 
-\subsection{Tecnologías de Comunicaciones para ITS}\label{sec:its_comms}
+\subsection{Tecnologías de comunicaciones para ITS}\label{sec:its_comms}
 
 Una de las principales características de los ITS es la capacidad del sistema de otorgar información a los usuarios para la optimización del sistema. Con este fin, se han establecido distintos tipos de categorías de tecnologías de transmisión inalámbrica para el uso en variados escenarios \autocite{dar2010wireless}.
 
@@ -45,13 +45,13 @@ IEEE 802.11p es una modificación al estándar 802.11 de la IEEE -- el cual defi
 %
 %Se denominan \emph{simulaciones de eventos discretos} a la categoría de simulaciones en las cuales el estado del modelo cambia en instantes de tiempo discreto \autocite{SchriberDiscreteSim}. Este tipo de simulaciones tienen diversos usos, siendo dos de los principales (y de interés para el presente trabajo de memoria) las simulaciones de redes de comunicaciones y de tráfico.
 
-\subsection{Simulación de Redes de Comunicaciones}
+\subsection{Simulación de redes de comunicaciones}
 
 Las simulaciones de redes de comunicaciones tienen como fin modelar el comportamiento de sistemas interconectados mediante tecnologías de comunicaciones, sean estas cableadas o no. Generalmente, esto se hace a través del empleo de modelos de eventos discretos, es decir, simulaciones en las cuales el estado del modelo cambia en instantes de tiempo discreto \autocite{SchriberDiscreteSim}.
 
 Para el fin del presente trabajo, por razones evidentes ligadas a la naturaleza de las comunicaciones dentro de un sistema altamente dinámico como lo son los sistemas de transporte, se consideraron únicamente sistemas de comunicación inalámbrica.
 
-\subsubsection{Comunicación Inalámbrica}
+\subsubsection{Comunicación inalámbrica}
 
 %En el contexto de la presente memoria, se entenderá por \emph{comunicación inalámbrica} todo acto de transmisión de información entre dos o más entidades mediante la interacción con un campo electromagnético, sin otra conexión física entre dichas entidades (\emph{e.g.} cables). Estas entidades denominarán \emph{nodos}, y al establecerse una configuración que permita la comunicación inalámbrica entre múltiples nodos cercanos, se hablará de una \emph{red inalámbrica}.
 
@@ -62,7 +62,7 @@ La simulación de una red de comunicaciones inalámbrica consiste en tres etapas
     \item Finalmente, la obtención de resultados y métricas que indiquen la eficiencia de la red en términos de pérdidas de paquetes, el \emph{throughput} (cantidad de datos correctamente transmitidos), etc.
 \end{enumerate}
 
-\subsection{Simulación de Tráfico}
+\subsection{Simulación de tráfico}
 
 Se entenderá por \emph{Simulación de Tráfico} aquel entorno virtual que permita la emulación y estudio del comportamiento de un sistema de transporte ficticio o real, mediante el modelamiento de éste utilizando herramientas computacionales. Estas simulaciones puede ser tanto discretas como continuas.
 
@@ -76,7 +76,7 @@ A continuación, se describirán brevemente las tres principales categorías de 
 
 La presente memoria considera únicamente la integración de una simulación de tipo microscópica, dada su fácil adaptación al modelo utilizado por las simulaciones de comunicaciones inalámbricas -- un nodo en la red de comunicaciones corresponde directamente a un vehículo en el sistema de transporte.
 
-\subsection{Simulación Bidireccional}
+\subsection{Simulación bidireccional}
 
 En el contexto de integración de simuladores de comunicaciones y de tráfico para el estudio de Sistemas Inteligentes de Transporte, se entenderá por \emph{Simulación Bidireccional} aquél entorno de simulación en que un simulador de redes de comunicación y otro de tráfico se ejecuten de manera paralela, cada uno obteniendo \emph{feedback} continuo del otro.
 
