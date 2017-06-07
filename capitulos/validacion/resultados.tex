@@ -1,7 +1,7 @@
 \section{Resultados}
 \subsection{Eficiencia}
 
-\begin{figure}[tpb]
+\begin{figure}[htpb]
     \centering
     \begin{tabular}{@{}rrr@{}}
         \textbf{Carga Vehicular} & \textbf{Nro. Prom. Vehículos} & \textbf{Tiempo Promedio [s]} \\ \midrule
@@ -10,14 +10,18 @@
         50\%            & 514.5825        & 275.75              \\ %\midrule
         25\%            & 246.5675        & 113.25              \\ \bottomrule
     \end{tabular}
+    \captionof{table}{Promedio cantidad de vehículos en simulación (por instante de tiempo) vs. tiempo promedio de simulación, 15 minutos de tiempo simulado.}
+    \label{table:vehiclesvstime}
+
+
     \input{figuras/n_vhcs_vs_time.pgf}
-    \caption{Tabla y gráfico de dispersión del promedio de vehículos en simulación vs. tiempo, para una simulación de 15 minutos de tiempo simulado.}
+    \captionof{figure}{Gráfico de dispersión del promedio de vehículos en simulación por instante de tiempo vs. tiempo total de simulación, para una simulación de 15 minutos de tiempo simulado.}
     \label{fig:vehiclesvstime}
 \end{figure}
 
 La figura \ref{fig:vehiclesvstime} presenta los resultados de los experimentos de eficiencia de tiempo de la simulación en relación a la cantidad promedio de vehículos presentes.
 
-\begin{figure}[tpb]
+\begin{figure}[htpb]
     \centering
     \input{figuras/system_performance.pgf}
     \caption{Carga sobre el sistema durante una simulación con 100\% de carga vehicular.}
