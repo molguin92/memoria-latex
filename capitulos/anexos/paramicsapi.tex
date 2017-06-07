@@ -26,7 +26,7 @@ Las funciones de \emph{override}, con prefijo \texttt{QPO}, corresponden a funci
 
 \subsection{Funciones \texttt{QPX}}
 
-Las funciones de prefijo \texttt{QPX}, correspondiente a funciones de extensión de funcionalidad, son funciones definibles por el usuario que extienden algún funcionamiento de Paramics. Por lo general, estos métodos están ligados a eventos disparados o periódicos en Paramics; \emph{e.g.}, la función \texttt{void qpx\_NET\_postOpen()} se ejecuta una única vez inmediatamente luego de terminar de cargar la red de Paramics, y en el \emph{plugin} se utiliza para inicializar el servidor TraCI. Por otro lado, la función \texttt{void qpx\_CLK\_startOfSimLoop()} se ejecuta antes de cada paso de simulación, y se utiliza en el \emph{framework} para ejecutar un \emph{loop} de recepción y interpretación de mensajes desde el cliente TraCI.
+Las funciones de prefijo \texttt{QPX}, correspondiente a funciones de extensión de funcionalidad, son funciones definibles por el usuario que extienden algún funcionamiento de Paramics. Por lo general, estos métodos están ligados a eventos disparados o periódicos en Paramics; \emph{e.g.}, la función \texttt{void qpx\_NET\_postOpen()} se ejecuta una única vez inmediatamente luego de terminar de cargar la red de Paramics, y en el \emph{plugin} se utiliza para inicializar el servidor TraCI. Por otro lado, la función \texttt{void qpx\_CLK\_startOfSimLoop()} se ejecuta antes de cada paso de simulación, y se utiliza en el \emph{framework} para ejecutar un \emph{loop} de recepción e interpretación de mensajes desde el cliente TraCI.
 
 \subsection{Funciones \texttt{QPG}}
 
