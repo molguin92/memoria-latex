@@ -31,6 +31,6 @@ Este método es ejecutado por Paramics cada vez que un vehículo pasa de una cal
 
 \subsubsection{\texttt{float qpo\_CFM\_leadSpeed(\dots)} y \texttt{float qpo\_CFM\_followSpeed(\dots)}}\label{sec:plugin.c:speed}
 
-Estas funciones se invocan en cada de simulación para cada vehículo en la simulación de tráfico de Paramics -- \texttt{leadSpeed()} se invoca para aquellos vehículos que no tienen otro vehículo delante, y \texttt{followSpeed()} es invocada para todos los demás.
+Estas funciones se invocan en cada paso de simulación para cada vehículo en la simulación de tráfico de Paramics -- \texttt{leadSpeed()} se invoca para aquellos vehículos que no tienen otro vehículo delante, mientras \texttt{followSpeed()} es invocada los vehículos que se encuentran detrás de otro.
 
 Estas funciones deben retornar la rapidez que se le deberá aplicar al vehículo en cuestión en el siguiente paso de simulación. En el \emph{framework}, se utilizan para aplicar cambios de velocidad dictados por comandos TraCI.

@@ -50,7 +50,7 @@ Esto es altamente deseable para futuras extensiones del \emph{framework}, \emph{
 
 \subsection{paramics-launchd.py}
 
-El archivo \texttt{paramics-launchd.py} corresponde a una versión modificada del \emph{script} de Python 2.7 \texttt{sumo-launchd.py} incluído con la distribución de VEINS, alterado para su funcionamiento con Paramics en vez de SUMO.
+El archivo \texttt{paramics-launchd.py} corresponde a una versión modificada del \emph{script} de Python 2.7 \texttt{sumo-launchd.py} incluído con la distribución de VEINS, modificado para su funcionamiento con Paramics en vez de SUMO.
 
 Este archivo funciona como un \emph{daemon} de ejecución del \emph{framework}, cuya labor es la de recibir conexiones entrantes desde clientes TraCI y preparar la simulación de Paramics para dar inicio a la simulación bidireccional. Su funcionamiento se detalla a continuación:
 
@@ -68,7 +68,7 @@ Este archivo funciona como un \emph{daemon} de ejecución del \emph{framework}, 
     \begin{enumerate}
         \item En primer lugar, encuentra un puerto de red disponible en el \emph{host} y notifica al cliente de esta elección.
         \item Luego, prepara la red vehicular, copiando los archivos de definición y configuración de ésta a una ubicación temporal y modificándolos para incluir el valor de semilla especificado por el usuario y la dirección al \emph{dll} del \emph{plugin}.
-        \item Finalmente, inicia el modelador de Paramics con el \emph{plugin}, especificando la red a simular y el puerto asignado.
+        \item Inicia el modelador de Paramics con el \emph{plugin}, especificando la red a simular y el puerto asignado.
     \end{enumerate}
 
     \item Finalmente, al terminar la simulación bidireccional, el \emph{script} finaliza la conexión entre ambos simuladores y limpia los archivos temporales generados (esta acción puede suprimirse mediante un parámetro de consola al ejecutar el \emph{script}).

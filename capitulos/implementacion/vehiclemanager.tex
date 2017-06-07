@@ -28,7 +28,7 @@ Se utilizan las siguientes variables para almacenar información sobre el estado
 
 La función más básica de \texttt{VehicleManager} es la de abstraer el acceso a las variables de simulación directamente relacionadas con vehículos y tipos de vehículos. Los principales métodos encargados de estas funcionalidades son \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()}, respectivamente, aunque éstos por lo general son invocados por \texttt{packVehicleVariable()} y \texttt{packVhcTypesVariable()}, respectivamente, métodos que empaquetan los resultados en un \texttt{tcpip::Storage} para su fácil manejo. 
 
-\texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()} son métodos relativamente simples, los cuales simplemente comparan el identificador de variable proporcionado como argumento y obtienen el valor solicitado mediante un llamado a alguna de los métodos auxiliares implementados para la obtención de variables. Dada su gran similitud con los métodos \texttt{packSimulationVariable()} y \texttt{getSimulationVariable()} ya presentados en la sección \ref{sec:simulation:vars}, dedicada a la obtención de variables desde el módulo \texttt{Simulation}, no se presentará la implementación de los métodos propios del presente módulo en el documento (ver código \ref{code:simvar} para un acercamiento a la implementación real de éstos).
+\texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()} son métodos relativamente simples, los cuales simplemente comparan el identificador de variable proporcionado como argumento y obtienen el valor solicitado mediante un llamado a alguno de los métodos auxiliares implementados para la obtención de variables. Dada su gran similitud con los métodos \texttt{packSimulationVariable()} y \texttt{getSimulationVariable()} ya presentados en la sección \ref{sec:simulation:vars}, dedicada a la obtención de variables desde el módulo \texttt{Simulation}, no se presentará la implementación de los métodos propios del presente módulo en el documento (ver código \ref{code:simvar} para un acercamiento a la implementación real de éstos).
 
 \subsection{Modificación de estado de vehículos}
 
@@ -38,7 +38,7 @@ Dos de los comandos de cambio de estado implementados, \texttt{0x45 Coloreado} y
 
 \subsubsection{Cambios de velocidad lineal e instantáneo}\label{sec:speedoverride}
 
-Los comandos de cambio de velocidad de TraCI requieren un procedimiento especial ya que el efecto tiene debe aplicarse por un periodo mayor a un sólo paso de simulación, y por lo tanto es necesario un procedimiento que se encargue de mantener el efecto en el tiempo. Esto se implementó mediante la clase \texttt{traci\_api::BaseSpeedController} y sus derivadas.
+Los comandos de cambio de velocidad de TraCI requieren un procedimiento especial ya que el efecto debe aplicarse por un periodo mayor a un paso de simulación, y por lo tanto es necesario un procedimiento que se encargue de mantener el efecto en el tiempo. Esto se implementó mediante la clase \texttt{traci\_api::BaseSpeedController} y sus derivadas.
 
 \texttt{traci\_api::BaseSpeedController} define una clase compuesta únicamente de métodos virtuales, en base a la cual se construyen distintos tipos de controladores de velocidad. Como se comentó anteriormente, en la sección \ref{sec:internalstate}, \texttt{VehicleManager} mantiene un \emph{hashmap} que relaciona vehículos con controladores derivados de la clase anteriormente mencionada. Este mapa es accedido para cada vehículo, en cada paso de simulación por el método \texttt{speedControlOverride()} (a su vez, invocado por \texttt{qpo\_CFM\_followSpeed()} y \texttt{qpo\_CFM\_leadSpeed()} -- ver sección \ref{sec:plugin.c:speed}), el cual verifica si el vehículo en cuestión cuenta con un modificador de velocidad y aplica el cambio necesario. Además, cada controlador de velocidad cuenta con un método \texttt{repeat()} para verificar si debe seguir aplicándose en pasos de simulación futuros -- de no ser así, se elimina de la representación interna.
 
@@ -48,7 +48,7 @@ En la implementación final del \emph{framework} se definieron dos clases deriva
 
 \subsubsection{Cambio de ruta}\label{sec:routeoverride}
 
-TraCI cuenta con un comando \texttt{0x57 Cambio de Ruta} mediante el cual un cliente puede proveer un número de arcos (calles) que el vehículo en cuestión deberá seguir antes de reencaminarse a su destino original. Este comando es especial en que requiere invalidar el ruteo interno de Paramics para dicho vehículo mientras esté siguiendo la ruta otorgada por el cliente, lo cual puede durar un tiempo indefinido.
+TraCI cuenta con un comando \texttt{0x57 Cambio de Ruta} mediante el cual un cliente puede proveer un número de arcos (calles) que el vehículo en cuestión deberá seguir antes de reencaminarse a su destino original. Este comando es especial en el sentido que requiere invalidar el ruteo interno de Paramics para dicho vehículo mientras esté siguiendo la ruta otorgada por el cliente, lo cual puede durar un tiempo indefinido.
 
 Para esto se definió entonces un método \texttt{rerouteVehicle()} en VehicleManager, el cual recibe un puntero a un vehículo y su calle actual, y retorna el índice de la siguiente salida que debe tomar -- en caso de tener una ruta personalizada, este método retornará el índice de la siguiente calle en la ruta, y de otro modo retorna 0, lo cual es interpretado por Paramics como una indicación a seguir la ruta dictada por el modelo interno.
 
@@ -61,7 +61,7 @@ Las rutas en sí se almacenan en la variable interna \texttt{vhc\_routes}; un \e
 
 \subsubsection{Cambio de pista}\label{sec:laneoverride}
 
-Finalmente, el comando de cambio de pista de TraCI también debe aplicarse por un tiempo determinado. Desafortunadamente, dadas ciertas limitaciones del modelo que utiliza Paramics para controlar la selección de pistas, este cambio no se pudo implementar como el cambio de ruta o el cambio de velocidad, dejando que la simulación de Paramics misma consultara la pista a tomar en el siguiente paso de simulación, sino que se debió implementar a ``fuerza bruta''.
+Finalmente, el comando de cambio de pista de TraCI también debe aplicarse por un tiempo determinado. Infortunadamente, dadas ciertas limitaciones del modelo que utiliza Paramics para controlar la selección de pistas, este cambio no se pudo implementar como el cambio de ruta o el cambio de velocidad, dejando que la simulación de Paramics misma consultara la pista a tomar en el siguiente paso de simulación, sino que se debió implementar a ``fuerza bruta''.
 
 Esto se logró mediante la implementación de la clase de métodos virtuales \texttt{traci\_api::}
 \texttt{BaseTrigger} y su clase derivada \texttt{traci\_api::LaneSetTrigger}. \texttt{BaseTrigger} define una interfaz general para operaciones de ejecución periódica o diferida, y \texttt{LaneSetTrigger} representa una implementación de ésta interfaz para la ejecución constante de un cambio de pista por un tiempo definido.
