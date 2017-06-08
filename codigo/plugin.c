@@ -4,6 +4,7 @@
 #include <shellapi.h>
 #include "TraCIAPI/VehicleManager.h"
 #include "TraCIAPI/Utils.h"
+#include "TraCIAPI/Simulation.h"
 
 #define DEFAULT_PORT 5000
 #define CMDARG_PORT "--traci_port="
@@ -66,7 +67,13 @@ void runner_fn()
 void qpx_NET_postOpen(void)
 {
     qps_GUI_singleStep(PFALSE);
-    traci_api::infoPrint("TraCI support enabled");
+    std::string version_str = "Paramics TraCI plugin v" + std::string(PVEINS_VERSION) + " on Paramics v" + std::to_string(qpg_UTL_parentProductVersion());
+    traci_api::infoPrint(version_str);
+    traci_api::infoPrint(PVEINS_COPYRIGHT);
+    traci_api::infoPrint(PVEINS_LICENSE);
+    traci_api::infoPrint("---");
+    traci_api::infoPrint("Timestep size: " + std::to_string(static_cast<int>(qpg_CFG_timeStep() * 1000.0f)) + "ms");
+    traci_api::infoPrint("Simulation start time: " + std::to_string(traci_api::Simulation::getInstance()->getCurrentTimeMilliseconds()) + "ms");
     runner = new std::thread(runner_fn);
 }
 
@@ -136,8 +143,7 @@ void qpx_VHC_transfer(VEHICLE* vehicle, LINK* link1, LINK* link2)
 float qpo_CFM_followSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 {
     float speed = 0;
-    if (traci_api::VehicleManager::getInstance()
-                ->speedControlOverride(v, speed))
+    if (traci_api::VehicleManager::getInstance()->speedControlOverride(v, speed))
         return speed;
     else
         return qpg_CFM_followSpeed(link, v, ahead);
@@ -146,8 +152,7 @@ float qpo_CFM_followSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 float qpo_CFM_leadSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 {
     float speed = 0;
-    if (traci_api::VehicleManager::getInstance()
-                ->speedControlOverride(v, speed))
+    if (traci_api::VehicleManager::getInstance()->speedControlOverride(v, speed))
         return speed;
     else
         return qpg_CFM_leadSpeed(link, v, ahead);
