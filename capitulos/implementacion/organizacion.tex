@@ -4,7 +4,7 @@ El código del \emph{plugin} se separó en una serie de módulos lógicos que en
 
 Cabe notar también que se utilizó el \emph{namespace} \texttt{traci\_api} para agrupar los elementos propios del framework. 
 
-\begin{figure}[h]
+\begin{figure}[tpbh]
     \dirtree{%
         .1 src/.
         .2 plugin.c\DTcomment{Archivo de inicio del \emph{plugin}}.
@@ -26,4 +26,11 @@ Cabe notar también que se utilizó el \emph{namespace} \texttt{traci\_api} para
     }
     \caption{Estructura de archivos del código fuente del framework.}
     \label{fig:dirtree}
+\end{figure}
+
+\begin{figure}[tpbh]
+    \centering
+    \includegraphics[angle=90, origin=c, height=0.6\textheight]{figuras/plugin_dependency_graph.png}
+    \caption{Gráfico de dependencia entre los componentes del \emph{framework}.}
+    \label{fig:dependencygraph}
 \end{figure}
