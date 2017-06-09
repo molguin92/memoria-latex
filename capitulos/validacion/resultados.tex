@@ -1,10 +1,10 @@
-\section{Resultados}
+\section{Resultados}\label{sec:results}
 \subsection{Eficiencia}
 
 \begin{figure}[htpb]
     \centering
     \begin{tabular}{@{}rrr@{}}
-        \textbf{Carga Vehicular} & \textbf{Nro. Prom. Vehículos} & \textbf{Tiempo Promedio [s]} \\ \midrule
+        \textbf{Factor de Demanda} & \textbf{Nro. Prom. Vehículos} & \textbf{Tiempo Promedio [s]} \\ \midrule
         100\%           & 1379.9          & 1471.5              \\ %\midrule
         75\%            & 868.75          & 683.5               \\ %\midrule
         50\%            & 514.5825        & 275.75              \\ %\midrule
@@ -21,11 +21,18 @@
 
 La figura \ref{fig:vehiclesvstime} presenta los resultados de los experimentos de eficiencia de tiempo de la simulación en relación a la cantidad promedio de vehículos presentes.
 
-\begin{figure}[htpb]
+\begin{figure}[tpb]
     \centering
     \input{figuras/system_performance.pgf}
-    \caption{Carga sobre el sistema durante una simulación con 100\% de carga vehicular.}
-    \label{fig:systemload}
+    \caption{Carga sobre el sistema durante una simulación con factor de demanda 100\%.}
+    \label{fig:systemload:cpuram}
 \end{figure}
+\begin{figure}[tpb]
+    \centering
+    \input{figuras/system_io.pgf}
+    \caption{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}
+    \label{fig:systemload:io}
+\end{figure} 
+
 
 \subsection{Simulación vehicular}
