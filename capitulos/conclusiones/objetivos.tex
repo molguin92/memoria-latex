@@ -1,0 +1,22 @@
+\section{Cumplimiento de Objetivos}
+Objetivo general cumplido.
+
+En términos de los objetivos particulares enumerados en la sección \ref{sec:obj:part}, se puede concluir que éstos se cumplieron a cabalidad:
+
+\begin{enumerate}
+    \item \textbf{Se estableció el estado del arte en cuanto a simulación bidireccional en comunicaciones inalámbricas y sistemas de transporte}, tomando en cuenta herramientas tanto de código abierto como cerrado. Esto se expuso de manera extensa y profunda en la sección \ref{sec:state_of_the_art}.
+    
+    \item \textbf{Se escogió la opción de adaptar el \emph{framework} VEINS como solución al problema presentado}, dado que correspondía a la opción más madura y flexible en términos de simulación bidireccional. El razonamiento completo detrás de esta decisión se encuentra en la sección \ref{sec:solution}.
+    
+    \item \textbf{Se adaptó Paramics}, mediante la implementación de un \emph{plugin}, \textbf{para que pudiese comunicarse de manera bidireccional con OMNeT++}. Se implementaron además todas las funcionalidades enumeradas en la sección \ref{sec:functionality}, las cuales incluyen:
+    \begin{enumerate}
+        \item Construcción de la topología del modelo de comunicaciones a partir de la topología del modelo de tráfico.
+        \item Actualización dinámica de los nodos en OMNeT++, siguiendo los movimientos de los elementos de Paramics.
+        \item Modificación del comportamiento de los nodos del modelo de transporte a partir de eventos en OMNeT++.
+    \end{enumerate}
+    \item \textbf{Se implemetó el \emph{framework} PVEINS siguiendo patrones y buenas prácticas de ingeniería de software} -- el detalle de esto se encuentra en el capítulo \ref{cap:implementation}.
+    
+    \item \textbf{Se probó y validó el funcionamiento de la integración de los simuladores} mediante la simulación de un modelo de transporte simple pero dinámico (ver sección \ref{sec:simpletest}).
+    
+    \item Finalmente, \textbf{se implementó un modelo avanzado de transporte}, y se utilizó para \textbf{la evaluación del rendimiento del software implementado y su aplicabilidad a modelos realistas de Sistemas de Transporte Inteligentes}. El detalle del modelo desarrollado y los resultados obtenidos se expusieron en el capítulo \ref{cap:validacion}.
+\end{enumerate}
