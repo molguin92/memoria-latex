@@ -1,12 +1,3 @@
-\section{Elección de solución a implementar}\label{sec:solution}
-
-Luego de realizar el exhaustivo estudio del estado del arte presentado en la sección \ref{sec:state_of_the_art}, se tomó la decisión de implementar el \emph{framework} propuesto para el presente trabajo de memoria basándose en la implementación de VEINS. 
-
-Se determinó esto ya que ninguna de las demás opciones de simulación bidireccional presentaba la madurez necesaria para el tipo de escenarios para los cuales se pretende utilizar el producto final. Como se comentó en la sección \ref{sec:integrated_sim}, si bien existen una serie de alternativas de entornos integrados para la simulación bidireccional, ninguna es tan flexible y potente como VEINS. Además, la naturaleza modular del \emph{framework} en cuestión, la cual enlaza OMNeT++ con SUMO mediante un \emph{socket} TCP utilizando un protocolo ya establecido y bien documentado como lo es TraCI, específicamente diseñado para la comunicación entre simuladores de comunicaciones y de transporte, es fácilmente adaptable al problema tratado en la presente memoria. El problema se redujo a la implementación de una capa de interfaz para Paramics, que le permite intepretar y funcionar con el protocolo TraCI -- para esto se utilizó el API de extensión del \emph{software}, detallado en el apéndice \ref{anex:paramics_api}.
-
-Finalmente, una implementación utilizando VEINS necesariamente cumple con los requisitos de diseño descritos en la sección \ref{sec:obj:part}, ya que éstas son funcionalidades fundamentales del \emph{framework} y del protocolo TraCI.
-
-
 \section{Diseño Arquitectural}\label{sec:architecture}
 
 El software desarrollado consiste en un \emph{plugin} que extiende la funcionalidad de Paramics, agregándole la capacidad de comportarse como un servidor TraCI, y que permite a Paramics integrarse de manera transparente con el \emph{framewok} VEINS \autocite{sommer_german_dressler}. Este \emph{framework} modificado, en el cual se reemplazó a SUMO por Paramics, se denominó \textbf{PVEINS}, por ``Paramics VEINS''. 
