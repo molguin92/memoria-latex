@@ -42,7 +42,7 @@ En el archivo de cabecera \texttt{Constants.h} se declararon una serie de consta
         DUMMY_CONST = 0x42;
         \end{lstlisting}
     \end{minipage}
-    \caption{Definición del preprocesador (izq.) \emph{vs} variable constante estática (der.).}
+    \caption[Definición del preprocesador vs. variable constante estática]{Definición del preprocesador (izq.) \emph{vs} variable constante estática (der.).}
 \end{figure}
 
 La diferencia entre ambos métodos de definición radica en la interpretación que el \emph{toolchain} de compilación les da. Las \emph{definiciones del preprocesador} son interpretadas por el \emph{preprocesador}, antes de pasar por el compilador, y se ejecutan como simples reemplazos textuales en el código por el valor definido. Por otro lado, las variables constantes son tratadas como cualquier otra variable, y por ende cuentan con todas las propiedades de éstas. La decisión de utilizar este segundo método se tomó en base a que las variables constantes tienen la particularidad de estar restringidas a su \emph{scope} -- es decir, si se declaran por ejemplo dentro de un \emph{namespace} (como es el caso en \texttt{Constants.h}), su identificador no queda definido fuera de dicho entorno.

@@ -24,12 +24,12 @@ Esto indica que a pesar de ser exponencial, la relación presenta una curva bast
         50\%            & 514.5825        & 275.75              \\ %\midrule
         25\%            & 246.5675        & 113.25              \\ \bottomrule
     \end{tabular}
-    \captionof{table}{Promedio cantidad de vehículos en simulación (por instante de tiempo) vs. tiempo promedio de simulación, 15 minutos de tiempo simulado.}
+    \captionof{table}[Cantidad de vehículos vs. tiempo real de simulación]{Promedio cantidad de vehículos en simulación (por instante de tiempo) vs. tiempo promedio de simulación, 15 minutos de tiempo simulado.}
     \label{table:vehiclesvstime}
     
     
     \input{figuras/n_vhcs_vs_time.pgf}
-    \captionof{figure}{Gráfico de dispersión del promedio de vehículos en simulación por instante de tiempo vs. tiempo total de simulación, para una simulación de 15 minutos de tiempo simulado.}
+    \captionof{figure}[Cantidad de vehículos vs. tiempo real de simulación]{Gráfico de dispersión del promedio de vehículos en simulación por instante de tiempo vs. tiempo total de simulación, para una simulación de 15 minutos de tiempo simulado.}
     \label{fig:vehiclesvstime}
 \end{figure}
 
@@ -38,7 +38,7 @@ La figura \ref{fig:timevsvehicles_evolution} presenta además la evolución de l
 \begin{figure}[h]
     \centering
     \input{figuras/timevsvehicles_evolution.pgf}
-    \caption{Evolución de la cantidad de vehículos en una simulación con factor de demanda 100\%, para tiempo real y simulado.}
+    \caption[Evolución temporal de la cantidad de vehículos en la simulación.]{Evolución de la cantidad de vehículos en una simulación con factor de demanda 100\%, para tiempo real y simulado.}
     \label{fig:timevsvehicles_evolution}
 \end{figure}
 
@@ -55,7 +55,7 @@ La figura \ref{fig:systemload:cpuram} ilustra la carga sobre el sistema en térm
 \begin{figure}[h]
     \centering
     \input{figuras/system_io.pgf}
-    \caption{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}
+    \caption[I/O en disco durante simulación]{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}
     \label{fig:systemload:io}
 \end{figure} 
 

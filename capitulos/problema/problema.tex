@@ -1,1 +1,13 @@
 \section{Especificación del problema}
+
+El problema abordado en este trabajo de memoria puede definirse como: 
+\begin{quote}
+    \textbf{``El diseño e implementación de un \emph{framework} que permita la integración bidireccional del simulador de transporte Quadstone Paramics con un simulador de redes de comunicación inalámbrica, para el modelamiento y análisis de Sistemas Inteligentes de Transporte.''}
+\end{quote}
+
+El problema se enfoca en Quadstone Paramics dada su importancia para el Área de Transporte del Departamento de Ingeniería Civil de la Universidad de Chile, quienes cuentan con una gran cantidad de modelos y simulaciones de transporte de gran complejidad ya implementados en Paramics.
+Para ellos, es de gran interés contar con un sistema que permita el estudio de nuevas tecnologías y tendencias en el ámbito de transporte y una adaptación de Paramics para funcionar en un entorno de simulación de comunicaciones les permitiría ampliar su espectro de investigación a incluir, por ejemplo, sistemas de alarma temprana para conductores, o directamente sistemas de vehículos autónomos.
+
+Esta integración, o \emph{framework}, debe entonces ser altamente eficiente para operar sobre sistemas de transporte con miles de vehículos. Un escenario puede llegar a necesitar horas de tiempo simulado para poder analizar sus efectos y consecuencias de manera íntegra, y es esencial que esto sea factible de realizar en el producto final.
+
+Finalmente, debe además ser flexible, y poder adaptarse sin mayores dificultades a diversos escenarios de simulación -- no es lo mismo simular un sistema comunicación crítica para vehículos autónomos que un sistema de coordinación de vehículos de transporte público. Esto quiere decir que idealmente debe existir una separación entre el \emph{framework} y los escenarios a simular, posiblemente a través de una API.
