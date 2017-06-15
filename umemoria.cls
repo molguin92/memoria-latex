@@ -6,7 +6,7 @@
 %%%%%%%%	Fecha: 21-06-2012
 %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\NeedsTeXFormat{LaTeX2e}[2009/09/24]
+\NeedsTeXFormat{LaTeX2e}%[2009/09/24]
 \ProvidesClass{umemoria}[2012/06/18 v1.2 Clase LaTeX para estandarizacion de Memorias U. de Chile]
 
 %% Definicion de Condicionales

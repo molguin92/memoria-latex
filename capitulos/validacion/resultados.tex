@@ -27,8 +27,9 @@ Esto indica que a pesar de ser exponencial, la relación presenta una curva bast
     \captionof{table}[Cantidad de vehículos vs. tiempo real de simulación]{Promedio cantidad de vehículos en simulación (por instante de tiempo) vs. tiempo promedio de simulación, 15 minutos de tiempo simulado.}
     \label{table:vehiclesvstime}
     
+    \vspace{15mm}
     
-    \input{figuras/n_vhcs_vs_time.pgf}
+    \input{figuras/n_vhcs_vs_time.tex}
     \captionof{figure}[Cantidad de vehículos vs. tiempo real de simulación]{Gráfico de dispersión del promedio de vehículos en simulación por instante de tiempo vs. tiempo total de simulación, para una simulación de 15 minutos de tiempo simulado.}
     \label{fig:vehiclesvstime}
 \end{figure}
@@ -37,7 +38,7 @@ La figura \ref{fig:timevsvehicles_evolution} presenta además la evolución de l
 
 \begin{figure}[h]
     \centering
-    \input{figuras/timevsvehicles_evolution.pgf}
+    \input{figuras/timevsvehicles_evolution.tex}
     \caption[Evolución temporal de la cantidad de vehículos en la simulación.]{Evolución de la cantidad de vehículos en una simulación con factor de demanda 100\%, para tiempo real y simulado.}
     \label{fig:timevsvehicles_evolution}
 \end{figure}
@@ -48,13 +49,13 @@ La figura \ref{fig:systemload:cpuram} ilustra la carga sobre el sistema en térm
 
 \begin{figure}[h]
     \centering
-    \input{figuras/system_performance.pgf}
+    \input{figuras/system_performance.tex}
     \caption{Carga sobre el sistema durante una simulación con factor de demanda 100\%.}
     \label{fig:systemload:cpuram}
 \end{figure}
 \begin{figure}[h]
     \centering
-    \input{figuras/system_io.pgf}
+    \input{figuras/system_io.tex}
     \caption[I/O en disco durante simulación]{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}
     \label{fig:systemload:io}
 \end{figure} 
@@ -62,9 +63,13 @@ La figura \ref{fig:systemload:cpuram} ilustra la carga sobre el sistema en térm
 
 \subsection{Simulación vehicular}
 
-\begin{figure}
-    \centering
-    \input{figuras/per00per10_timedistance.pgf}
-    \caption{PER 0.0 vs PER 1.0}
-    \label{fig:per00per10timedistance}
-\end{figure}
+\begin{table}[htpb]
+\centering
+\begin{tabular}{@{}l|rrr@{}}
+    \multicolumn{1}{c|}{\textbf{Duración}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}\textbf{Alcanzaron destino}\\ \textbf{PER 0.0}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}\textbf{Alcanzaron destino}\\ \textbf{PER 1.0}\end{tabular}} & \multicolumn{1}{c}{$\triangle$} \\ \midrule
+    15 min & 3858 & 3801 & 57 \\
+    120 min & 11488 & 11014 & 474 \\ \bottomrule
+\end{tabular}
+\caption{My caption}
+\label{my-label}
+\end{table}
