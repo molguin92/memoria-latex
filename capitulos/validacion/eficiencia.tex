@@ -1,0 +1,99 @@
+\section{Eficiencia Computacional}\label{sec:results:performance}
+\subsection{Mediciones Realizadas}
+
+El principal factor a medir en esta categoría es la relación entre la cantidad de vehículos en una simulación y el tiempo real que demora el \emph{framework} en simular el escenario, para una duración en tiempo simulado específica. De esta manera, se pretende caracterizar el comportamiento del \emph{software} para escenarios vehiculares de alta complejidad, en los cuales pueden llegar a interactuar miles de vehículos. Además, interesa también la carga en términos de recursos de sistema que genera la ejecución de la simulación sobre el equipo de prueba. 
+
+A través de éstos datos se pretende generar un perfil del \emph{software} que indique los requisitos que impone sobre el entorno de simulación, y su factibilidad de uso para sistemas de transporte complejos tanto en entornos de simulación de alto rendimiento como de mediano y bajo.
+
+Antes de detallar las simulaciones realizadas, se debe definir el término \emph{factor de demanda}. Éste corresponde a un elemento de configuración de la simulación de transporte en Paramics, el cual caracteriza la carga vehicular sobre el sistema de transporte en cada instante de tiempo. En términos más simples, el factor de demanda regula la cantidad de vehículos que Paramics inserta a la red durante la simulación; es un valor porcentual cuya correspondencia en cantidad real de vehículos en la red dependerá de las características particulares de cada simulación. Sin embargo, los valores aproximados para el escenario utilizado, para distintos factores de demanda, pueden observarse en la tabla \ref{table:demandfactor}.
+
+Se realizaron entonces 16 ejecuciones del escenario (de aquí en adelante, denominadas \emph{runs}) con cuatro factores de demanda distintos (4 \emph{runs} con 100\%, 4 con 75\%, 4 con 50\% y 4 con 25\%) y cada una con una \emph{semilla} distinta para los generadores de números pseudoaleatorios. De éstos \emph{runs} se extrajeron las siguientes estadísticas:
+
+\begin{enumerate}
+    \item Timestamp de inicio del \emph{run}.
+    \item Timestamp de fin del \emph{run}.
+    \item Duración en tiempo real del \emph{run}.
+    \item Cantidad de vehículos en la red de transporte, cada 1 minuto de tiempo simulado.
+\end{enumerate}
+
+Además, se realizó una ejecución adicional de un \emph{run} con factor de demanda 100\%, y se midió la carga sobre el equipo de prueba mientras se ejecutaba la simulación utilizando las herramientas de monitoreo de sistema de Microsoft Windows. En específico, se midió la carga porcentual sobre el procesador, la memoria RAM utilizada y la cantidad de operaciones de escritura y lectura del disco físico durante la simulación.
+
+\begin{table}[htpb]
+    \centering
+    \begin{tabular}{@{}rrr@{}}
+        \textbf{Factor de Demanda} & \textbf{Ctdad. Prom. Vehículos} \\ \midrule
+        100\%           & 1379.9 \\ %\midrule
+        75\%            & 868.75 \\ %\midrule
+        50\%            & 514.5825 \\ %\midrule
+        25\%            & 246.5675 \\ \bottomrule
+    \end{tabular}
+    \caption[Factor de demanda vs. cantidad promedio de vehículos]{Tabla de relación entre factor de demanda y cantidad promedio de vehículos por instante de tiempo en el escenario de prueba.}
+    \label{table:demandfactor}
+\end{table}
+
+\subsection{Resultados}
+
+\subsubsection{Duración de la Simulación}
+
+La tabla \ref{table:vehiclesvstime} presenta los resultados obtenidos del tiempo de duración de la simulación versus la cantidad de vehículos promedio por instante de tiempo; estos datos se visualizan además de manera gráfica en la figura \ref{fig:vehiclesvstime}.
+
+\begin{table}[htpb]
+    \centering
+    \begin{tabular}{@{}rrr@{}}
+        \textbf{Factor de Demanda} & \textbf{Nro. Prom. Vehículos} & \textbf{Tiempo Promedio [s]} \\ \midrule
+        100\%           & 1379.9          & 1471.5              \\ %\midrule
+        75\%            & 868.75          & 683.5               \\ %\midrule
+        50\%            & 514.5825        & 275.75              \\ %\midrule
+        25\%            & 246.5675        & 113.25              \\ \bottomrule
+    \end{tabular}
+    \caption[Cantidad de vehículos vs. tiempo real de simulación]{Promedio cantidad de vehículos en simulación (por instante de tiempo) vs. tiempo promedio de simulación, 15 minutos de tiempo simulado.}
+    \label{table:vehiclesvstime}
+\end{table}
+
+\begin{figure}[htpb]
+    \centering    
+    \input{figuras/n_vhcs_vs_time.tex}
+    \captionof{figure}[Cantidad de vehículos vs. tiempo real de simulación]{Gráfico de dispersión del promedio de vehículos en simulación por instante de tiempo vs. tiempo total de simulación, para una simulación de 15 minutos de tiempo simulado.}
+    \label{fig:vehiclesvstime}
+\end{figure}
+
+De estos resultados se puede concluir que el \emph{framework}, como era de esperarse dada la naturaleza de la simulación, presenta una relación levemente exponencial entre la cantidad promedio de nodos en la red vehicular con el tiempo que efectivamente demora una simulación en completar su ejecución.
+
+Se utilizó numpy para calcular un ajuste polinomial a los datos obtenidos, obteniendo la siguiente relación entre cantidad de vehículos promedio en la simulación $N_{v}$ y tiempo de ejecución de ésta en segundos, $T(N_{v})$:
+
+\[ T(N_{v}) = (5.829 \times 10^{-4})N_{v}^{2} + (2.586 \times 10^{-1})N_{v} + 6.317 \]
+
+Esto indica que a pesar de ser exponencial, la relación presenta una curva bastante suavizada. Es factible entonces simular escenarios de escala aún mayor que la presentada en esta memoria (la cual, cabe notar, no es menor), sin mayores dificultades.
+
+La figura \ref{fig:timevsvehicles_evolution} presenta por lo otro lado la evolución de la red vehicular en términos de cantidad de vehículos para un \emph{run} con factor de demanda de 100\%, tanto en tiempo real como en tiempo simulado. Este gráfico permite visualizar además como la cantidad de vehículos en la red afecta el tiempo de ejecución de cada paso de simulación.
+
+\begin{figure}[htpb]
+    \centering
+    \input{figuras/timevsvehicles_evolution.tex}
+    \caption[Evolución temporal de la cantidad de vehículos en la simulación.]{Evolución de la cantidad de vehículos en una simulación con factor de demanda 100\%, para tiempo real y simulado.}
+    \label{fig:timevsvehicles_evolution}
+\end{figure}
+
+\subsubsection{Carga computacional}
+
+En términos de carga sobre el entorno de simulación, se pueden observar los resultados obtenidos en las figuras \ref{fig:systemload:cpuram} y \ref{fig:systemload:io}. 
+
+\begin{figure}[htpb]
+    \centering
+    \input{figuras/system_performance.tex}
+    \caption{Carga sobre el sistema durante una simulación con factor de demanda 100\%.}
+    \label{fig:systemload:cpuram}
+\end{figure}
+
+La figura \ref{fig:systemload:cpuram} ilustra la carga sobre el sistema en términos porcentuales. En específico, se puede observar como el uso promedio del procesador aumenta en aproximadamente un 20\% durante la simulación, situación fácilmente manejable para cualquier procesador moderno. Además, el uso de memoria aumenta en menos de un 5\% -- en términos numéricos, el sistema utiliza menos de 600 MB para simular un escenario con un promedio de 1400 nodos presentes en cualquier instante, lo cual es un valor muy razonable si se considera que el estándar de memoria RAM para computadores personales hoy en día es por lo menos 4 GB \autocite{steamhwsurvey, unityhardwaresurvey}.
+
+Por otro lado, la figura \ref{fig:systemload:io} ilustra el uso del disco duro del sistema durante la ejecución de la simulación. 
+Cabe destacar que durante el \emph{run} en cuestión se extrajeron y almacenaron un gran número de estadísticas en cada instante de simulación, las cuales OMNeT++ almacena directamente en el disco. 
+Sin embargo, aún así, se puede notar que el \emph{framework} es austero en su utilización de los recursos del sistema.
+
+\begin{figure}[htpb]
+    \centering
+    \input{figuras/system_io.tex}
+    \caption[I/O en disco durante simulación]{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}
+    \label{fig:systemload:io}
+\end{figure} 
