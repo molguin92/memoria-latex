@@ -1,0 +1,69 @@
+% This file was created by matplotlib2tikz v0.6.10.
+\begin{tikzpicture}
+
+\begin{axis}[
+xlabel={Factor de Demanda},
+xmin=-0.22, xmax=2.42,
+ymin=0, ymax=5000,
+width=\figurewidth,
+height=\figureheight,
+xtick={0.1,1.1,2.1},
+xticklabels={20\%,50\%,100\%},
+tick align=outside,
+tick pos=left,
+xmajorgrids,
+x grid style={lightgray, opacity=0.7},
+ymajorgrids,
+y grid style={lightgray, opacity=0.7},
+axis line style={black, opacity=0.0},
+legend cell align={left},
+legend style={at={(0.03,0.97)}, anchor=north west, draw=white!80.0!black, fill=white!89.803921568627459!black},
+legend entries={{Sin comunicaci\'on},{Con comunicaci\'on}}
+]
+\addlegendimage{ybar,ybar legend,fill=red,draw opacity=0};
+\draw[fill=red,draw opacity=0] (axis cs:-0.1,0) rectangle (axis cs:0.1,985);
+\draw[fill=red,draw opacity=0] (axis cs:0.9,0) rectangle (axis cs:1.1,2441);
+\draw[fill=red,draw opacity=0] (axis cs:1.9,0) rectangle (axis cs:2.1,3801);
+\addlegendimage{ybar,ybar legend,fill=blue,draw opacity=0};
+\draw[fill=blue,draw opacity=0] (axis cs:0.1,0) rectangle (axis cs:0.3,1009);
+\draw[fill=blue,draw opacity=0] (axis cs:1.1,0) rectangle (axis cs:1.3,2512);
+\draw[fill=blue,draw opacity=0] (axis cs:2.1,0) rectangle (axis cs:2.3,3858);
+\node at (axis cs:-0.05,1025)[
+scale=1.0,
+anchor=west,
+text=black,
+rotate=45.0
+]{ 985};
+\node at (axis cs:0.95,2481)[
+scale=1.0,
+anchor=west,
+text=black,
+rotate=45.0
+]{ 2441};
+\node at (axis cs:1.95,3841)[
+scale=1.0,
+anchor=west,
+text=black,
+rotate=45.0
+]{ 3801};
+\node at (axis cs:0.15,1049)[
+scale=1.0,
+anchor=west,
+text=black,
+rotate=45.0
+]{ 1009};
+\node at (axis cs:1.15,2552)[
+scale=1.0,
+anchor=west,
+text=black,
+rotate=45.0
+]{ 2512};
+\node at (axis cs:2.15,3898)[
+scale=1.0,
+anchor=west,
+text=black,
+rotate=45.0
+]{ 3858};
+\end{axis}
+
+\end{tikzpicture}

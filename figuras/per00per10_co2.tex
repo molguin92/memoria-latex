@@ -3,27 +3,26 @@
 
 \definecolor{color0}{rgb}{0.2,0.8,0.133333333333333}
 
-\begin{groupplot}[group style={group size=1 by 2}]
-\nextgroupplot[
-ylabel={CO2 Total [g]},
+\begin{axis}[
+xlabel={Distancia Total $[m]$},
+ylabel={CO2 Total $[g]$},
 xmin=-141.460057014178, xmax=2838.93005701418,
-ymin=-73.1404919642858, ymax=1350.70625925454,
+ymin=-68.3178396915584, ymax=1350.47320778577,
 width=\figurewidth,
 height=\figureheight,
-xtick={-500,0,500,1000,1500,2000,2500,3000},
-xticklabels={},
 tick align=outside,
 tick pos=left,
+xticklabel style={rotate=45},
 xmajorgrids,
-x grid style={lightgray!84.183006535947712!black},
+x grid style={lightgray, opacity=0.7},
 ymajorgrids,
-y grid style={lightgray!84.183006535947712!black},
-axis line style={white},
-legend entries={{PER 0.0}},
+y grid style={lightgray, opacity=0.7},
+axis line style={black, opacity=0.0},
+legend style={at={(0.97,0.03)}, anchor=south east, draw=white!80.0!black, fill=white!89.803921568627459!black},
 legend cell align={left},
-legend style={draw=white!80.0!black, fill=white!89.803921568627459!black}
+legend entries={{Con comunicaci\'on},{Sin comunicaci\'on}}
 ]
-\addplot [only marks, draw=red, fill=red, opacity=0.75, colormap/viridis]
+\addplot [only marks, draw=red, mark size=1.0, fill=red, opacity=0.75, colormap/viridis]
 table{%
 x                      y
 +2.789250000000000e+02 +7.572980000000000e+01
@@ -5871,25 +5870,7 @@ x                      y
 +1.058870000000000e+03 +9.783850000000000e+02
 +1.710230000000000e+03 +1.208580000000000e+03
 };
-\nextgroupplot[
-xlabel={Distancia Total},
-ylabel={CO2 Total [g]},
-xmin=-141.460057014178, xmax=2838.93005701418,
-ymin=-73.1404919642858, ymax=1350.70625925454,
-width=\figurewidth,
-height=\figureheight,
-tick align=outside,
-tick pos=left,
-xmajorgrids,
-x grid style={lightgray!84.183006535947712!black},
-ymajorgrids,
-y grid style={lightgray!84.183006535947712!black},
-axis line style={white},
-legend entries={{PER 1.0}},
-legend cell align={left},
-legend style={draw=white!80.0!black, fill=white!89.803921568627459!black}
-]
-\addplot [only marks, draw=color0, fill=color0, opacity=0.75, colormap/viridis]
+\addplot [only marks, draw=color0, mark size=1.0, fill=color0, opacity=0.75, colormap/viridis]
 table{%
 x                      y
 +1.855480000000000e+03 +5.762230000000002e+02
@@ -11517,6 +11498,6 @@ x                      y
 +0.000000000000000e+00 +0.000000000000000e+00
 +0.000000000000000e+00 +0.000000000000000e+00
 };
-\end{groupplot}
+\end{axis}
 
 \end{tikzpicture}
