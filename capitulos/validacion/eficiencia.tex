@@ -37,7 +37,7 @@ Además, se realizó una ejecución adicional de un \emph{run} con factor de dem
 
 La tabla \ref{table:vehiclesvstime} presenta los resultados obtenidos del tiempo de duración de la simulación versus la cantidad de vehículos promedio por instante de tiempo; estos datos se visualizan además de manera gráfica en la figura \ref{fig:vehiclesvstime}.
 
-\begin{table}[htpb]
+\begin{table}[tpb]
     \centering
     \begin{tabular}{@{}rrr@{}}
         \textbf{Factor de Demanda} & \textbf{Nro. Prom. Vehículos} & \textbf{Tiempo Promedio [s]} \\ \midrule
@@ -76,24 +76,20 @@ La figura \ref{fig:timevsvehicles_evolution} presenta por lo otro lado la evoluc
 
 \subsubsection{Carga computacional}
 
-En términos de carga sobre el entorno de simulación, se pueden observar los resultados obtenidos en las figuras \ref{fig:systemload:cpuram} y \ref{fig:systemload:io}. 
-
-\begin{figure}[htpb]
+\begin{figure}[tpb]
     \centering
     \input{figuras/system_performance.tex}
     \caption{Carga sobre el sistema durante una simulación con factor de demanda 100\%.}
     \label{fig:systemload:cpuram}
 \end{figure}
 
-La figura \ref{fig:systemload:cpuram} ilustra la carga sobre el sistema en términos porcentuales. En específico, se puede observar como el uso promedio del procesador aumenta en aproximadamente un 20\% durante la simulación, situación fácilmente manejable para cualquier procesador moderno. Además, el uso de memoria aumenta en menos de un 5\% -- en términos numéricos, el sistema utiliza menos de 600 MB para simular un escenario con un promedio de 1400 nodos presentes en cualquier instante, lo cual es un valor muy razonable si se considera que el estándar de memoria RAM para computadores personales hoy en día es por lo menos 4 GB \autocite{steamhwsurvey, unityhardwaresurvey}.
+En términos de carga sobre el entorno de simulación, se pueden observar los resultados obtenidos en la figura \ref{fig:systemload:cpuram}. Esta figura ilustra la carga sobre el sistema en términos porcentuales, para el escenario con factor de demanda 100\%. En específico, se puede observar como el uso promedio del procesador aumenta en aproximadamente un 20\% durante la simulación, situación fácilmente manejable para cualquier procesador moderno. Además, el uso de memoria aumenta en menos de un 5\% -- en términos numéricos, el sistema utiliza menos de 600 MB para simular un escenario con un promedio de 1400 nodos presentes en cualquier instante, lo cual es un valor muy razonable si se considera que el estándar de memoria RAM para computadores personales hoy en día es por lo menos 4 GB \autocite{steamhwsurvey, unityhardwaresurvey}.
 
-Por otro lado, la figura \ref{fig:systemload:io} ilustra el uso del disco duro del sistema durante la ejecución de la simulación. 
-Cabe destacar que durante el \emph{run} en cuestión se extrajeron y almacenaron un gran número de estadísticas en cada instante de simulación, las cuales OMNeT++ almacena directamente en el disco. 
-Sin embargo, aún así, se puede notar que el \emph{framework} es austero en su utilización de los recursos del sistema.
-
-\begin{figure}[htpb]
-    \centering
-    \input{figuras/system_io.tex}
-    \caption[I/O en disco durante simulación]{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}
-    \label{fig:systemload:io}
-\end{figure} 
+%Finalmente, la figura \ref{fig:systemload:io} ilustra el uso del disco duro del sistema durante la ejecución de la simulación. 
+%Cabe destacar que durante el \emph{run} en cuestión se extrajeron y almacenaron un gran número de estadísticas en cada instante de simulación, las cuales OMNeT++ almacena directamente en el disco. 
+%\begin{figure}[htpb]
+%    \centering
+%    \input{figuras/system_io.tex}
+%    \caption[I/O en disco durante simulación]{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}
+%    \label{fig:systemload:io}
+%\end{figure} 

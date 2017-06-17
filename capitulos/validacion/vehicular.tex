@@ -1,33 +1,61 @@
-\section{Modelo Vehicular}
+\section{Modelo Vehicular}\label{sec:results:vehicular}
 
-\begin{figure}
+\subsection{Mediciones Realizadas}
+
+Esta categoría de experimentos y mediciones pretende verificar el correcto funcionamiento del \emph{framework} para la simulación de Sistemas Inteligentes de Transporte, utilizando el escenario de simulación descrito al principio del presente capítulo, en la sección \ref{sec:experiments}. Cabe destacar que en ningún caso se pretende argumentar que el escenario en cuestión es óptimo, ni que lo parámetros del sistema de transporte son los correctos para este escenario, sino simplemente que PVEINS permite de manera precisa y confiable comparar y medir las ventajas que otorga un sistema de transporte dotado de comunicación intervehicular.
+
+Para este fin se realizaron 6 \emph{runs} del escenario en cuestión, la mitad sin comunicación alguna entre vehículos y la otra mitad con comunicación perfecta\footnote{Es decir, con un factor de pérdida de paquetes en el medio de transmisión de un 0\%}, para tres factores de demanda distintos. Estos \emph{runs} se contrastaron principalmente en términos de la cantidad de vehículos que alcanzaron su destino dentro de los 15 minutos de simulación, factor que de manera intuitiva permite evaluar el desempeño del sistema. Para \emph{runs} con el mismo factor de demanda, una cantidad menor de vehículos que alcanzan su destino en un lapso de tiempo dado nos indica una menor eficiencia del sistema y un mayor retardo en los viajes realizados dentro del escenario. De esta manera, se pretende mostrar que el ``accidente'' modelado causa una cierta congestión en el sistema de transporte, y que, utilizando la comunicación intervehicular, es posible disminuir dicho impacto sobre la red. 
+
+Además, se realizaron dos análisis un poco más avanzados para los casos con factor de demanda 100\%; uno contrastando distancia y tiempos de recorrido en ambas simulaciones (con y sin comunicación), y un segundo comparando la emisión de CO$^2$\footnote{Valor obtenido desde OMNeT++, el cual se calcula en base a parámetros obtenidos desde la simulación vehicular (distancia recorrida, velocidad, etc.)} en ambos casos. 
+
+\subsection{Resultados}
+
+Los resultados del conjunto de 6 \emph{runs} con distintos factores de demanda puede observarse en la figura \ref{fig:arrivedcomp}, representados en un diagrama de barras. Puede observarse que aquellos \emph{runs} dotados de capacidades de comunicación intervehicular constantemente presentan una mayor cantidad de vehículos que alcanzan su destino final en el escenario dentro del tiempo de simulación. Si bien esta mejora en términos porcentuales es de apenas un 2.33\% en promedio, en la realidad se traduce a una considerable cantidad de vehículos que en el escenario \emph{sin comunicación} se ven atascados en una congestión que no les permite alcanzar su destino, pero que que en el escenario \emph{con comunicación} logran evitar esta situación.
+
+\begin{figure}[tpb]
     \centering
     \input{figuras/arrived_comp.tex}
-    \caption[Cantidad de vehículos que alcanzaron su destino]{Comparación cantidad de vehículos que alcanzaron su destino en 15 minutos de tiempo simulado con tres factores de demanda distintos.}
+    \caption[Comparación cantidad de vehículos que alcanzaron su destino]{Comparación cantidad de vehículos que alcanzaron su destino en 15 minutos de tiempo simulado con tres factores de demanda distintos.}
     \label{fig:arrivedcomp}
 \end{figure}
 
-\begin{figure}[htpb]
+Con el fin de ilustrar de mejor manera el impacto de la comunicación en la cantidad de vehículos que logran evitar congestión y trasladarse exitosamente a su destino, se realizaron dos simulaciones adicionales al conjunto mencionado anteriormente. Esta simulaciones fueron de una duración extendida de dos horas de tiempo simulado, y los resultados de éstas se puede visualizar en la tabla \ref{table:2hrssimulation}, comparados con los resultados obtenidos de la simulación de 15 minutos con factor de demanda 100\%. Se puede evidenciar que la diferencia estudiada se acentúa con el tiempo -- mientras que para el escenario de 15 minutos la diferencia entre la cantidad de vehículos que alcanzan su destino para ambas configuraciones es de ``apenas'' 57, cuando el escenario se extiende a dos horas, esta diferencia alcanza casi los 500 vehículos. Esto indica que la comunicación tiene un efecto no-negligible en el flujo vehicular.
+
+\begin{table}[tpb]
+    \centering
+    \begin{tabular}{@{}l|rrrr@{}}
+        \multicolumn{1}{c|}{\textbf{Duración}} & \multicolumn{1}{l}{\begin{tabular}[l]{@{}l@{}}\textbf{Alcanzaron destino}\\ \textbf{con comunicación}\end{tabular}} & \multicolumn{1}{l}{\begin{tabular}[l]{@{}l@{}}\textbf{Alcanzaron destino}\\ \textbf{sin comunicación}\end{tabular}} & \multicolumn{1}{c}{\textbf{$\triangle$}} & \multicolumn{1}{c}{\textbf{\% de mejora}} \\ \midrule
+        15 min & 3858 & 3801 & 57 & 1.5\% \\
+        120 min & 11488 & 11014 & 474 & 4.3\% \\ \bottomrule
+    \end{tabular}
+    \caption[Comparación simulaciones de 15 y 120 minutos de duración]{Comparación cantidad de vehículos que alcanzaron su destino con y sin comunicación intervehicular, para simulaciones de 15 minutos y 2 horas, con factor de demanda 100\%.}
+    \label{table:2hrssimulation}
+\end{table}
+
+Por otro lado, los análisis de eficiencia del sistema de transporte en términos de distancia total y emisión total de dióxido de carbono pueden estudiarse a continuación, en las figuras \ref{fig:distvstime} y \ref{fig:distvsco2}. Estas figuras corresponden a gráficos de dispersión para la comparación de variables claves para los escenarios \emph{con} y \emph{sin} comunicación, y cada punto en el gráfico representa un vehículo en la simulación.
+
+El primero de éstos, el gráfico \ref{fig:distvstime}, ilustra la relación entre distancia total recorrida y tiempo total de viaje para cada uno de los vehículos presentes en las simulaciones de 15 minutos de duración con un factor de demanda del 100\%. Puede notarse que si bien ambos \emph{runs} por lo general presentan un comportamiento similar, en el \emph{run} sin comunicación existen dos grupos con tendencia a presentar un mayor tiempo total en la simulación pero con distancias totales recorridas más bajas de lo esperado. En particular, es muy clara la presencia de un grupo de vehículos que están presentes en prácticamente la duración total de la simulación pero que sin embargo recorren distancias menores a 300 metros. Por otro lado, si bien el escenario con comunicación perfecta presenta una mayor dispersión de sus tiempos totales, no presenta mayores tendencias a largos tiempos de viaje asociados a distancias cortas. 
+
+La interpretación de estos resultados es directa; aquellas ``ramas'' del escenario sin comunicación que tienden hacia tiempos mayores para distancias comparativamente más cortas, corresponden casi seguramente a aquellos vehículos que se ven atascados en la congestión de tráfico generada por el ``accidente'', y que por ende pasan mucho tiempo detenidos o con velocidades muy bajas. Por otro lado, la mayor dispersión de los puntos asociados al escenario con comunicación perfecta se asocia al hecho de que se ``redirige'' a todo vehículo que se estima potencialmente pudiese pasar por la calle afectada -- esto aumenta la distancia y tiempo de viaje para mucho de ellos. Estos es un \emph{tradeoff} para asegurar un mayor flujo vehicular.
+
+\begin{figure}[tpb]
     \centering
     \input{figuras/per00per10_timedistance.tex}
-    \caption{Gráfico de dispersión, distancia total vs tiempo, para escenarios con PER 0.0 y PER 1.0}
+    \caption[Distancia vs. tiempo total]{Gráfico de dispersión, distancia total vs. tiempo total en la simulación, para escenarios con factor de demanda 100\%, 15 minutos de tiempo simulado.}
     \label{fig:distvstime}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tpb]
     \centering
     \input{figuras/per00per10_co2.tex}
-    \caption{Gráfico de dispersión, distancia total vs CO$^{2}$ total, para escenarios con PER 0.0 y PER 1.0}
+    \caption[Distancia vs. CO$^{2}$ total]{Gráfico de dispersión, distancia total vs. gramos totales de CO$^{2}$ emitidos en la simulación, para escenarios con factor de demanda 100\%, 15 minutos de tiempo simulado.}
     \label{fig:distvsco2}
 \end{figure}
 
-\begin{table}[htpb]
-    \centering
-    \begin{tabular}{@{}l|rrr@{}}
-        \multicolumn{1}{c|}{\textbf{Duración}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}\textbf{Alcanzaron destino}\\ \textbf{PER 0.0}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}\textbf{Alcanzaron destino}\\ \textbf{PER 1.0}\end{tabular}} & \multicolumn{1}{c}{$\triangle$} \\ \midrule
-        15 min & 3858 & 3801 & 57 \\
-        120 min & 11488 & 11014 & 474 \\ \bottomrule
-    \end{tabular}
-    \caption{My caption}
-    \label{my-label}
-\end{table}
+El gráfico \ref{fig:distvsco2} presenta la relación entre la distancia total recorrida vs. la cantidad total de dióxido de carbono emitido por cada vehículo en los escenarios. Este gráfico presenta resultados muy similares al gráfico anterior, \ref{fig:distvstime}; existen dos grupos de vehículos, en el caso sin comunicación, que tienden a exhibir mayores cantidades totales de emisiones para distancias comparativamente más cortas, mientras que el \emph{run} con comunicación perfecta presenta una dispersión un poco mayor pero sin tendencia a extremos.
+
+Nuevamente se asocian los extremos en el \emph{run} sin comunicación a aquellos vehículos que se ven atrapados en el atochamiento producido por el accidente. Estos vehículos se encontraron la mayor del tiempo desplazándose a muy bajas velocidades o detenidos con el motor encendido, lo cual causa mayores emisiones de dióxido de carbono a la atmósfera. Por otro lado, en el \emph{run} con comunicación perfecta, nuevamente se debe considerar que muchos vehículos son redirigidos y deben extender su trayectoria, lo cual genera una mayor dispersión en los valores obtenidos
+
+
+
+
