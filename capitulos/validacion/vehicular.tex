@@ -6,7 +6,9 @@ Esta categoría de experimentos y mediciones pretende verificar el correcto func
 
 Para este fin se realizaron 6 \emph{runs} del escenario en cuestión, la mitad sin comunicación alguna entre vehículos y la otra mitad con comunicación perfecta\footnote{Es decir, con un factor de pérdida de paquetes en el medio de transmisión de un 0\%}, para tres factores de demanda distintos. Estos \emph{runs} se contrastaron principalmente en términos de la cantidad de vehículos que alcanzaron su destino dentro de los 15 minutos de simulación, factor que de manera intuitiva permite evaluar el desempeño del sistema. Para \emph{runs} con el mismo factor de demanda, una cantidad menor de vehículos que alcanzan su destino en un lapso de tiempo dado nos indica una menor eficiencia del sistema y un mayor retardo en los viajes realizados dentro del escenario. De esta manera, se pretende mostrar que el ``accidente'' modelado causa una cierta congestión en el sistema de transporte, y que, utilizando la comunicación intervehicular, es posible disminuir dicho impacto sobre la red. 
 
-Además, se realizaron dos análisis un poco más avanzados para los casos con factor de demanda 100\%; uno contrastando distancia y tiempos de recorrido en ambas simulaciones (con y sin comunicación), y un segundo comparando la emisión de CO$^2$\footnote{Valor obtenido desde OMNeT++, el cual se calcula en base a parámetros obtenidos desde la simulación vehicular (distancia recorrida, velocidad, etc.)} en ambos casos. 
+Además, se realizaron dos análisis un poco más avanzados para los casos con factor de demanda 100\%; uno contrastando distancia y tiempos de recorrido en ambas simulaciones (con y sin comunicación), y un segundo comparando la emisión de dióxido de carbono en ambos casos. 
+
+Todos los valores analizados en estos experimentos fueron obtenidos desde OMNeT++ -- el simulador de redes de comunicación, a su vez los obtiene desde el simulador de transporte o los calcula en base a datos proporcionados por este. 
 
 \subsection{Resultados}
 
@@ -56,6 +58,11 @@ El gráfico \ref{fig:distvsco2} presenta la relación entre la distancia total r
 
 Nuevamente se asocian los extremos en el \emph{run} sin comunicación a aquellos vehículos que se ven atrapados en el atochamiento producido por el accidente. Estos vehículos se encontraron la mayor del tiempo desplazándose a muy bajas velocidades o detenidos con el motor encendido, lo cual causa mayores emisiones de dióxido de carbono a la atmósfera. Por otro lado, en el \emph{run} con comunicación perfecta, nuevamente se debe considerar que muchos vehículos son redirigidos y deben extender su trayectoria, lo cual genera una mayor dispersión en los valores obtenidos
 
+\subsection{Conclusiones}
 
+El análisis del modelo vehicular arrojó los resultados esperados, y se evidencia claramente el efecto mitigante en la congestión vehicular producto de un accidente que puede tener la comunicación intervehicular en un sistema de transporte inteligente. 
 
+En particular, los experimentos demostraron que PVEINS es capaz de simular escenarios viales realistas, y que permite analizar los resultados de manera correcta y precisa. La integración permite la obtención de datos claves del sistema, como la distancia total recorrida por cada vehículo, el tiempo que permaneció en el escenario y el total de su emisión de dióxido de carbono. 
+
+Finalmente, se destaca que el \emph{framework} posibilita la modificación total del comportamiento de vehículos en respuesta a eventos generados de manera dinámica. 
 

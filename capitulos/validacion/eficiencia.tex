@@ -7,18 +7,7 @@ A través de éstos datos se pretende generar un perfil del \emph{software} que 
 
 Antes de detallar las simulaciones realizadas, se debe definir el término \emph{factor de demanda}. Éste corresponde a un elemento de configuración de la simulación de transporte en Paramics, el cual caracteriza la carga vehicular sobre el sistema de transporte en cada instante de tiempo. En términos más simples, el factor de demanda regula la cantidad de vehículos que Paramics inserta a la red durante la simulación; es un valor porcentual cuya correspondencia en cantidad real de vehículos en la red dependerá de las características particulares de cada simulación. Sin embargo, los valores aproximados para el escenario utilizado, para distintos factores de demanda, pueden observarse en la tabla \ref{table:demandfactor}.
 
-Se realizaron entonces 16 ejecuciones del escenario (de aquí en adelante, denominadas \emph{runs}) con cuatro factores de demanda distintos (4 \emph{runs} con 100\%, 4 con 75\%, 4 con 50\% y 4 con 25\%) y cada una con una \emph{semilla} distinta para los generadores de números pseudoaleatorios. De éstos \emph{runs} se extrajeron las siguientes estadísticas:
-
-\begin{enumerate}
-    \item Timestamp de inicio del \emph{run}.
-    \item Timestamp de fin del \emph{run}.
-    \item Duración en tiempo real del \emph{run}.
-    \item Cantidad de vehículos en la red de transporte, cada 1 minuto de tiempo simulado.
-\end{enumerate}
-
-Además, se realizó una ejecución adicional de un \emph{run} con factor de demanda 100\%, y se midió la carga sobre el equipo de prueba mientras se ejecutaba la simulación utilizando las herramientas de monitoreo de sistema de Microsoft Windows. En específico, se midió la carga porcentual sobre el procesador, la memoria RAM utilizada y la cantidad de operaciones de escritura y lectura del disco físico durante la simulación.
-
-\begin{table}[htpb]
+\begin{table}[tpb]
     \centering
     \begin{tabular}{@{}rrr@{}}
         \textbf{Factor de Demanda} & \textbf{Ctdad. Prom. Vehículos} \\ \midrule
@@ -31,11 +20,36 @@ Además, se realizó una ejecución adicional de un \emph{run} con factor de dem
     \label{table:demandfactor}
 \end{table}
 
+Se realizaron entonces 16 ejecuciones del escenario (de aquí en adelante, denominadas \emph{runs}) con cuatro factores de demanda distintos (4 \emph{runs} con 100\%, 4 con 75\%, 4 con 50\% y 4 con 25\%) y cada una con una \emph{semilla} distinta para los generadores de números pseudoaleatorios. De éstos \emph{runs} se extrajeron las siguientes estadísticas:
+
+\begin{enumerate}
+    \item Timestamp de inicio del \emph{run}.
+    \item Timestamp de fin del \emph{run}.
+    \item Duración en tiempo real del \emph{run}.
+    \item Cantidad de vehículos en la red de transporte, cada 1 minuto de tiempo simulado.
+\end{enumerate}
+
+De manera adicional, para determinar el principal origen del \emph{overhead} presente en las simulaciones, se ejecutaron también una serie de \emph{runs} de la simulación \emph{sin} OMNeT++, sólamente utilizando el \emph{plugin} controlado por un \emph{script} Python, y se midió su tiempo de ejecución.
+
+Finalmente, se realizó una ejecución adicional de un \emph{run} con factor de demanda 100\%, y se midió la carga sobre el equipo de prueba mientras se ejecutaba la simulación utilizando las herramientas de monitoreo de sistema de Microsoft Windows. En específico, se midió la carga porcentual sobre el procesador, la memoria RAM utilizada y la cantidad de operaciones de escritura y lectura del disco físico durante la simulación.
+
 \subsection{Resultados}
 
 \subsubsection{Duración de la Simulación}
 
 La tabla \ref{table:vehiclesvstime} presenta los resultados obtenidos del tiempo de duración de la simulación versus la cantidad de vehículos promedio por instante de tiempo; estos datos se visualizan además de manera gráfica en la figura \ref{fig:vehiclesvstime}.
+
+De estos resultados se puede concluir que el \emph{framework}, como era de esperarse dada la naturaleza de la simulación, presenta una relación levemente exponencial entre la cantidad promedio de nodos en la red vehicular con el tiempo que efectivamente demora una simulación en completar su ejecución.
+
+Se utilizó numpy para calcular un ajuste polinomial a los datos obtenidos, obteniendo la siguiente relación entre cantidad de vehículos promedio en la simulación $N_{v}$ y tiempo de ejecución de ésta en segundos, $T(N_{v})$:
+
+\[ T(N_{v}) = (5.829 \times 10^{-4})N_{v}^{2} + (2.586 \times 10^{-1})N_{v} + 6.317 \]
+
+Esto indica que a pesar de ser exponencial, la relación presenta una curva bastante suavizada. Es factible entonces simular escenarios de escala aún mayor que la presentada en esta memoria (la cual, cabe notar, no es menor), sin mayores dificultades.
+
+La figura \ref{fig:timevsvehicles_evolution} presenta por lo otro lado la evolución de la red vehicular en términos de cantidad de vehículos para un \emph{run} con factor de demanda de 100\%, tanto en tiempo real como en tiempo simulado. Este gráfico permite visualizar además como la cantidad de vehículos en la red afecta el tiempo de ejecución de cada paso de simulación.
+
+Por otro lado, para determinar si la mayor parte del \emph{overhead} en la ejecución de las simulaciones provenía desde el \emph{plugin} en sí o desde OMNeT++, se realizaron 6 \emph{runs} de la simulación, con factor de demanda 100\%, omitiendo la integración con VEINS. Es decir, se ejecutó el escenario dentro de Paramics, con el \emph{plugin} activado, pero sin accidente y sin comunicación entre los nodos, controlado por un \emph{script} Python. Estas mediciones arrojaron como promedio 63.37 segundos de tiempo real por 15 minutos de tiempo simulado, indicando claramente que la mayor parte del \emph{overhead} proviene de OMNeT++, y de la simulación de la comunicación inalámbrica.
 
 \begin{table}[tpb]
     \centering
@@ -57,16 +71,6 @@ La tabla \ref{table:vehiclesvstime} presenta los resultados obtenidos del tiempo
     \label{fig:vehiclesvstime}
 \end{figure}
 
-De estos resultados se puede concluir que el \emph{framework}, como era de esperarse dada la naturaleza de la simulación, presenta una relación levemente exponencial entre la cantidad promedio de nodos en la red vehicular con el tiempo que efectivamente demora una simulación en completar su ejecución.
-
-Se utilizó numpy para calcular un ajuste polinomial a los datos obtenidos, obteniendo la siguiente relación entre cantidad de vehículos promedio en la simulación $N_{v}$ y tiempo de ejecución de ésta en segundos, $T(N_{v})$:
-
-\[ T(N_{v}) = (5.829 \times 10^{-4})N_{v}^{2} + (2.586 \times 10^{-1})N_{v} + 6.317 \]
-
-Esto indica que a pesar de ser exponencial, la relación presenta una curva bastante suavizada. Es factible entonces simular escenarios de escala aún mayor que la presentada en esta memoria (la cual, cabe notar, no es menor), sin mayores dificultades.
-
-La figura \ref{fig:timevsvehicles_evolution} presenta por lo otro lado la evolución de la red vehicular en términos de cantidad de vehículos para un \emph{run} con factor de demanda de 100\%, tanto en tiempo real como en tiempo simulado. Este gráfico permite visualizar además como la cantidad de vehículos en la red afecta el tiempo de ejecución de cada paso de simulación.
-
 \begin{figure}[htpb]
     \centering
     \input{figuras/timevsvehicles_evolution.tex}
@@ -79,7 +83,7 @@ La figura \ref{fig:timevsvehicles_evolution} presenta por lo otro lado la evoluc
 \begin{figure}[tpb]
     \centering
     \input{figuras/system_performance.tex}
-    \caption{Carga sobre el sistema durante una simulación con factor de demanda 100\%.}
+    \caption[Carga sobre el sistema durante una simulación]{Carga sobre el sistema durante una simulación con factor de demanda 100\%.}
     \label{fig:systemload:cpuram}
 \end{figure}
 
@@ -93,3 +97,9 @@ En términos de carga sobre el entorno de simulación, se pueden observar los re
 %    \caption[I/O en disco durante simulación]{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}
 %    \label{fig:systemload:io}
 %\end{figure} 
+
+\subsection{Conclusiones}
+
+De los experimentos realizados para la medición de la eficiencia computacional del \emph{framework} desarrollado, se puede concluir que este alcanza el grado de eficiencia deseado para un software destinado al uso en la investigación de modelos complejos de sistemas de transporte. Es capaz de simular eficientemente sistemas con 1400 nodos presentes en cada de simulación, manteniendo un uso de procesador razonable y una huella en memoria casi despreciable. 
+
+Además, destaca que la mayor parte del \emph{overhead} evidenciado en las simulaciones proviene de fuentes externas al \emph{plugin} desarrollado; en particular, una gran parte del retraso proviene de la simulación de comunicación inalámbrica de OMNeT++, y de ser necesario esto puede ser evitado mediante la omisión de la integración con VEINS, realizando la simulación directamente con, por ejemplo, Python.

@@ -1,4 +1,4 @@
-\section{VehicleManager}\label{sec:vehiclemanager}
+\subsection{VehicleManager}\label{sec:vehiclemanager}
 
 El módulo más complejo y grande (en términos de líneas de código) del \emph{framework}. \texttt{VehicleManager} tiene como función abstraer el acceso a variables directamente relacionadas con los vehículos presentes en la simulación, mantener registros de dichos vehículos, y encargarse de ejecutar los diversos cambios de estado de éstos que puede solicitar el cliente (ver \ref{sec:mod_state}). Además, varios de éstos cambios de estado requieren acciones en múltiples instantes de tiempo (por ejemplo, el cambio de velocidad lineal, el cual se ejecuta durante un periodo de tiempo determinado), por lo que adicionalmente el módulo mantiene colas de eventos diferidos a ejecutar en instantes determinados.
 
@@ -6,7 +6,7 @@ Para la implementación de éste módulo, se utilizó nuevamente el paradigma de
 
 A continuación se tratará de detallar los aspectos más importantes de este módulo.
 
-\subsection{Estado interno}\label{sec:internalstate}
+\subsubsection{Estado interno}\label{sec:internalstate}
 
 Para simplificar muchas de las operaciones de obtención de variables y modificación de estados, el módulo mantiene un estado interno congruente con el estado de la simulación en Paramics. Para este fin se ocupan los llamados de la API de Paramics mencionados en la sección \ref{sec:plugin.c}.
 
@@ -24,13 +24,13 @@ Se utilizan las siguientes variables para almacenar información sobre el estado
     \item[\texttt{lane\_set\_triggers}] \emph{Hashmap} utilizado para relacionar vehículos con eventuales comandos de cambio de pista (ver sección \ref{sec:laneoverride}).
 \end{description}
 
-\subsection{Obtención de variables}
+\subsubsection{Obtención de variables}
 
 La función más básica de \texttt{VehicleManager} es la de abstraer el acceso a las variables de simulación directamente relacionadas con vehículos y tipos de vehículos. Los principales métodos encargados de estas funcionalidades son \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()}, respectivamente, aunque éstos por lo general son invocados por \texttt{packVehicleVariable()} y \texttt{packVhcTypesVariable()}, respectivamente, métodos que empaquetan los resultados en un \texttt{tcpip::Storage} para su fácil manejo. 
 
 \texttt{getVehicleVariable()} y \texttt{getVhcTypesVariable()} son métodos relativamente simples, los cuales simplemente comparan el identificador de variable proporcionado como argumento y obtienen el valor solicitado mediante un llamado a alguno de los métodos auxiliares implementados para la obtención de variables. Dada su gran similitud con los métodos \texttt{packSimulationVariable()} y \texttt{getSimulationVariable()} ya presentados en la sección \ref{sec:simulation:vars}, dedicada a la obtención de variables desde el módulo \texttt{Simulation}, no se presentará la implementación de los métodos propios del presente módulo en el documento (ver código \ref{code:simvar} para un acercamiento a la implementación real de éstos).
 
-\subsection{Modificación de estado de vehículos}
+\subsubsection{Modificación de estado de vehículos}
 
 La segunda función de \texttt{VehicleManager} es la de ejecutar los comandos de modificación de estado y comportamiento de los vehículos en la simulación (ver sección \ref{sec:mod_state} para una lista de los comandos de este tipo que se implementaron). El método \texttt{setVehicleState()} es el encargado de la interpretación de comandos de cambio de estado, y su implementación es simple; determina el tipo de cambio de estado solicitado y si se encuentra implementado delega su ejecución al método correspondiente.
 
@@ -42,7 +42,10 @@ Los comandos de cambio de velocidad de TraCI requieren un procedimiento especial
 
 \texttt{traci\_api::BaseSpeedController} define una clase compuesta únicamente de métodos virtuales, en base a la cual se construyen distintos tipos de controladores de velocidad. Como se comentó anteriormente, en la sección \ref{sec:internalstate}, \texttt{VehicleManager} mantiene un \emph{hashmap} que relaciona vehículos con controladores derivados de la clase anteriormente mencionada. Este mapa es accedido para cada vehículo, en cada paso de simulación por el método \texttt{speedControlOverride()} (a su vez, invocado por \texttt{qpo\_CFM\_followSpeed()} y \texttt{qpo\_CFM\_leadSpeed()} -- ver sección \ref{sec:plugin.c:speed}), el cual verifica si el vehículo en cuestión cuenta con un modificador de velocidad y aplica el cambio necesario. Además, cada controlador de velocidad cuenta con un método \texttt{repeat()} para verificar si debe seguir aplicándose en pasos de simulación futuros -- de no ser así, se elimina de la representación interna.
 
-\lstinputlisting[style=CPP, label={cod:vehiclemanager_speedcontrol}, caption={Método de verificación de control de velocidad en VehicleManager. Verifica la existencia de un controlador personalizado de velocidad en \texttt{speed\_controllers} y luego guarda el resultado de la evaluación en la variable \texttt{speed}.}]{codigo/vehiclemanager_speedcontrol.cpp}
+\begin{figure}[htpb]
+    \lstinputlisting[style=CPP, label={cod:vehiclemanager_speedcontrol}, caption={Método de verificación de control de velocidad en VehicleManager. Verifica la existencia de un controlador personalizado de velocidad en \texttt{speed\_controllers} y luego guarda el resultado de la evaluación en la variable \texttt{speed}.}]{codigo/vehiclemanager_speedcontrol.cpp}
+\end{figure}
+
 
 En la implementación final del \emph{framework} se definieron dos clases derivadas distintas de \texttt{traci\_api::BaseSpeedController}: \texttt{traci\_api::HoldSpeedController} y \texttt{traci\_api::LinearSpeedChangeController}, las cuales implementan, respectivamente, los cambios inmediatos y lineales de velocidad definidos en el protocolo TraCI. La implementación de éstos puede revisarse en los apéndices, código \ref{code:speedcontrollers}.
 
@@ -51,8 +54,9 @@ En la implementación final del \emph{framework} se definieron dos clases deriva
 TraCI cuenta con un comando \texttt{0x57 Cambio de Ruta} mediante el cual un cliente puede proveer un número de arcos (calles) que el vehículo en cuestión deberá seguir antes de reencaminarse a su destino original. Este comando es especial en el sentido que requiere invalidar el ruteo interno de Paramics para dicho vehículo mientras esté siguiendo la ruta otorgada por el cliente, lo cual puede durar un tiempo indefinido.
 
 Para esto se definió entonces un método \texttt{rerouteVehicle()} en VehicleManager, el cual recibe un puntero a un vehículo y su calle actual, y retorna el índice de la siguiente salida que debe tomar -- en caso de tener una ruta personalizada, este método retornará el índice de la siguiente calle en la ruta, y de otro modo retorna 0, lo cual es interpretado por Paramics como una indicación a seguir la ruta dictada por el modelo interno.
-
+\begin{figure}[htpb]
 \lstinputlisting[style=CPP, label={cod:vehiclemanager_reroute}, caption={Método de reruteo en VehicleManager, para vehículos con rutas dictadas por un cliente TraCI.}]{codigo/vehiclemanager_reroute.cpp}
+\end{figure}
 
 Este método es invocado cada vez que un vehículo necesite evaluar su elección de ruta, a través de la función de extensión de la API de Paramics \texttt{int qpo\_RTM\_decision()} (ver sección \ref{sec:plugin.c:decision}).
 
@@ -66,8 +70,14 @@ Finalmente, el comando de cambio de pista de TraCI también debe aplicarse por u
 Esto se logró mediante la implementación de la clase de métodos virtuales \texttt{traci\_api::}
 \texttt{BaseTrigger} y su clase derivada \texttt{traci\_api::LaneSetTrigger}. \texttt{BaseTrigger} define una interfaz general para operaciones de ejecución periódica o diferida, y \texttt{LaneSetTrigger} representa una implementación de ésta interfaz para la ejecución constante de un cambio de pista por un tiempo definido.
 
-\lstinputlisting[style=CPP, label={cod:lanesettrigger}, caption={Cambio de pista, implementado en \texttt{LaneSetTrigger}}]{codigo/lanesettrigger.cpp}
+\begin{figure}[htpb]
+    \lstinputlisting[style=CPP, label={cod:lanesettrigger}, caption={Cambio de pista, implementado en \texttt{LaneSetTrigger}}]{codigo/lanesettrigger.cpp}
+\end{figure}
+
 
 La ejecución de estos \emph{triggers} se maneja en el método \texttt{handleDelayedTriggers()} en \texttt{VehicleManager}, el cual es ejecutado al fin de cada paso de simulación. Cabe notar que si bien en la versión final del \emph{framework} sólo se implementó una clase derivada de \texttt{BaseTrigger}, el diseño polimórfico de la evaluación de los \emph{triggers} hace que en el futuro sea muy fácil la integración de nuevos procedimientos diferidos al sistema.
 
-\lstinputlisting[style=CPP, label={cod:vehiclemanager_handledelayedtriggers}, caption={Manejo de \emph{triggers} para operaciones diferidas en \texttt{VehicleManager}}]{codigo/vehiclemanager_handledelayedtriggers.cpp}
+\begin{figure}[htpb]
+    \lstinputlisting[style=CPP, label={cod:vehiclemanager_handledelayedtriggers}, caption={Manejo de \emph{triggers} para operaciones diferidas en \texttt{VehicleManager}}]{codigo/vehiclemanager_handledelayedtriggers.cpp}
+\end{figure}
+

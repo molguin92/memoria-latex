@@ -1,8 +1,8 @@
-\section{Simulation}\label{sec:simulation}
+\subsection{Simulation}\label{sec:simulation}
 
 La principal funcionalidad de este módulo es abstraer y encapsular el acceso a los parámetros de la simulación vehicular de Paramics. Se implementó como una clase de C++ utilizando el patrón de diseño \emph{singleton}; esto quiere decir que sólo se permite la creación de una única instancia de un objeto de este tipo en la ejecución del programa. Esto ya que, por razones lógicas, cada ejecución del \emph{plugin} está asociada a una única simulación en Paramics, y por ende no tiene sentido que pueda existir más de un objeto de acceso a ésta. Este patrón de diseño tiene además la ventaja que simplifica el acceso a la instancia global de la clase en el sistema, desde cualquier otro objeto o función.
 
-\subsection{Obtención de variables}\label{sec:simulation:vars}
+\subsubsection{Obtención de variables}\label{sec:simulation:vars}
 
 Las variables obtenibles desde este módulo son todas aquellas que se relacionan con la simulación como ente abstracto, enumeradas en el ítem \ref{item:simvars} de la sección \ref{sec:comandos}. La implementación de los métodos \texttt{packSimulationVariable()} y \texttt{getSimulationVariable()}, encargados de facilitar el acceso a las variables representadas por este módulo, pueden observarse en el código \ref{code:simvar} en los apéndices. Cabe destacar que los módulos \texttt{VehicleManager} y \texttt{Network} cuentan con métodos análogos \emph{muy} similares, por lo que no se incluirá el código de éstos últimos en el documento.
 

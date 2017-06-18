@@ -1,6 +1,6 @@
-\section{Otros módulos}\label{sec:miscmodules}
+\subsection{Otros módulos}\label{sec:miscmodules}
 
-\subsection{Network}
+\subsubsection{Network}
 
 El módulo \texttt{Network} encapsula el acceso a variables de elementos de la red, en particular, calles, intersecciones y rutas. Al igual que \texttt{VehicleManager} y \texttt{Simulation}, se implementó utilizando un \emph{singleton}. 
 
@@ -12,9 +12,12 @@ La implementación del módulo es muy simple, ya que sólo otorga acceso a eleme
     
 \end{description}
 
-\lstinputlisting[style=CPP, label={cod:network_init}, caption={Constructor del módulo \texttt{Network}}]{codigo/network_init.cpp} 
+\begin{figure}[htpb]
+    \lstinputlisting[style=CPP, label={cod:network_init}, caption={Constructor del módulo \texttt{Network}}]{codigo/network_init.cpp} 
+\end{figure}
 
-\subsection{Utils}
+
+\subsubsection{Utils}
 
 En \texttt{Utils.\{cpp/h\}} se implementaron una serie de funciones de conveniencia:
 \begin{itemize}
@@ -25,7 +28,7 @@ En \texttt{Utils.\{cpp/h\}} se implementaron una serie de funciones de convenien
     \item Las funciones \texttt{RGB2HEX()} y \texttt{HEX2RGB()}, para la conversión de colores entre ambas representaciones.
 \end{itemize}
 
-\subsection{Constants}
+\subsubsection{Constants}
 
 En el archivo de cabecera \texttt{Constants.h} se declararon una serie de constantes globales al sistema. No obstante, cada módulo maneja además un conjunto de constantes propias. Cabe notar que las constantes del \emph{framework} fueron definidas como \emph{variables constantes estáticas}, y no como \emph{definiciones del preprocesador}.
 
@@ -48,7 +51,7 @@ En el archivo de cabecera \texttt{Constants.h} se declararon una serie de consta
 La diferencia entre ambos métodos de definición radica en la interpretación que el \emph{toolchain} de compilación les da. Las \emph{definiciones del preprocesador} son interpretadas por el \emph{preprocesador}, antes de pasar por el compilador, y se ejecutan como simples reemplazos textuales en el código por el valor definido. Por otro lado, las variables constantes son tratadas como cualquier otra variable, y por ende cuentan con todas las propiedades de éstas. La decisión de utilizar este segundo método se tomó en base a que las variables constantes tienen la particularidad de estar restringidas a su \emph{scope} -- es decir, si se declaran por ejemplo dentro de un \emph{namespace} (como es el caso en \texttt{Constants.h}), su identificador no queda definido fuera de dicho entorno.
 Esto es altamente deseable para futuras extensiones del \emph{framework}, \emph{e.g.} en el caso que se desee integrar con algún otro \emph{plugin} que ya cuente con sus propias constantes, ya que de esta manera se facilita la distinción de cual valor pertenece a qué parte del software. Por otro lado, las \emph{definiciones de preprocesador} tienen la ventaja de que no ocupan memoria en el programa final compilado (ya que los identificadores en el código se reemplazan directamente por el valor antes de compilarse el código); no obstante, dado que el número de constantes definidas es altamente acotado, el impacto en memoria de declararlas como variables del lenguage es negligible.
 
-\subsection{paramics-launchd.py}
+\subsubsection{paramics-launchd.py}
 
 El archivo \texttt{paramics-launchd.py} corresponde a una versión modificada del \emph{script} de Python 2.7 \texttt{sumo-launchd.py} incluído con la distribución de VEINS, modificado para su funcionamiento con Paramics en vez de SUMO.
 
@@ -61,7 +64,10 @@ Este archivo funciona como un \emph{daemon} de ejecución del \emph{framework}, 
     
     \item Por otro lado, el usuario inicia la simulación de VEINS en OMNeT++. Esta automáticamente se conecta con el puerto 9999 del \emph{host}, y le transfiere los contenidos de un archivo XML \texttt{paramics-launchd.xml}, definido por el usuario. Este archivo define parámetros de simulación como la red vehicular a utilizar y la \emph{semilla} deseada para la generación de valores pseudoaleatorios.
     
-\lstinputlisting[style=myXML, label={cod:launchd_xml}, caption={Ejemplo de archivo XML de inicialización de la simulación.}, xleftmargin=\dimexpr-\csname @totalleftmargin\endcsname]{codigo/paramics_example.launchd.xml}
+    \begin{figure}[tpb]
+        \lstinputlisting[style=myXML, label={cod:launchd_xml}, caption={Ejemplo de archivo XML de inicialización de la simulación.}, xleftmargin=\dimexpr-\csname @totalleftmargin\endcsname]{codigo/paramics_example.launchd.xml}
+    \end{figure}
+
     
     \item Al recibir una conexión entrante junto con el archivo de configuración, \texttt{paramics-launchd.py} prepara el inicio de la simulación integrada siguiendo los siguientes pasos:
     
