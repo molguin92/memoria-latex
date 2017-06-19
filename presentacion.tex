@@ -4,41 +4,62 @@
 \input{doc_settings.tex}
 \usepackage[sfdefault]{roboto}
 \usepackage{multirow}
+\captionsetup{format=hang}
+
 
 
 \title{Diseño e Implementación de un Framework Integrado para la Simulación de Sistemas Inteligentes de Transporte en OMNeT++ y Paramics}
 \date{\today}
-\author{Manuel Olguín}
+\author{Manuel Olguín \\\href{mailto:molguin@dcc.uchile.cl}{\nolinkurl{molguin@dcc.uchile.cl}}}
 \institute{\includegraphics[width=0.5\linewidth]{figuras/fcfm_dcc_png.png}}
-\logo{\includegraphics[width=0.3\linewidth]{figuras/fcfm_dcc_png.png}}
+%\logo{\includegraphics[width=0.3\linewidth]{figuras/fcfm_dcc_png.png}}
 
 \begin{document}
 
-    \maketitle
+\maketitle
+
+\begin{frame}{Organización de la presentación}
+    \tableofcontents
+\end{frame}
+
+\section{Motivación y Marco Teórico}
+\begin{frame}{Motivación y Marco Teórico}
+    \centering
+    ¿Qué es un Sistema Inteligente de Transporte (ITS)?
+\end{frame}
+
+\begin{frame}[standout]
+    \begin{quote}
+        \centering
+        \small
+        ``\dots\@
+        aplicaciones avanzadas que, sin incorporar inteligencia como tal, pretenden proveer servicios innovadores relacionados con distintos modos de transporte y de administración de tráfico, que además otorgan información a los usuarios, permitiéndoles utilizar el sistema de transporte de manera más segura, coordinada e inteligente\dots''\footnote{\textcite{eudirective}}
+    \end{quote}
+\end{frame}
+
+\begin{frame}{Motivación y Marco Teórico}
+    \begin{figure}
+        \centering
+        \includegraphics[width=.85\linewidth]{figuras/ITS.png}
+        \caption{Aplicaciones en un ITS (fuente: ETSI \autocite{etsi})}
+        \label{fig:itsetsi}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Estado del Arte}
+\end{frame}
     
-    \begin{frame}{Organización de la presentación}
-        \tableofcontents
-    \end{frame}
+\section{Especificación del Problema}
+\section{Diseño e Implementación}
+\section{Validación}
+\section{Conclusiones}
+\begin{frame}[standout]
+    Thank you!
+\end{frame}
 
-    \section{Marco Teórico y Estado del Arte}
-    \subsection{Marco Teórico}
-    \begin{frame}{Marco Teórico}
-        Hello, world!
-    \end{frame}
-    
-    \section{Especificación del Problema}
-    \begin{frame}{Marco Teórico}
-        Hello, world!
-    \end{frame}
+\begin{frame}[t,allowframebreaks]
+    \printbibliography
+\end{frame}
 
-    \section{Diseño e Implementación}
-    \begin{frame}{Marco Teórico}
-    Hello, world!
-    \end{frame}
-
-    \section{Validación}
-    \section{Conclusiones}
-    \begin{frame}[standout]
-        Thank you!
-    \end{frame}
 \end{document}
