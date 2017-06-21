@@ -1,58 +1,35 @@
-\usepackage{lipsum}
 \usepackage{multicol}
-\usepackage[]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{bytefield}
 \usepackage{subcaption}
+\captionsetup{format=hang}
 \usepackage{pgf-umlsd}
 \usepackage{pgf-umlcd}
 \usepackage[spanish]{babel}
 \usepackage[style=ieee, sorting=none]{biblatex}
 \usepackage{csquotes}
-\usepackage{appendix}
 \usepackage{listings}
-\usepackage{float}
 \usepackage{sourcecodepro}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows}
 \usepackage{tikz-qtree}
-\usepackage{dirtree}
 \usepackage[labelfont=bf]{caption}
-\usepackage{enumitem}
+\usepackage{hyperref}
 \usepackage[htt]{hyphenat}
 \usepackage{booktabs}
 \usepackage{pgfplots}
 \usetikzlibrary{plotmarks}
 \usepgfplotslibrary{groupplots}
 \pgfplotsset{compat=newest}
-\usepackage{minitoc}
-\usepackage{hyperref} %always last\texttt{\texttt{}}
+\usepackage[sfdefault]{roboto}
+\usepackage{multirow}
+\usepackage{textcomp}
 
 \newlength\figureheight
 \newlength\figurewidth
 \setlength\figureheight{9cm}
 \setlength\figurewidth{\linewidth}
-
-\inputencoding{utf8}
-
-\setcounter{tocdepth}{2}
-
-\renewcommand{\labelenumii}{\roman{enumii}.}
-
-\setlist{  
-    listparindent=\parindent
-}
-
-% reference description items
-\makeatletter
-\def\namedlabel#1#2{\begingroup
-    #2%
-    \def\@currentlabel{#2}%
-    \phantomsection\label{#1}\endgroup
-}
-\makeatother
-
-\captionsetup{format=hang}
 
 % CPP style definition: %
 \renewcommand{\lstlistingname}{Código}% Listing -> Código
@@ -147,26 +124,4 @@
     \tikzstyle{instcolor#2}=[fill=gray!30]
 }
 
-\newcommand{\blankpage}{
-    \newpage
-    %\thispagestyle{empty}
-    \mbox{}
-    \newpage
-}
-
-\newcommand{\minipagelisting}[3]{
-    \noindent
-    \begin{minipage}{\linewidth}
-        \lstinputlisting[style=CPP, label={#3}, caption={#2}]{#1}
-    \end{minipage}
-}
-
-\newcommand\mcitem[1]{\item\begin{minipage}[t]{\linewidth}#1\end{minipage}}
-
-% footnote spacing
-\setlength{\footnotesep}{.7cm}
 \addbibresource{bibliografia.bib}
-
-%minitoc
-\renewcommand{\mtctitle}{}
-

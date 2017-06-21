@@ -1,11 +1,7 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 \usetheme[titleformat=regular, sectionpage=progressbar, progressbar=head, background=light, numbering=none]{metropolis}           % Use metropolis theme
 
-\input{doc_settings.tex}
-\usepackage[sfdefault]{roboto}
-\usepackage{multirow}
-\captionsetup{format=hang}
-
+\input{presentation_settings.tex}
 
 
 \title{Diseño e Implementación de un Framework Integrado para la Simulación de Sistemas Inteligentes de Transporte en OMNeT++ y Paramics}
@@ -19,31 +15,45 @@
 \maketitle
 
 \begin{frame}{Organización de la presentación}
-    \tableofcontents
+\tableofcontents
 \end{frame}
 
 \section{Motivación y Marco Teórico}
 \begin{frame}{Motivación y Marco Teórico}
-    \centering
-    ¿Qué es un Sistema Inteligente de Transporte (ITS)?
+\centering
+¿Qué es un Sistema Inteligente de Transporte (ITS)?
 \end{frame}
 
 \begin{frame}[standout]
-    \begin{quote}
-        \centering
-        \small
-        ``\dots\@
-        aplicaciones avanzadas que, sin incorporar inteligencia como tal, pretenden proveer servicios innovadores relacionados con distintos modos de transporte y de administración de tráfico, que además otorgan información a los usuarios, permitiéndoles utilizar el sistema de transporte de manera más segura, coordinada e inteligente\dots''\footnote{\textcite{eudirective}}
-    \end{quote}
+\begin{quote}
+    \centering
+    
+    ``\dots\@
+    aplicaciones avanzadas que, sin incorporar inteligencia como tal, pretenden proveer servicios innovadores relacionados con distintos modos de transporte y de administración de tráfico, que además otorgan información a los usuarios, permitiéndoles utilizar el sistema de transporte de manera más segura, coordinada e inteligente\dots''\footnote{\textcite{eudirective}}
+\end{quote}
 \end{frame}
 
 \begin{frame}{Motivación y Marco Teórico}
-    \begin{figure}
-        \centering
-        \includegraphics[width=.85\linewidth]{figuras/ITS.png}
-        \caption{Aplicaciones en un ITS (fuente: ETSI \autocite{etsi})}
-        \label{fig:itsetsi}
-    \end{figure}
+\begin{figure}
+    \centering
+    \includegraphics[height=0.8\textheight]{figuras/ITS.png}
+    \caption{Aplicaciones en un ITS (fuente: ETSI \autocite{etsi})}
+    \label{fig:itsetsi}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Motivación y Marco Teórico}
+Factor común: recopilación y transmisión de información.
+
+Realizado a través de la integración de comunicación inalámbrica en el sistema: LTE, 802.11p (WAVE), etc (\autocite{80211dailey,80211wave,80215vanet,dar2010wireless})
+\end{frame}
+
+\begin{frame}{Motivación y Marco Teórico}
+\textbf{Problemática:} la tecnología aún está en su infancia, y existen consecuencias de esta integración que deben estudiarse antes de una implementación a gran escala \autocite{sommer2008need}:
+\begin{itemize}
+    \item efectos de la comunicación sobre el modelo de transporte;
+    \item efectos de la topología de la red sobre las comunicaciones.
+\end{itemize}
 \end{frame}
 
 
@@ -55,11 +65,11 @@
 \section{Validación}
 \section{Conclusiones}
 \begin{frame}[standout]
-    Thank you!
+Thank you!
 \end{frame}
 
-\begin{frame}[t,allowframebreaks]
-    \printbibliography
+\begin{frame}[t,allowframebreaks]{Referencias}
+\printbibliography[heading=none]
 \end{frame}
 
 \end{document}
