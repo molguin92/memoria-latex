@@ -1,28 +1,64 @@
 \documentclass[aspectratio=169]{beamer}
-\usetheme[titleformat=regular, sectionpage=progressbar, progressbar=head, background=light, numbering=none]{metropolis}           % Use metropolis theme
+\usetheme[titleformat=regular, sectionpage=progressbar, subsectionpage=progressbar, progressbar=head, background=light, numbering=none]{metropolis}           % Use metropolis theme
 
 \input{presentation_settings.tex}
 
 
 \title{Diseño e Implementación de un Framework Integrado para la Simulación de Sistemas Inteligentes de Transporte en OMNeT++ y Paramics}
-\date{\today}
-\author{Manuel Olguín \\\href{mailto:molguin@dcc.uchile.cl}{\nolinkurl{molguin@dcc.uchile.cl}}}
-\institute{\includegraphics[width=0.5\linewidth]{figuras/fcfm_dcc_png.png}}
-%\logo{\includegraphics[width=0.3\linewidth]{figuras/fcfm_dcc_png.png}}
+\subtitle{\emph{Memoria para obtar al título de Ingeniero Civil en Computación}}
+\date{Agosto 2017}
+%\author{Manuel Olguín \\\href{mailto:molguin@dcc.uchile.cl}{\nolinkurl{molguin@dcc.uchile.cl}}}
+
+\author[Olguín]{\texorpdfstring{%
+        \begin{minipage}{.5\textwidth}
+            %\centering
+            Memorista: \\
+            Manuel Olguín \\
+            \href{mailto:molguin@dcc.uchile.cl}{\nolinkurl{molguin@dcc.uchile.cl}} \\
+        \end{minipage}%  
+        \begin{minipage}{.5\textwidth}
+            %\centering
+            Profesora Guía: \\
+            Sandra Céspedes \\
+            \href{mailto:scespedes@ing.uchile.cl}{\nolinkurl{scespedes@ing.uchile.cl}} \\
+    \end{minipage}}{Manuel Olguín}}
+
+
+%\institute{\includegraphics[width=0.4\linewidth]{figuras/fcfm_dcc_png.png}}
 
 \begin{document}
 
 \maketitle
 
-\begin{frame}{Organización de la presentación}
+\begin{frame}{Integrantes}
+\begin{minipage}{.5\textwidth}
+    Memorista: \\
+    Manuel Olguín, DCC\\
+    
+    Profesora Guía:\\
+    Sandra Céspedes, DIE \\
+    
+    Comisión:\\
+    Javier Bustos, DCC \\
+    Nancy Hitschfeld, DCC
+\end{minipage}%  
+\begin{minipage}{.5\textwidth}
+    \centering
+    %\includegraphics[width=0.8\textwidth]{figuras/logo_escudo_png.png}\\
+    \includegraphics[height=.25\textheight]{figuras/fcfm_horizontal_png.png}\\
+    \vspace{0.05\textheight}
+    \includegraphics[height=.25\textheight]{figuras/dcc_antiguo_png.png}\\
+    \vspace{0.05\textheight}
+    \includegraphics[height=.25\textheight]{figuras/niclabs.png}    
+\end{minipage}    
+\end{frame}
+
+\begin{frame}{Organización de la defensa}
 \tableofcontents
 \end{frame}
 
 \section{Motivación y Marco Teórico}
-\begin{frame}{Motivación y Marco Teórico}
-\centering
-¿Qué es un Sistema Inteligente de Transporte (ITS)?
-\end{frame}
+\subsection{Sistemas Inteligentes de Transporte}
 
 \begin{frame}[standout]
 \begin{quote}
@@ -33,7 +69,7 @@
 \end{quote}
 \end{frame}
 
-\begin{frame}{Motivación y Marco Teórico}
+\begin{frame}{Sistemas Inteligentes de Transporte}
 \begin{figure}
     \centering
     \includegraphics[height=0.8\textheight]{figuras/ITS.png}
@@ -42,33 +78,45 @@
 \end{figure}
 \end{frame}
 
-\begin{frame}{Motivación y Marco Teórico}
+\begin{frame}{Sistemas Inteligentes de Transporte}
 Factor común: recopilación y transmisión de información.
 
 Realizado a través de la integración de comunicación inalámbrica en el sistema: LTE, 802.11p (WAVE), etc (\autocite{80211dailey,80211wave,80215vanet,dar2010wireless})
 \end{frame}
 
-\begin{frame}{Motivación y Marco Teórico}
-\textbf{Problemática:} la tecnología aún está en su infancia, y existen consecuencias de esta integración que deben estudiarse antes de una implementación a gran escala \autocite{sommer2008need}:
+\begin{frame}{Sistemas Inteligentes de Transporte}
+\textbf{Problemática:} la tecnología aún está en su infancia, y existen consecuencias de esta integración que deben estudiarse previo a una implementación a gran escala \autocite{sommer2008need}:
 \begin{itemize}
     \item efectos de la comunicación sobre el modelo de transporte;
     \item efectos de la topología de la red sobre las comunicaciones.
 \end{itemize}
 \end{frame}
 
+\subsection{Simulaciones Bidireccionales}
 
-\begin{frame}{Estado del Arte}
+\begin{frame}{Simulaciones Bidireccionales}
+En el contexto de \emph{ITS}, el concepto de ``simulación bidireccional'' se refiere a un entorno de simulación que permite simular la integración de sistemas de transporte con redes de comunicación inalámbrica.
 \end{frame}
+
+\begin{frame}{Simulaciones Bidireccionales - Ejemplos}
+\begin{itemize}
+    \item NCTUns -- Universidad Chiao Tung, Taiwan \autocite{nctuns6}
+    \item TraNS -- Escuela Politécnica Federal de Lausanne, Suiza \autocite{piorkowski2008trans}
+    \item VEINS -- Universidad de Erlangen, Alemania \autocite{sommer_german_dressler}
+\end{itemize}
+\end{frame}
+
+
     
 \section{Especificación del Problema}
 \section{Diseño e Implementación}
 \section{Validación}
 \section{Conclusiones}
 \begin{frame}[standout]
-Thank you!
+Gracias!
 \end{frame}
 
-\begin{frame}[t,allowframebreaks]{Referencias}
+\begin{frame}[c,allowframebreaks]{Referencias}
 \printbibliography[heading=none]
 \end{frame}
 
