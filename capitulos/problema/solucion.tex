@@ -4,7 +4,7 @@ Luego de realizar el exhaustivo estudio del estado del arte presentado en la sec
 
 Esto se puede lograr gracias al diseño modular y extensible de VEINS. Dado que ambos simuladores se comunican a través de un protocolo bien definido, el cual abstrae el funcionamiento de ambos extremos de la comunicación, ninguno de los dos simuladores necesita saber detalles de la implementación del otro. TraCI, el protocolo de comunicación, fue justamente diseñado con este tipo de escenarios en mente (\autocite{traci}).
 
-El problema se redujo entonces a la implementación de una capa de interfaz para Paramics, que le permite intepretar y funcionar con TraCI -- para esto se utilizó el API de extensión del \emph{software}, detallado en el apéndice \ref{anex:paramics_api}. 
+El alcance de la solución propuesta abarca entonces la implementación de una capa de interfaz para Paramics, que le permite intepretar y funcionar con TraCI -- para esto se utilizó el API de extensión del \emph{software}, detallado en el apéndice \ref{anex:paramics_api}. 
 
 Se tomó la decisión de optar por esta solución ya que ninguna de las demás opciones de simulación bidireccional presentaba la madurez y flexibilidad necesaria para el tipo de escenarios para los cuales se pretende utilizar el producto final. Como se comentó en la sección \ref{sec:integrated_sim}, si bien existen una serie de alternativas de entornos integrados para la simulación bidireccional, ninguna es tan avanzada y potente como VEINS.
 
