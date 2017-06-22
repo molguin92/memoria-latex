@@ -35,7 +35,7 @@ La obtención de valores desde la simulación se realiza a través de estas func
 \subsection{Funciones \texttt{QPS}}
 
 Finalmente, las funciones \texttt{QPS} sobrescriben valores internos de la simulación, o modifican comportamientos puntuales. Por ejemplo, \texttt{void qps\_DRW\_vehicleColour(VEHICLE* vehicle, int colour)} cambia el color de un vehículo, y \texttt{void qps\_VHC\_changeLane (VEHICLE*, int direction)} fuerza un cambio de pista.
-
+\newpage
 \section{Dominios}
 
 El segundo trío de caracteres en el nombre de cada función de la API indica el dominio de esta, es decir, a qué categoría de objetos o funcionalidades dentro del modelo de Paramics está asociada. Dada la gran cantidad de dominios definidos en la API, no se detallarán aquí. Sin embargo, cabe notar que los principales dominios de funciones utilizados en el desarrollo del presente trabajo corresponden a los dominios \texttt{VHC}, ligado a los vehículos presentes en la red, \texttt{LNK}, ligado a los arcos (calles) de la red y \texttt{NET}, ligado a propiedades de la red en su totalidad.
