@@ -37,6 +37,19 @@ Finalmente, se realizó una ejecución adicional de un \emph{run} con factor de 
 
 \subsubsection{Duración de la Simulación}
 
+\begin{table}[tpb]
+    \centering
+    \begin{tabular}{@{}rrr@{}}
+        \textbf{Factor de Demanda} & \textbf{Nro. Prom. Vehículos} & \textbf{Tiempo Promedio [s]} \\ \midrule
+        100\%           & 1379.9          & 1471.5              \\ %\midrule
+        75\%            & 868.75          & 683.5               \\ %\midrule
+        50\%            & 514.5825        & 275.75              \\ %\midrule
+        25\%            & 246.5675        & 113.25              \\ \bottomrule
+    \end{tabular}
+    \caption[Cantidad de vehículos vs. tiempo real de simulación]{Promedio cantidad de vehículos en simulación (por instante de tiempo) vs. tiempo promedio de simulación, 15 minutos de tiempo simulado.}
+    \label{table:vehiclesvstime}
+\end{table}
+
 La tabla \ref{table:vehiclesvstime} presenta los resultados obtenidos del tiempo de duración de la simulación versus la cantidad de vehículos promedio por instante de tiempo; estos datos se visualizan además de manera gráfica en la figura \ref{fig:vehiclesvstime}.
 
 De estos resultados se puede concluir que el \emph{framework}, como era de esperarse dada la naturaleza de la simulación, presenta una relación levemente exponencial entre la cantidad promedio de nodos en la red vehicular con el tiempo que efectivamente demora una simulación en completar su ejecución.
@@ -51,27 +64,14 @@ La figura \ref{fig:timevsvehicles_evolution} presenta por lo otro lado la evoluc
 
 Para determinar si la mayor parte del \emph{overhead} en la ejecución de las simulaciones provenía desde el \emph{plugin} en sí o desde OMNeT++, se realizaron 6 \emph{runs} de la simulación, con factor de demanda 100\%, omitiendo la integración con VEINS. Es decir, se ejecutó el escenario dentro de Paramics, con el \emph{plugin} activado, pero sin accidente y sin comunicación entre los nodos, controlado por un \emph{script} Python. Estas mediciones arrojaron como promedio 63.37 segundos de tiempo real por 15 minutos de tiempo simulado, indicando claramente que la mayor parte del \emph{overhead} proviene de OMNeT++, y de la simulación de la comunicación inalámbrica.
 
-\begin{table}[tpb]
-    \centering
-    \begin{tabular}{@{}rrr@{}}
-        \textbf{Factor de Demanda} & \textbf{Nro. Prom. Vehículos} & \textbf{Tiempo Promedio [s]} \\ \midrule
-        100\%           & 1379.9          & 1471.5              \\ %\midrule
-        75\%            & 868.75          & 683.5               \\ %\midrule
-        50\%            & 514.5825        & 275.75              \\ %\midrule
-        25\%            & 246.5675        & 113.25              \\ \bottomrule
-    \end{tabular}
-    \caption[Cantidad de vehículos vs. tiempo real de simulación]{Promedio cantidad de vehículos en simulación (por instante de tiempo) vs. tiempo promedio de simulación, 15 minutos de tiempo simulado.}
-    \label{table:vehiclesvstime}
-\end{table}
-
-\begin{figure}[htpb]
+\begin{figure}[tpb]
     \centering    
     \input{figuras/n_vhcs_vs_time.tex}
     \captionof{figure}[Cantidad de vehículos vs. tiempo real de simulación]{Gráfico de dispersión del promedio de vehículos en simulación por instante de tiempo vs. tiempo total de simulación, para una simulación de 15 minutos de tiempo simulado.}
     \label{fig:vehiclesvstime}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}[tpb]
     \centering
     \input{figuras/timevsvehicles_evolution.tex}
     \caption[Evolución temporal de la cantidad de vehículos en la simulación.]{Evolución de la cantidad de vehículos en una simulación con factor de demanda 100\%, para tiempo real y simulado.}
@@ -91,7 +91,7 @@ En términos de carga sobre el entorno de simulación, se pueden observar los re
 
 Finalmente, la figura \ref{fig:systemload:io} ilustra el uso del disco duro del sistema durante la ejecución de la simulación. Se debe destacar que el uso del disco variará fuertemente dependiendo de el escenario simulado, y de la configuración de OMNeT++. Esto ya que el simulador de redes por defecto periódicamente almacena estadísticas del funcionamiento de la simulación en archivos en disco, lo cual evidentemente genera un impacto sobre la eficiencia del sistema. De ser necesario, es posible desactivar esta funcionalidad para obtener un mejor rendimiento. De todas maneras, la figura \ref{fig:systemload:io} demuestra que a pesar de esto, los accesos al disco del \emph{framework} son muy razonables y no generan un mayor impacto en el rendimiento de éste.
 
-\begin{figure}[htpb]
+\begin{figure}[tpb]
     \centering
     \input{figuras/system_io.tex}
     \caption[I/O en disco durante simulación]{Lecturas y escrituras de disco por segundo durante una simulación con factor de demanda 100\%.}

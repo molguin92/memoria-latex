@@ -62,12 +62,7 @@ Este archivo funciona como un \emph{daemon} de ejecución del \emph{framework}, 
     
     \item Por defecto, el \emph{script} se asocia a un \emph{socket} en el puerto 9999 y espera conexiones TraCI entrantes.
     
-    \item Por otro lado, el usuario inicia la simulación de VEINS en OMNeT++. Esta automáticamente se conecta con el puerto 9999 del \emph{host}, y le transfiere los contenidos de un archivo XML \texttt{paramics-launchd.xml}, definido por el usuario. Este archivo define parámetros de simulación como la red vehicular a utilizar y la \emph{semilla} deseada para la generación de valores pseudoaleatorios.
-    
-    \begin{figure}[tpb]
-        \lstinputlisting[style=myXML, label={cod:launchd_xml}, caption={Ejemplo de archivo XML de inicialización de la simulación.}, xleftmargin=\dimexpr-\csname @totalleftmargin\endcsname]{codigo/paramics_example.launchd.xml}
-    \end{figure}
-
+    \item Por otro lado, el usuario inicia la simulación de VEINS en OMNeT++. Esta automáticamente se conecta con el puerto 9999 del \emph{host}, y le transfiere los contenidos de un archivo XML \texttt{paramics-launchd.xml}, definido por el usuario (ver ejemplo en figura \ref{cod:launchd_xml}). Este archivo define parámetros de simulación como la red vehicular a utilizar y la \emph{semilla} deseada para la generación de valores pseudoaleatorios.
     
     \item Al recibir una conexión entrante junto con el archivo de configuración, \texttt{paramics-launchd.py} prepara el inicio de la simulación integrada siguiendo los siguientes pasos:
     
@@ -80,3 +75,7 @@ Este archivo funciona como un \emph{daemon} de ejecución del \emph{framework}, 
     \item Finalmente, al terminar la simulación bidireccional, el \emph{script} finaliza la conexión entre ambos simuladores y limpia los archivos temporales generados (esta acción puede suprimirse mediante un parámetro de consola al ejecutar el \emph{script}).
     
 \end{enumerate}
+
+\begin{figure}[tpb]
+    \lstinputlisting[style=myXML, label={cod:launchd_xml}, caption={Ejemplo de archivo XML de inicialización de la simulación.}]{codigo/paramics_example.launchd.xml}
+\end{figure}

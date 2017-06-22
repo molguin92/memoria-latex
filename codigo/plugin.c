@@ -73,7 +73,8 @@ void qpx_NET_postOpen(void)
     traci_api::infoPrint(PVEINS_LICENSE);
     traci_api::infoPrint("---");
     traci_api::infoPrint("Timestep size: " + std::to_string(static_cast<int>(qpg_CFG_timeStep() * 1000.0f)) + "ms");
-    traci_api::infoPrint("Simulation start time: " + std::to_string(traci_api::Simulation::getInstance()->getCurrentTimeMilliseconds()) + "ms");
+    traci_api::infoPrint("Simulation start time: " + std::to_string(traci_api::Simulation::getInstance()
+                            ->getCurrentTimeMilliseconds()) + "ms");
     runner = new std::thread(runner_fn);
 }
 
@@ -143,7 +144,8 @@ void qpx_VHC_transfer(VEHICLE* vehicle, LINK* link1, LINK* link2)
 float qpo_CFM_followSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 {
     float speed = 0;
-    if (traci_api::VehicleManager::getInstance()->speedControlOverride(v, speed))
+    if (traci_api::VehicleManager::getInstance()
+                    ->speedControlOverride(v, speed))
         return speed;
     else
         return qpg_CFM_followSpeed(link, v, ahead);
@@ -152,7 +154,8 @@ float qpo_CFM_followSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 float qpo_CFM_leadSpeed(LINK* link, VEHICLE* v, VEHICLE* ahead[])
 {
     float speed = 0;
-    if (traci_api::VehicleManager::getInstance()->speedControlOverride(v, speed))
+    if (traci_api::VehicleManager::getInstance()
+                    ->speedControlOverride(v, speed))
         return speed;
     else
         return qpg_CFM_leadSpeed(link, v, ahead);
