@@ -6,7 +6,7 @@
 %%%%%%%%	Fecha: 21-06-2012
 %%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\NeedsTeXFormat{LaTeX2e}[2009/09/24]
+\NeedsTeXFormat{LaTeX2e}%[2009/09/24]
 \ProvidesClass{umemoria}[2012/06/18 v1.2 Clase LaTeX para estandarizacion de Memorias U. de Chile]
 
 %% Definicion de Condicionales
@@ -38,12 +38,14 @@
 \RequirePackage[pdfpagelabels]{hyperref} % Links y numeracion del PDF
 \RequirePackage{listings} % Codigo Fuente
 \RequirePackage{pgffor} % foreach
+\RequirePackage{appendix}
 
 %% Lenguaje
 \addto\captionsspanish{\renewcommand\tablename{Tabla}}
 \addto\captionsspanish{\renewcommand\contentsname{Tabla de Contenido}}
 \addto\captionsspanish{\renewcommand\listtablename{Índice de Tablas}}
 \addto\captionsspanish{\renewcommand\listfigurename{Índice de Ilustraciones}}
+\addto\captionsspanish{\renewcommand\appendixname{Anexo}}
 
 %% Interlineado
 \RequirePackage{parskip}
@@ -60,20 +62,20 @@
 
 %% Entornos nuevos
 \newenvironment{abstract}{%
-\cleardoublepage
-\begin{flushright}
-\small
-\begin{tabular}{l}
-RESUMEN DE LA MEMORIA PARA OPTAR \\
-AL TÍTULO DE \MakeUppercase\@carrera \\
-POR: \MakeUppercase\@author \\
-FECHA: \MakeUppercase\@date\\
-PROF. GUÍA: \foreach \x in \@guia { \MakeUppercase\x }
-\end{tabular}
-\end{flushright}
-\begin{center}
-\MakeUppercase\@title
-\end{center}
+    \cleardoublepage
+    \begin{flushright}
+        \small
+        \begin{tabular}{l}
+            RESUMEN DE LA MEMORIA PARA OPTAR \\
+            AL TÍTULO DE \MakeUppercase\@carrera \\
+            POR: \MakeUppercase\@author \\
+            FECHA: \MakeUppercase\@date\\
+            PROF. GUÍA: \foreach \x in \@guia { \MakeUppercase\x }
+        \end{tabular}
+    \end{flushright}
+    \begin{center}
+        \MakeUppercase\@title
+    \end{center}
 }{\vfill\null}
 
 \newenvironment{dedicatoria}{\cleardoublepage\null\vspace{\stretch{1}}\begin{flushright}\itshape}{\end{flushright}\vspace{\stretch{2}}\null}
@@ -88,7 +90,7 @@ PROF. GUÍA: \foreach \x in \@guia { \MakeUppercase\x }
 \newtheoremstyle{miestilo}{\baselineskip}{3pt}{\itshape}{}{\bfseries}{}{.5em}{}
 \newtheoremstyle{miobs}{\baselineskip}{3pt}{}{}{\bfseries}{}{.5em}{}
 \if@swapnum
-	\swapnumbers
+\swapnumbers
 \fi
 \theoremstyle{miestilo}
 \newtheorem{defn}{Definición}[chapter]
@@ -140,57 +142,57 @@ PROF. GUÍA: \foreach \x in \@guia { \MakeUppercase\x }
 
 %%Portada
 \renewcommand{\maketitle}{
-	\begin{titlepage}
-		\begin{minipage}{1.6cm}
-			\includegraphics[scale=.12]{imagenes/escudoU2014.pdf}
-		\end{minipage}
-		\begin{minipage}[t]{12cm}
-			UNIVERSIDAD DE CHILE\\FACULTAD DE CIENCIAS FíSICAS Y MATEMÁTICAS\\\MakeUppercase\@depto
-		\end{minipage}
-
-		\vspace{2cm}
-		\centering
-			\MakeUppercase\@title
-
-		\vspace{1cm}
-			\MakeUppercase\@memoria
-
-		\vspace{1cm}
-			\MakeUppercase\@author
-
-		\vspace{3cm}
-			\foreach \x [count=\xi] in \@guia {
-				PROFESOR GUÍA\ifnum\xi>1 \ \xi \fi:\\ \MakeUppercase\x\\
-			}
-
-		\vspace{1cm}
-			MIEMBROS DE LA COMISIÓN:\\
-			\foreach \x in \@comision { \MakeUppercase\x\\ }
-
-		\if\@auspicio\@empty\else
-		\vfill
-			\normalfont
-			Este trabajo ha sido parcialmente financiado por \@auspicio
-		\fi
-
-		\vfill
-			SANTIAGO DE CHILE\\ \MakeUppercase\@date
-	\end{titlepage}
+    \begin{titlepage}
+        \begin{minipage}{1.6cm}
+            \includegraphics[scale=.12]{imagenes/escudoU2014.pdf}
+        \end{minipage}
+        \begin{minipage}[t]{12cm}
+            UNIVERSIDAD DE CHILE\\FACULTAD DE CIENCIAS FÍSICAS Y MATEMÁTICAS\\\MakeUppercase\@depto
+        \end{minipage}
+        
+        \vspace{2cm}
+        \centering
+        \MakeUppercase\@title
+        
+        \vspace{1cm}
+        \MakeUppercase\@memoria
+        
+        \vspace{1cm}
+        \MakeUppercase\@author
+        
+        \vspace{3cm}
+        \foreach \x [count=\xi] in \@guia {
+            PROFESOR GUÍA\ifnum\xi>1 \ \xi \fi:\\ \MakeUppercase\x\\
+        }
+        
+        \vspace{1cm}
+        MIEMBROS DE LA COMISIÓN:\\
+        \foreach \x in \@comision { \MakeUppercase\x\\ }
+        
+        \if\@auspicio\@empty\else
+        \vfill
+        \normalfont
+        Este trabajo ha sido parcialmente financiado por \@auspicio
+        \fi
+        
+        \vfill
+        SANTIAGO DE CHILE\\ \MakeUppercase\@date
+    \end{titlepage}
 }
 
 %%Estilo del frontmatter
 \newcommand{\ps@front}{
-	\renewcommand{\thepage}{\roman{page}}
-	\renewcommand{\@oddhead}{}
-	\renewcommand{\@evenhead}{}
-	\renewcommand{\@oddfoot}{\hfill\thepage\hfill}
-	\renewcommand{\@evenfoot}{\hfill\thepage\hfill}
+    \renewcommand{\thepage}{\roman{page}}
+    \renewcommand{\@oddhead}{}
+    \renewcommand{\@evenhead}{}
+    \renewcommand{\@oddfoot}{\hfill\thepage\hfill}
+    \renewcommand{\@evenfoot}{\hfill\thepage\hfill}
 }
 
 \let\oldfrontmatter\frontmatter
 \renewcommand{\frontmatter}{
-	\pagestyle{front}
-	\oldfrontmatter
+    \pagestyle{front}
+    \oldfrontmatter
 }
 \let\oldfrontmatter\relax
 
