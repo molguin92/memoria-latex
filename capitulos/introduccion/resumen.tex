@@ -21,6 +21,24 @@ Este nuevo \emph{framework} PVEINS se validó luego mediante una serie de experi
 
 Los resultados de los análisis realizados sobre el \emph{framework} en el contexto de un escenario tan complejo como el proporcionado fueron altamente positivos. El software es eficiente, y permite modelar de manera precisa y realista el comportamiento de los Sistemas Inteligentes de Transporte.
 
+En específico:
+
+\begin{enumerate}
+    \item Se demostró que el \emph{framework} es eficiente, al simular 15 minutos del escenario mencionado en tiempos razonables dada la complejidad de éste. Por dar dos ejemplos, el sistema demoró aproximadamente 11 minutos en simular el escenario con una carga promedio de 869 vehículos presentes en la simulación por instante de tiempo, y 25 minutos con una carga de 1379 vehículos por instante de tiempo.
+    
+    \item En términos de carga computacional, se estableció que el \emph{framework} genera una carga relativamente baja en el sistema, apenas causando un aumento promedio de un 15\% en el uso del procesador y un uso de 600MB de memoria RAM durante la simulación. 
+    
+    \item Por otro lado, se comparó el funcionamiento del escenario dotado de capacidades comunicación intervehicular versus sin dichas capacidades, en presencia de un accidente en la red de transportes, estableciéndose que
+    \begin{enumerate}
+        \item Una mayor cantidad de vehículos alcanzan su destino en el tiempo de simulación cuando existe comunicación que cuando no.
+        \item Así mismo, existe una tendencia a mayores tiempo de viaje y menores distancias totales cuando no se cuenta con comunicación intervehicular.
+        \item Finalmente, también se nota una tendencia a mayores emisiones de CO$^{2}$ en el escenario sin comunicación.
+    \end{enumerate}
+
+    Todos estos resultados se ajustan a lo esperado, demostrando la correctitud del sistema, y su utilidad para el estudio de Sistemas Inteligentes de Transporte.
+\end{enumerate}
+
 Sin embargo, este trabajo de todas maneras identifica factores y detalles perfeccionables en la implementación del sistema, los cuales se presentan al final de este documento como sugerencias para trabajo futuro. 
 
 Finalmente, el producto de este trabajo de memoria se encuentra disponible en su totalidad en el repositorio \emph{git} personal del autor \autocite{pveins_github}, bajo una licencia \emph{BSD 3-Clause} \autocite{bsd3clause}. Ahí se podrá encontrar tanto el código fuente del \emph{framework} como del escenario de validación avanzado y los resultados de las pruebas realizadas.
+\newpage

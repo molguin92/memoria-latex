@@ -81,3 +81,31 @@ La presente memoria considera únicamente la integración de una simulación de 
 En el contexto de integración de simuladores de comunicaciones y de tráfico para el estudio de Sistemas Inteligentes de Transporte, se entenderá por \emph{Simulación Bidireccional} aquél entorno de simulación en que un simulador de redes de comunicación y otro de tráfico se ejecuten de manera paralela, cada uno obteniendo \emph{feedback} continuo del otro.
 
 De esta manera es posible no sólo estudiar el efecto que tiene el movimiento de los vehículos sobre la red de comunicaciones en un Sistema Inteligente de Transporte, sino también se hace posible estudiar las repercusiones de la diseminación de información en la red vehicular. Por ejemplo, permite analizar el efecto de que un grupo de conductores cambien su ruta dentro de la red de transporte en respuesta a la recepción de una notificación de un accidente más adelante en su ruta original.
+
+\subsection{Métricas de Evaluación}
+
+En la presente memoria se utilizó un conjunto de métricas para evaluar el rendimiento del \emph{framework} desarrollado. A continuación, se describirán brevemente las métricas utilizadas y su relevancia en el ámbito de sistemas de simulación para ITS.
+
+\subsubsection{Métricas de Eficiencia Computacional}
+
+La utilidad de un entorno de simulación estará fuertemente ligada a su capacidad de simular y analizar escenarios complejos de manera eficiente. Para el caso de simuladores bidireccionales para Sistemas Inteligentes de Transporte, su eficiencia computacional puede medirse en base a las siguientes métricas (para un escenario y tiempo simulado dados):
+
+\begin{enumerate}
+    \item \textbf{Número de vehículos promedio en la simulación \emph{vs} tiempo total de ejecución de la simulación.} Esta métrica indica la relación existente entre la complejidad de la red y el tiempo estimado de duración de la simulación, y proporciona una manera de estimar qué escenarios son \emph{factibles} (en términos de tiempo) de simular con el \emph{framework}.
+    
+    \item \textbf{Utilización de recursos de sistema.} Permite evaluar la carga que genera un escenario específico en los recursos del sistema (utilización del procesador, utilización de memoria RAM, actividad de entrada y salida en disco). En base a estos resultados se puede aproximar un perfil de uso de recursos del \emph{software}, a partir del cual se puede determinar si el \emph{framework} será de utilidad para usuarios con recursos razonablemente limitados.
+\end{enumerate}
+
+\subsubsection{Métricas del Modelo Vehicular}
+
+Este subconjunto de métricas se utilizó para caracterizar la utilidad del \emph{framework} para el estudio de sistemas de transporte dotados de capacidades de comunicación inalámbrica. Cabe notar que no se pretendió en ningún momento evaluar la correctitud ni la verosimilitud de la simulación vehicular, dado que se asume que Paramics representa de manera verídica el comportamiento de el sistema de transportes.
+
+Las métricas consideradas fueron entonces:
+
+\begin{enumerate}
+    \item \textbf{Comparación de la cantidad de vehículos que alcanzaron su destino en la red de transportes en un intervalo de tiempo dado, para distintos factores de demanda, para escenarios con y sin comunicación intervehicular.} Como se verá más adelante, el \emph{factor de demanda} corresponde a un indicador de la cantidad de vehículos presentes en la red vehicular en cada instante. Esta métrica permite entonces comparar la \emph{eficiencia} del sistema de transporte en presencia de un accidente vial, en escenarios con y sin comunicación inalámbrica. Intuitivamente, se espera que un sistema dotado de capacidades de transmisión de información permita a los conductores reaccionar preventivamente frente a una congestión causada por un accidente, logrando así un mayor flujo vehicular comparado con un sistema sin comunicación. 
+    
+    \item \textbf{Distancia recorrida \emph{vs} tiempo total en la simulación para cada vehículo.} Permite caracterizar el efecto mitigante de la comunicación intervehicular en el caso de un accidente en la red; se espera que un sistema sin comunicación presente una tendencia a distancias más cortas y tiempos más largos dado a que los vehículos no son capaces de reaccionar preventivamente al accidente.
+    
+    \item \textbf{Distancia recorrida vs emisión de CO$^{2}$.} Al igual que la métrica anterior, permite caracterizar los efectos de la comunicación; se espera que un sistema dotado de capacidades comunicación presente una tendencia a menores niveles de contaminación.
+\end{enumerate}
