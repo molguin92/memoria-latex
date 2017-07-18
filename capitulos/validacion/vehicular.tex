@@ -2,6 +2,13 @@
 
 \subsection{Mediciones Realizadas}
 
+Las métricas utilizadas para esta evaluación corresponden a aquellas métricas detalladas en la sección \ref{sec:eval_metrics:vehicular}:
+\begin{enumerate}
+    \item \textbf{Comparación de la cantidad de vehículos que alcanzaron su destino en la red de transportes en un intervalo de tiempo dado, para distintos factores de demanda, para escenarios con y sin comunicación intervehicular.}
+    \item \textbf{Distancia recorrida \emph{vs} tiempo total en la simulación para cada vehículo.}
+    \item \textbf{Distancia recorrida vs emisión de CO$^{2}$.}
+\end{enumerate}
+
 Esta categoría de experimentos y mediciones pretende verificar el correcto funcionamiento del \emph{framework} para la simulación de Sistemas Inteligentes de Transporte, utilizando el escenario de simulación descrito al principio del presente capítulo, en la sección \ref{sec:experiments}. Cabe destacar que en ningún caso se pretende argumentar que el escenario en cuestión es óptimo, ni que lo parámetros del sistema de transporte son los correctos para este escenario, sino simplemente que PVEINS permite de manera precisa y confiable comparar y medir las ventajas que otorga un sistema de transporte dotado de comunicación intervehicular.
 
 Para este fin se realizaron 6 \emph{runs} del escenario en cuestión, la mitad sin comunicación alguna entre vehículos y la otra mitad con comunicación perfecta\footnote{Es decir, con un factor de pérdida de paquetes en el medio de transmisión de 0\%}, para tres factores de demanda distintos. Estos \emph{runs} se contrastaron principalmente en términos de la cantidad de vehículos que alcanzaron su destino dentro de los 15 minutos de simulación, factor que de manera intuitiva permite evaluar el desempeño del sistema. Para \emph{runs} con el mismo factor de demanda, una cantidad menor de vehículos que alcanzan su destino en un lapso dado indica una menor eficiencia del sistema y un mayor retardo en los viajes realizados dentro del escenario. De esta manera, se pretende mostrar que el ``accidente'' modelado causa una cierta congestión en el sistema de transporte, y que, utilizando la comunicación intervehicular, es posible disminuir dicho impacto sobre la red. 

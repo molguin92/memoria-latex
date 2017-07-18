@@ -1,6 +1,8 @@
 \section{Eficiencia Computacional}\label{sec:results:performance}
 \subsection{Mediciones Realizadas}
 
+Las métricas utilizadas para esta evaluación corresponden a aquellas métricas detalladas en la sección \ref{sec:eval_metrics:efficiency}: \textbf{número de vehículos promedio en la simulación \emph{vs} tiempo total de ejecución de la simulación} y \textbf{utilización de recursos de sistema}.
+
 El principal factor a medir en esta categoría es la relación entre la cantidad de vehículos en una simulación y el tiempo real que demora el \emph{framework} en simular el escenario, para una duración en tiempo simulado específica. De esta manera, se pretende caracterizar el comportamiento del \emph{software} para escenarios vehiculares de alta complejidad, en los cuales pueden llegar a interactuar miles de vehículos. Además, interesa también la carga en términos de recursos de sistema que genera la ejecución de la simulación sobre el equipo de prueba. 
 
 A través de éstos datos se pretende generar un perfil del \emph{software} que indique los requisitos que impone sobre el entorno de simulación, y su factibilidad de uso para sistemas de transporte complejos tanto en entornos de simulación de alto rendimiento como de mediano y bajo.
@@ -101,5 +103,5 @@ Finalmente, la figura \ref{fig:systemload:io} ilustra el uso del disco duro del 
 \subsection{Conclusiones}
 
 De los experimentos realizados para la medición de la eficiencia computacional del \emph{framework} desarrollado, se puede concluir que este alcanza el grado de eficiencia deseado para un software destinado al uso en la investigación de modelos complejos de sistemas de transporte. Es capaz de simular eficientemente sistemas con 1400 nodos presentes en cada de simulación, manteniendo un uso de procesador razonable y una huella en memoria casi despreciable. 
-
+\newpage
 Además, destaca que la mayor parte del \emph{overhead} evidenciado en las simulaciones proviene de fuentes externas al \emph{plugin} desarrollado; en particular, una gran parte del retraso proviene de la simulación de comunicación inalámbrica de OMNeT++, y de ser necesario esto puede ser evitado mediante la omisión de la integración con VEINS, realizando la simulación directamente con, por ejemplo, Python.

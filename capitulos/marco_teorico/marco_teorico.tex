@@ -82,11 +82,11 @@ En el contexto de integración de simuladores de comunicaciones y de tráfico pa
 
 De esta manera es posible no sólo estudiar el efecto que tiene el movimiento de los vehículos sobre la red de comunicaciones en un Sistema Inteligente de Transporte, sino también se hace posible estudiar las repercusiones de la diseminación de información en la red vehicular. Por ejemplo, permite analizar el efecto de que un grupo de conductores cambien su ruta dentro de la red de transporte en respuesta a la recepción de una notificación de un accidente más adelante en su ruta original.
 
-\subsection{Métricas de Evaluación}
+\subsection{Métricas de Evaluación}\label{sec:eval_metrics}
 
 En la presente memoria se utilizó un conjunto de métricas para evaluar el rendimiento del \emph{framework} desarrollado. A continuación, se describirán brevemente las métricas utilizadas y su relevancia en el ámbito de sistemas de simulación para ITS.
 
-\subsubsection{Métricas de Eficiencia Computacional}
+\subsubsection{Métricas de Eficiencia Computacional}\label{sec:eval_metrics:efficiency}
 
 La utilidad de un entorno de simulación estará fuertemente ligada a su capacidad de simular y analizar escenarios complejos de manera eficiente. Para el caso de simuladores bidireccionales para Sistemas Inteligentes de Transporte, su eficiencia computacional puede medirse en base a las siguientes métricas (para un escenario y tiempo simulado dados):
 
@@ -96,7 +96,7 @@ La utilidad de un entorno de simulación estará fuertemente ligada a su capacid
     \item \textbf{Utilización de recursos de sistema.} Permite evaluar la carga que genera un escenario específico en los recursos del sistema (utilización del procesador, utilización de memoria RAM, actividad de entrada y salida en disco). En base a estos resultados se puede aproximar un perfil de uso de recursos del \emph{software}, a partir del cual se puede determinar si el \emph{framework} será de utilidad para usuarios con recursos razonablemente limitados.
 \end{enumerate}
 
-\subsubsection{Métricas del Modelo Vehicular}
+\subsubsection{Métricas del Modelo Vehicular}\label{sec:eval_metrics:vehicular}
 
 Este subconjunto de métricas se utilizó para caracterizar la utilidad del \emph{framework} para el estudio de sistemas de transporte dotados de capacidades de comunicación inalámbrica. Cabe notar que no se pretendió en ningún momento evaluar la correctitud ni la verosimilitud de la simulación vehicular, dado que se asume que Paramics representa de manera verídica el comportamiento de el sistema de transportes.
 
