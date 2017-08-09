@@ -3,6 +3,11 @@
 
 \input{presentation_settings.tex}
 
+\setbeameroption{show notes on second screen}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+\setbeamertemplate{enumerate items}[circle]
+
 
 \title{Diseño e Implementación de un Framework Integrado para la Simulación de Sistemas Inteligentes de Transporte en OMNeT++ y Paramics}
 \subtitle{\emph{Memoria para optar al título de Ingeniero Civil en Computación}}
@@ -51,23 +56,34 @@
     \includegraphics[height=.25\textheight]{figuras/dcc_antiguo_png.png}\\
     \vspace{0.05\textheight}
     \includegraphics[height=.25\textheight]{figuras/niclabs.png}    
+    \note{Presentar miembros comisión.}
 \end{minipage}    
 \end{frame}
 
 \begin{frame}{Organización de la defensa}
 \tableofcontents
+\note{
+    \tableofcontents
+}
 \end{frame}
 
-\section{Motivación y Marco Teórico}
-\subsection{Sistemas Inteligentes de Transporte}
+\section{Objetivos}
+\note{Objetivo principal: desarrollo de un framework de integración entre un simulador de redes, OMNeT++ y un microsimulador de tráfico, Quadstone Paramics, de tal manera que exista comunicación bidireccional entre ambos.}
+\begin{frame}{Objetivos}
+\begin{enumerate}
+    \item Establecer el estado del arte;\pause
+    \item Identificar una solución viable;\pause
+    \item Diseñar la solución;\pause
+    \item Implementar el mecanismo;\pause
+    \item Validar su funcionamiento.
+\end{enumerate}
+\end{frame}
+
+\section{Motivación y Background}
 
 \begin{frame}[standout]
-\begin{quote}
-    \centering
-    
-    ``\dots\@
-    aplicaciones avanzadas que, sin incorporar inteligencia como tal, pretenden proveer servicios innovadores relacionados con distintos modos de transporte y de administración de tráfico, que además otorgan información a los usuarios, permitiéndoles utilizar el sistema de transporte de manera más segura, coordinada e inteligente\dots''\footnote{\textcite{eudirective}}
-\end{quote}
+\centering
+¿Qué son los Sistemas Inteligentes de Transporte?
 \end{frame}
 
 \begin{frame}{Sistemas Inteligentes de Transporte}
@@ -80,57 +96,218 @@
 \end{frame}
 
 \begin{frame}{Sistemas Inteligentes de Transporte}
-Factor común: recopilación y transmisión de información.
-
-Realizado a través de la integración de comunicación inalámbrica en el sistema: LTE, 802.11p (WAVE), etc (\autocite{80211dailey,80211wave,80215vanet,dar2010wireless})
-\end{frame}
-
-\begin{frame}{Sistemas Inteligentes de Transporte}
-\textbf{Problemática:} la tecnología aún está en su infancia, y existen consecuencias de esta integración que deben estudiarse previo a una implementación a gran escala \autocite{sommer2008need}:
+Efectos bidireccionales de la integración:\pause
 \begin{itemize}
-    \item efectos de la comunicación sobre el modelo de transporte;
+    \item efectos de la comunicación sobre el modelo de transporte;\pause
     \item efectos de la topología de la red sobre las comunicaciones.
 \end{itemize}
 \end{frame}
 
-\subsection{Simulaciones Bidireccionales}
-
 \begin{frame}{Simulaciones Bidireccionales}
-En el contexto de \emph{ITS}, el concepto de ``simulación bidireccional'' se refiere a un entorno de simulación que permite simular la integración de sistemas de transporte con redes de comunicación inalámbrica.
+\begin{columns}
+    \begin{column}{.75\linewidth}
+        \begin{figure}[p]
+            \centering
+            \includegraphics[width=\textwidth]{figuras/bidirectionalsimul.png}
+            \caption{Arquitectura general de una simulación bidireccional\\(Grzybek \emph{et al.} \autocite{trendsvanet2012})}
+            \label{fig:bidirsimulation}
+        \end{figure}
+    \end{column}
+    \begin{column}{.25\linewidth}
+        Ejemplos:
+        \begin{itemize}
+            \item NCTUns \autocite{nctuns6}
+            \item TraNS \autocite{piorkowski2008trans}
+            \item VEINS \autocite{sommer_german_dressler}
+        \end{itemize}        
+    \end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{Simulaciones Bidireccionales}
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figuras/evolution_bidirectional_sim_sommerdressler.png}
-    \caption{Evolución de simulaciones para ITS (fuente: Sommer \emph{et al.} \autocite{sommer_dressler2})}
-    \label{fig:bidirsimulation_evol}
-\end{figure}
+\begin{frame}[standout]
+¿Por qué crear algo nuevo si ya existen soluciones?
 \end{frame}
 
-\begin{frame}{Simulaciones Bidireccionales}
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{figuras/bidirectionalsimul.png}
-    \caption{Arquitectura general de una simulación bidireccional (fuente: Grzybek \emph{et al.} \autocite{trendsvanet2012})}
-    \label{fig:bidirsimulation}
-\end{figure}
+\begin{frame}{¿Por qué crear algo nuevo si ya existen soluciones?}
+\begin{enumerate}
+    \item Inexistencia de solución que integre Paramics:\pause
+    \begin{itemize}
+        \item Quadstone Paramics es el simulador de preferencia del Área de Transportes del Depto. de Ing. Civil.
+        \item Simulador de alto renombre.\pause
+    \end{itemize}
+    \item Necesidad de acercar los estándares en uso en Transportes y Comunicaciones.
+
+\end{enumerate}
 \end{frame}
 
-\begin{frame}{Simulaciones Bidireccionales - Ejemplos}
-\begin{itemize}
-    \item NCTUns -- Universidad Chiao Tung, Taiwan \autocite{nctuns6}
-    \item TraNS -- Escuela Politécnica Federal de Lausanne, Suiza \autocite{piorkowski2008trans}
-    \item VEINS -- Universidad de Erlangen, Alemania \autocite{sommer_german_dressler}
-\end{itemize}
-\end{frame}
+%\begin{frame}{Especificación del Problema}
+%\begin{quote}
+%    \centering
+%    \textbf{``La inexistencia de un \emph{framework} que permita la integración bidireccional del simulador de transporte Quadstone Paramics con un simulador de redes de comunicación inalámbrica, para el modelamiento y análisis de Sistemas Inteligentes de Transporte.''}
+%\end{quote}
+%\end{frame}
 
-
-    
-\section{Especificación del Problema}
 \section{Diseño e Implementación}
-\section{Validación}
+\begin{frame}{Diseño e Implementación}
+    \begin{columns}
+        \begin{column}{.3\linewidth}
+            \centering
+            \huge\textbf{``PVEINS''}\pause
+        \end{column}
+        \begin{column}{.7\linewidth}
+            \begin{itemize}
+                \item Paramics \textbf{+} OMNeT++\pause
+                \item Arquitectura Cliente-Servidor\pause
+                \item Comunicación a través de socket\pause
+                \item Plugin implementa funcionalidad para Paramics\pause
+                \item Basado en VEINS 
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Por qué VEINS?}
+\vspace{\belowdisplayskip}
+\begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figuras/veins-arch.png}
+\end{minipage}\\
+\vspace{\belowdisplayskip}\pause
+\begin{minipage}{\linewidth}
+    \begin{columns}
+        \begin{column}{.5\linewidth}
+            \begin{itemize}
+                \item Mayoritariamente FOSS\pause
+                \item Experiencia previa\pause
+            \end{itemize}
+        \end{column}
+        \begin{column}{.5\linewidth}
+            \begin{itemize}
+                \item Diseño Modular\pause
+                \item Comunicación entre simuladores completamente abstraída (TraCI)
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{minipage}
+\end{frame}
+
+\begin{frame}{Arquitectura General}
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{figuras/PVEINSArch.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Implementación}
+\begin{columns}
+    \begin{column}{.5\linewidth}
+        \centering
+        \includegraphics[width=.5\linewidth]{figuras/c++.png}
+    \end{column}
+    \begin{column}{.5\linewidth}
+        \centering
+        \includegraphics[width=.8\linewidth]{figuras/VisualStudio.png}
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Implementación}
+\begin{figure}
+    \centering
+    \includegraphics[width=.50\linewidth]{figuras/modules_pveins.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Paso de Simulación}
+\begin{figure}
+    \centering
+    \multiinclude[<+>][format=png, graphics={width=.7\linewidth}]{figuras/simsteps/simstep}
+\end{figure}
+\end{frame}
+
+\section{Validación y Resultados}
+
+\begin{frame}{El Escenario}
+\begin{columns}
+    \begin{column}{.5\linewidth}
+        \begin{figure}[p]
+            \centering
+            \includegraphics[width=\linewidth]{figuras/costanera.png}
+        \end{figure}
+    \end{column}
+    \begin{column}{.5\linewidth}
+        \begin{figure}[p]
+            \centering
+            \includegraphics[width=\linewidth]{figuras/costanera_maps.png}
+        \end{figure}
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[standout]
+\centering
+Demo
+\end{frame}
+
+\begin{frame}{Resultados: Nro. Vehículos que alcanzaron destino}
+\begin{figure}
+    \centering
+    \renewcommand{\figurewidth}{\linewidth}
+    \renewcommand{\figureheight}{200}
+    \input{figuras/arrived_comp.tex}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Resultados: Distancia vs Tiempo}
+\begin{figure}
+    \centering
+    \renewcommand{\figurewidth}{\linewidth}
+    \renewcommand{\figureheight}{165}
+    \input{figuras/per00per10_timedistance.tex}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Resultados: Distancia vs CO$^2$}
+\begin{figure}
+    \centering
+    \renewcommand{\figurewidth}{\linewidth}
+    \renewcommand{\figureheight}{165}
+    \input{figuras/per00per10_co2.tex}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Resultados: Duración de la Simulación}
+\begin{figure}
+    \centering
+    \renewcommand{\figurewidth}{\linewidth}
+    \renewcommand{\figureheight}{165}
+    \input{figuras/n_vhcs_vs_time.tex}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Resultados: Carga sobre el Sistema}
+\begin{figure}
+    \centering
+    \renewcommand{\figurewidth}{\linewidth}
+    \renewcommand{\figureheight}{180}
+    \input{figuras/system_performance.tex}
+\end{figure}
+\end{frame}
+
 \section{Conclusiones}
+\begin{frame}{Cumplimiento de Objetivos}
+\centering
+\begin{minipage}{.8\textwidth}
+    \begin{enumerate}\pause
+        \item Establecer el estado del arte;\hfill\checkmark\pause
+        \item Identificar una solución viable;\hfill\checkmark\pause
+        \item Diseñar la solución;\hfill\checkmark\pause
+        \item Implementar el mecanismo;\hfill\checkmark\pause
+        \item Validar su funcionamiento.\hfill\checkmark
+    \end{enumerate}%
+\end{minipage}
+\end{frame}
+
 \begin{frame}[standout]
 Gracias!
 \end{frame}
@@ -138,5 +315,40 @@ Gracias!
 \begin{frame}[c,allowframebreaks]{Referencias}
 \printbibliography[heading=none]
 \end{frame}
+
+\begin{frame}%[standout]
+\begin{quote}
+    \centering
+    \textbf{``‘Intelligent Transport Systems’ or ‘ITS’ means systems in which information and communication technologies are applied in the field of road transport, including infrastructure, vehicles and users, and in traffic management and mobility management, as well as for interfaces with other modes of transport''\footnote{\textcite{eudirective}}}
+\end{quote}
+\end{frame}
+
+\begin{frame}{Simuladores de Transporte: Comunicaciones vs Transporte}
+\begin{figure}[p]
+    \centering
+    \includegraphics[width=.8\linewidth]{figuras/popular_trafficsims.png}
+    \caption{Simuladores de transporte utilizados en el área de transportes\\(Mubasher \emph{et al.} \autocite{traffic_sim_review})}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Simuladores de Transporte: Comunicaciones vs Transporte}
+\begin{figure}[p]
+\centering
+\includegraphics[height=.7\textheight]{figuras/trafficsims_comp}
+\caption{Simuladores de transporte utilizados en el área de comunicaciones\\(Sommer \emph{et al.} \autocite{sommer_dressler2})}
+\label{fig:trafficsimscomp}
+\end{figure}
+\end{frame}
+
+\begin{frame}{TraCI}
+\begin{figure}
+    \centering
+    \includegraphics[width=.7\linewidth]{figuras/traci-arch.png}
+    \caption{Arquitectura general de TraCI - Traffic Control Interface (Wegener \emph{et al.} \autocite{traci})}
+    \label{fig:traci}
+\end{figure}
+\end{frame}
+
 
 \end{document}
