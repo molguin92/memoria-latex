@@ -7,6 +7,7 @@
 \setbeamertemplate{section in toc}[sections numbered]
 \setbeamertemplate{subsection in toc}[subsections numbered]
 \setbeamertemplate{enumerate items}[circle]
+\setbeamercovered{transparent}
 
 
 \title{Diseño e Implementación de un Framework Integrado para la Simulación de Sistemas Inteligentes de Transporte en OMNeT++ y Paramics}
@@ -15,19 +16,7 @@
 %\author{Manuel Olguín \\\href{mailto:molguin@dcc.uchile.cl}{\nolinkurl{molguin@dcc.uchile.cl}}}
 \institute[Universidad de Chile]{Departamento de Ciencias de la Computación\\Facultad de Ciencias Físicas y Matemáticas, Universidad de Chile}
 
-\author[Olguín]{\texorpdfstring{%
-        \begin{minipage}{.5\textwidth}
-            %\centering
-            Memorista: \\
-            Manuel Olguín \\
-            \href{mailto:molguin@dcc.uchile.cl}{\nolinkurl{molguin@dcc.uchile.cl}} \\
-        \end{minipage}%  
-        \begin{minipage}{.5\textwidth}
-            %\centering
-            Profesora Guía: \\
-            Sandra Céspedes \\
-            \href{mailto:scespedes@ing.uchile.cl}{\nolinkurl{scespedes@ing.uchile.cl}} \\
-    \end{minipage}}{Manuel Olguín}}
+\author[Olguín]{Manuel Olguín}
 
 
 %\institute{\includegraphics[width=0.4\linewidth]{figuras/fcfm_dcc_png.png}}
@@ -37,27 +26,29 @@
 \maketitle
 
 \begin{frame}{Integrantes}
-\begin{minipage}{.5\textwidth}
-    Memorista: \\
-    Manuel Olguín, DCC\\
-    
-    Profesora Guía:\\
-    Sandra Céspedes, DIE \\
-    
-    Comisión:\\
-    Javier Bustos, DCC \\
-    Nancy Hitschfeld, DCC
-\end{minipage}%  
-\begin{minipage}{.5\textwidth}
-    \centering
-    %\includegraphics[width=0.8\textwidth]{figuras/logo_escudo_png.png}\\
-    \includegraphics[height=.25\textheight]{figuras/fcfm_horizontal_png.png}\\
-    \vspace{0.05\textheight}
-    \includegraphics[height=.25\textheight]{figuras/dcc_antiguo_png.png}\\
-    \vspace{0.05\textheight}
-    \includegraphics[height=.25\textheight]{figuras/niclabs.png}    
-    \note{Presentar miembros comisión.}
-\end{minipage}    
+\begin{columns}
+    \begin{column}{.5\textwidth}
+        Profesora Guía:\\
+        \textbf{Sandra Céspedes, DIE}\\
+        \vspace{\belowdisplayskip}
+        Comisión:\\
+        \textbf{Javier Bustos, DCC}\\
+        \textbf{Nancy Hitschfeld, DCC}\\
+        \vspace{\belowdisplayskip}
+        Mención Adicional:\\
+        \textbf{Cristián Cortés, DIC}
+    \end{column}%  
+    \begin{column}{.5\textwidth}
+        \centering
+        %\includegraphics[width=0.8\textwidth]{figuras/logo_escudo_png.png}\\
+        \includegraphics[height=.25\textheight]{figuras/fcfm_horizontal_png.png}\\
+        \vspace{0.05\textheight}
+        \includegraphics[height=.25\textheight]{figuras/dcc_antiguo_png.png}\\
+        \vspace{0.05\textheight}
+        \includegraphics[height=.25\textheight]{figuras/niclabs.png}    
+        \note{Presentar miembros comisión.}
+    \end{column}
+\end{columns}    
 \end{frame}
 
 \begin{frame}{Organización de la defensa}
@@ -147,55 +138,71 @@ Efectos bidireccionales de la integración:\pause
 %\end{quote}
 %\end{frame}
 
-\section{Diseño e Implementación}
-\begin{frame}{Diseño e Implementación}
+\section{Solución, Diseño e Implementación}
+\begin{frame}[standout]
+\centering
+¿Cómo integrar Paramics con un simulador de redes?
+\end{frame}
+
+\begin{frame}{VEINS}
     \begin{columns}
         \begin{column}{.3\linewidth}
-            \centering
-            \huge\textbf{``PVEINS''}\pause
+            \begin{itemize}
+                \item OMNeT++ \textbf{+} SUMO
+                \item Comunicación por socket TCP
+                \item Mayoritariamente FOSS
+            \end{itemize}
         \end{column}
         \begin{column}{.7\linewidth}
-            \begin{itemize}
-                \item Paramics \textbf{+} OMNeT++\pause
-                \item Arquitectura Cliente-Servidor\pause
-                \item Comunicación a través de socket\pause
-                \item Plugin implementa funcionalidad para Paramics\pause
-                \item Basado en VEINS 
-            \end{itemize}
+            \centering
+            \includegraphics[width=\linewidth]{figuras/veins-arch.png}
+            \captionof{figure}{Arquitectura de VEINS\\Fuente Sommer \emph{et al.} \autocite{sommer_german_dressler}}
         \end{column}
     \end{columns}
 \end{frame}
 
-\begin{frame}{Por qué VEINS?}
-\vspace{\belowdisplayskip}
-\begin{minipage}{\linewidth}
-    \centering
-    \includegraphics[width=.8\linewidth]{figuras/veins-arch.png}
-\end{minipage}\\
-\vspace{\belowdisplayskip}\pause
-\begin{minipage}{\linewidth}
-    \begin{columns}
-        \begin{column}{.5\linewidth}
-            \begin{itemize}
-                \item Mayoritariamente FOSS\pause
-                \item Experiencia previa\pause
-            \end{itemize}
-        \end{column}
-        \begin{column}{.5\linewidth}
-            \begin{itemize}
-                \item Diseño Modular\pause
-                \item Comunicación entre simuladores completamente abstraída (TraCI)
-            \end{itemize}
-        \end{column}
-    \end{columns}
-\end{minipage}
+\begin{frame}{VEINS}
+\begin{columns}
+    \begin{column}{.3\linewidth}
+        \centering
+        \textbf{Idea: Reemplazar SUMO...}
+    \end{column}
+    \begin{column}{.7\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figuras/veins-arch-nosumo.png}
+        \captionof{figure}{Arquitectura de VEINS\\Fuente Sommer \emph{et al.} \autocite{sommer_german_dressler}}
+    \end{column}
+\end{columns}
 \end{frame}
 
-\begin{frame}{Arquitectura General}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figuras/PVEINSArch.png}
-\end{figure}
+\begin{frame}{VEINS}
+\begin{columns}
+    \begin{column}{.3\linewidth}
+        \centering
+        \textbf{... con Paramics!}
+    \end{column}
+    \begin{column}{.7\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figuras/veins-arch-paramics.png}
+        \captionof{figure}{Arquitectura de VEINS\\Fuente Sommer \emph{et al.} \autocite{sommer_german_dressler}}
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{PVEINS: Arquitectura General}
+\begin{columns}
+    \begin{column}{.7\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figuras/PVEINSArch.png}
+    \end{column}
+    \begin{column}{.3\linewidth}
+        \begin{itemize}
+            \item Mantiene compatibilidad
+            \item Facilidad de Uso
+            \item Simplifica desarrollo
+        \end{itemize}
+    \end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Implementación}
@@ -215,13 +222,6 @@ Efectos bidireccionales de la integración:\pause
 \begin{figure}
     \centering
     \includegraphics[width=.50\linewidth]{figuras/modules_pveins.png}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Paso de Simulación}
-\begin{figure}
-    \centering
-    \multiinclude[<+>][format=png, graphics={width=.7\linewidth}]{figuras/simsteps/simstep}
 \end{figure}
 \end{frame}
 
@@ -267,30 +267,12 @@ Demo
 \end{figure}
 \end{frame}
 
-\begin{frame}{Resultados: Distancia vs CO$^2$}
-\begin{figure}
-    \centering
-    \renewcommand{\figurewidth}{\linewidth}
-    \renewcommand{\figureheight}{165}
-    \input{figuras/per00per10_co2.tex}
-\end{figure}
-\end{frame}
-
 \begin{frame}{Resultados: Duración de la Simulación}
 \begin{figure}
     \centering
     \renewcommand{\figurewidth}{\linewidth}
     \renewcommand{\figureheight}{165}
     \input{figuras/n_vhcs_vs_time.tex}
-\end{figure}
-\end{frame}
-
-\begin{frame}{Resultados: Carga sobre el Sistema}
-\begin{figure}
-    \centering
-    \renewcommand{\figurewidth}{\linewidth}
-    \renewcommand{\figureheight}{180}
-    \input{figuras/system_performance.tex}
 \end{figure}
 \end{frame}
 
@@ -350,5 +332,54 @@ Gracias!
 \end{figure}
 \end{frame}
 
+\begin{frame}{Paso de Simulación}
+\begin{figure}
+    \centering
+    \multiinclude[<+>][format=png, graphics={width=.7\linewidth}]{figuras/simsteps/simstep}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Resultados: Carga sobre el Sistema}
+\begin{figure}
+    \centering
+    \renewcommand{\figurewidth}{\linewidth}
+    \renewcommand{\figureheight}{180}
+    \input{figuras/system_performance.tex}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Resultados: Distancia vs CO$^2$}
+\begin{figure}
+    \centering
+    \renewcommand{\figurewidth}{\linewidth}
+    \renewcommand{\figureheight}{165}
+    \input{figuras/per00per10_co2.tex}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Por qué VEINS?}
+\vspace{\belowdisplayskip}
+\begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=.8\linewidth]{figuras/veins-arch.png}
+\end{minipage}\\
+\vspace{\belowdisplayskip}\pause
+\begin{minipage}{\linewidth}
+    \begin{columns}
+        \begin{column}{.5\linewidth}
+            \begin{itemize}
+                \item Mayoritariamente FOSS\pause
+                \item Experiencia previa\pause
+            \end{itemize}
+        \end{column}
+        \begin{column}{.5\linewidth}
+            \begin{itemize}
+                \item Diseño Modular\pause
+                \item Comunicación entre simuladores completamente abstraída (TraCI)
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{minipage}
+\end{frame}
 
 \end{document}
