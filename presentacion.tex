@@ -53,13 +53,33 @@
     \item Implementar el mecanismo;\pause
     \item Validar su funcionamiento.
 \end{enumerate}
+\note{%
+    \begin{enumerate}
+        \item Establecer el estado del arte;
+        \item Identificar una solución viable;
+        \item Diseñar la solución;
+        \item Implementar el mecanismo;
+        \item Validar su funcionamiento.
+    \end{enumerate}
+}
 \end{frame}
 
 \section{Motivación y Background}
 
 \begin{frame}[standout]
-\centering
-¿Qué son los Sistemas Inteligentes de Transporte?
+\begin{center}
+    ¿Qué son los Sistemas Inteligentes de Transporte?
+\end{center}
+\note{%
+    \begin{quote}
+        \textbf{``‘Intelligent Transport Systems’ or ‘ITS’ means systems in which information and communication technologies are applied in the field of road transport, including infrastructure, vehicles and users, and in traffic management and mobility management, as well as for interfaces with other modes of transport''}
+    \end{quote}
+    
+    \begin{minipage}{\linewidth}
+        \fullcite{eudirective}
+    \end{minipage}
+
+}
 \end{frame}
 
 \begin{frame}{Sistemas Inteligentes de Transporte}
@@ -69,6 +89,7 @@
     \caption{Aplicaciones en un ITS (fuente: ETSI \autocite{etsi})}
     \label{fig:itsetsi}
 \end{figure}
+\note{ETSI: European Telecommunications Standards Institute}
 \end{frame}
 
 \begin{frame}{Sistemas Inteligentes de Transporte}
@@ -77,6 +98,13 @@ Efectos bidireccionales de la integración:\pause
     \item efectos de la comunicación sobre el modelo de transporte;\pause
     \item efectos de la topología de la red sobre las comunicaciones.
 \end{itemize}
+\note{%
+    Efectos:
+    \begin{itemize}
+        \item comunicación -> transporte
+        \item transporte -> comunicación
+    \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Simulaciones Bidireccionales}
@@ -110,8 +138,8 @@ Efectos bidireccionales de la integración:\pause
         \item Simulador de alto renombre.\pause
     \end{itemize}
     \item Necesidad de acercar los estándares en uso en Transportes y Comunicaciones.
-
 \end{enumerate}
+\note{No existe solución que integre Paramics, brecha entre Comunicaciones y Transporte.}
 \end{frame}
 
 %\begin{frame}{Especificación del Problema}
@@ -134,6 +162,10 @@ Efectos bidireccionales de la integración:\pause
     \caption{Arquitectura general de TraCI - Traffic Control Interface (Wegener \emph{et al.} \autocite{traci})}
     \label{fig:traci}
 \end{figure}
+\note{%
+    \fullcite{traci}
+}
+
 \end{frame}
 
 
@@ -145,6 +177,7 @@ Efectos bidireccionales de la integración:\pause
 \end{figure}
 \note{
     \begin{itemize}
+        \item \fullcite{sommer_german_dressler}
         \item OMNeT++ \textbf{+} SUMO
         \item Comunicación por socket TCP
         \item Mayoritariamente FOSS
@@ -167,6 +200,14 @@ Efectos bidireccionales de la integración:\pause
         \end{itemize}
     \end{column}
 \end{columns}
+\note{%
+    \begin{itemize}
+        \item Extensible
+        \item Mantiene compatibilidad
+        \item Facilidad de Uso
+        \item Simplifica desarrollo
+    \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Implementación y Desarrollo}
@@ -187,6 +228,14 @@ Efectos bidireccionales de la integración:\pause
     \centering
     \includegraphics[width=.5\linewidth]{figuras/modules_pveins.png}
 \end{figure}
+\note{%
+    \begin{itemize}
+        \item TraCIServer
+        \item VehicleManager
+        \item Simulation
+        \item Network
+    \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Implementación y Desarrollo}
@@ -202,6 +251,13 @@ Efectos bidireccionales de la integración:\pause
         \includegraphics[width=\linewidth]{figuras/poststep_code.png}
     \end{column}    
 \end{columns}
+\note{%
+    \begin{itemize}
+        \item Desarrollo iterativo.
+        \item Buenas prácticas y documentación.
+        \item Git.
+    \end{itemize}
+}
 \end{frame}
 
 \section{Validación y Resultados}
@@ -221,6 +277,10 @@ Efectos bidireccionales de la integración:\pause
         \end{figure}
     \end{column}
 \end{columns}
+\note{%
+    \fullcite{zuniga}
+    Explicar bien escenario! (Accidente, comunicación)
+}
 \end{frame}
 
 \begin{frame}[standout]
@@ -236,6 +296,17 @@ Efectos bidireccionales de la integración:\pause
     \renewcommand{\figureheight}{200}
     \input{figuras/arrived_comp.tex}
 \end{figure}
+\note{%
+    \begin{itemize}
+        \item Explicar Factor de Demanda.
+        \item Comportamiento consistente para los 3 casos.
+        \item Razones de diferencia casi ``despreciable'':
+        \begin{enumerate}
+            \item Accidente pequeño, escenario grande.
+            \item Tiempo de simulación corto.
+        \end{enumerate}
+    \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Resultados: Distancia vs Tiempo}
@@ -245,6 +316,12 @@ Efectos bidireccionales de la integración:\pause
     \renewcommand{\figureheight}{165}
     \input{figuras/per00per10_timedistance.tex}
 \end{figure}
+\note{%
+    \begin{itemize}
+        \item Gráfico de dispersión distancia vs tiempo.
+        \item Notar ``ramas'' que presentan comportamiento anómalo.
+    \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Resultados: Duración de la Simulación}
@@ -254,6 +331,13 @@ Efectos bidireccionales de la integración:\pause
     \renewcommand{\figureheight}{165}
     \input{figuras/n_vhcs_vs_time.tex}
 \end{figure}
+\note{%
+    \begin{itemize}
+        \item Ser breve.
+        \item Hablar de comportamiento exponencial - grafo!
+        \item Explicar que al fin y al cabo igual es bueno.
+    \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Otros Resultados}
@@ -261,6 +345,12 @@ Efectos bidireccionales de la integración:\pause
     \item Uso de recursos del sistema: 600 mb, 20\% capacidad del procesador.
     \item Se puede ampliar a estudiar la red de comunicaciones.
 \end{itemize}
+\note{%
+    \begin{itemize}
+        \item Uso de recursos del sistema: 600 mb, 20\% capacidad del procesador.
+        \item Se puede ampliar a estudiar la red de comunicaciones.
+    \end{itemize}
+}
 \end{frame}
 
 \section{Conclusiones}
@@ -275,6 +365,18 @@ Efectos bidireccionales de la integración:\pause
         \item Validar su funcionamiento.\hfill\checkmark
     \end{enumerate}%
 \end{minipage}
+\note{%
+    \centering
+    \begin{minipage}{.8\textwidth}
+        \begin{enumerate}
+            \item Establecer el estado del arte;\hfill\checkmark
+            \item Identificar una solución viable;\hfill\checkmark
+            \item Diseñar la solución;\hfill\checkmark
+            \item Implementar el mecanismo;\hfill\checkmark
+            \item Validar su funcionamiento.\hfill\checkmark
+        \end{enumerate}%
+    \end{minipage}
+}
 \end{frame}
 
 \begin{frame}{Aprendizajes y comentarios finales}
@@ -283,10 +385,24 @@ Efectos bidireccionales de la integración:\pause
     \item Aprendizaje en un área específica, alejada de lo ``común''. \pause
     \item M. Olguín, C. E. Cortés, S. Céspedes, J. Bustos, \textbf{An Integrated Framework for IVC Simulation under Realistic Transport Environments}, \textit{97th Annual Meeting of the Transportation Research Board}, 2018.
 \end{itemize}
+\note{%
+    \begin{itemize}
+        \item Desafío: Software propietario.
+        \item Salir de zona de ``confort'' en CS.
+        \item Mencionar Paper!
+    \end{itemize}
+}
 \end{frame}
 
 \begin{frame}[standout]
 Gracias!
+\note{%
+    \begin{itemize}
+        \item Agradecer profes (todos, comisión y Cristián!)
+        \item Agradecer familia y amigos.
+        \item Preguntas?
+    \end{itemize}
+}
 \end{frame}
 
 \begin{frame}{Integrantes}
